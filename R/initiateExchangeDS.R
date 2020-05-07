@@ -261,8 +261,12 @@ initiateExchangeDS <- function()
 {
 
   #set minimum and maximum values - MAY NEED TO BE AN OPTION IN  SERVERS ...
-  MIN             <- runif(1, min=-10^16, max = -1)
-  MAX               <- runif(1, min=1, max = 10^16)
+  #To be changed back to these values
+ # MIN             <- runif(1, min=-10^16, max = -1)
+#  MAX               <- runif(1, min=1, max = 10^16)
+  MIN             <- runif(1, min=1, max = 200)
+  MAX               <- runif(1, min=300, max =400)
+  
   no.rows           <- .define_no_rows()
   no.columns        <- .define_no_columns(no.rows)
   concealed.vector  <- .create_concealed_vector(no.rows,MIN, MAX)
