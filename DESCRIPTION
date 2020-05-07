@@ -1,0 +1,18 @@
+Package: dsServerParameter
+Title: share parameters between servers in a non-disclosive manner
+Version: 0.0.0.0
+Authors@R: 
+    person(given = "Patricia",
+           family = "Ryser-Welch",
+           role = c("aut", "cre"),
+           email = "patricia.ryser-welch@newcastle.ac.uk",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: The package provides the functions running on a DataSHIELD server. These function encodes a parameter using some matrices algebra.
+License: GPL-3
+Encoding: UTF-8
+Depends: R (>= 3.6.3)
+LazyData: true
+AggregateMethods:
+  getEncodedDataDS,
+  initiateExchangeDS
+RoxygenNote: 7.0.2
