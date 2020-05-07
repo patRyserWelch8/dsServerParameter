@@ -161,14 +161,20 @@
 
 .define_no_columns <- function(no.rows = 2)
 {
-  no.columns <- no.rows
-  continue = TRUE
-  while(continue)
-  {
-    no.columns <- as.integer(runif(1, min = 13, max = 23))
-    continue <- (no.columns %% 2 == 0) | (no.columns == no.rows)
-  }
-  return(no.columns)
+   no.columns = 0
+   if(is.numeric(no.rows))
+   {
+      no.columns <- no.rows
+      continue = TRUE
+      while(continue)
+      {
+        no.columns <- as.integer(runif(1, min = 13, max = 23))
+        continue <- (no.columns %% 2 == 0) | (no.columns == no.rows)
+      }
+      
+   }
+   return(no.columns)
+   
 }
 
 .createMatrixRUnif <- function(no.rows = 11, no.columns = 13, min.value=0, max.value=1)
@@ -195,23 +201,29 @@
 
 .occult <- function(masking.matrix = NULL, concealing.matrix = NULL, concealed.vector = NULL)
 {
-  #initialise some variables
-  no.row = nrow(concealing.matrix)
-  no.col = ncol(masking.matrix)
-  outcome <- matrix(rep(0,no.row * no.col),no.row, no.col)
-
+  outcome <- NULL
   #check parameters
-  if(!is.null(masking.matrix) & !is.null(concealing.matrix) & !is.null(concealed.vector))
+
+  if(is.matrix(masking.matrix) & is.matrix(concealing.matrix) & is.vector(concealed.vector))
   {
+    #initialise some variables
+    no.row = nrow(concealing.matrix)
+    no.col = ncol(masking.matrix)
+    outcome <- matrix(rep(0,no.row * no.col),no.row, no.col)
+    
     if (nrow(concealing.matrix) == length(concealed.vector))
     {
+      
       #hide the concealed vector into a column of the matrix
-      column <- ceiling(ncol(matrix)/2)
+      column <- ceiling(ncol(concealing.matrix)/2)
       concealing.matrix[,column]<- concealed.vector
+     
 
       #encode the concealing matrix with the masking matrix
       masking.matrix.t    <- t(masking.matrix)
       concealing.matrix.t <- t(concealing.matrix)
+     
+      
       if (ncol(masking.matrix.t) == nrow(concealing.matrix.t))
       {
         outcome <- masking.matrix.t %*% concealing.matrix.t

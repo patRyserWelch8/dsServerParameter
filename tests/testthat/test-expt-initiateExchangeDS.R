@@ -54,7 +54,7 @@ test_that("define.no.columns",
 
   no.rows = "a"
   #numeric and odd number
-  expect_error(.define_no_columns(no.rows = no.rows))
+  expect_equal(.define_no_columns(no.rows = no.rows),0)
 })
 
 
@@ -65,31 +65,31 @@ test_that(".createMatrixRUnif",
     createdMatrix <- .createMatrixRUnif()
     expect_equal(nrow(createdMatrix) == 11, TRUE)
     expect_equal(ncol(createdMatrix) == 13, TRUE)
-    expect_equal(all(1 <= createdMatrix, TRUE),TRUE)
+    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
 
     #no row
     createdMatrix <- .createMatrixRUnif(no.rows = 10)
     expect_equal(nrow(createdMatrix) == 11, TRUE)
     expect_equal(ncol(createdMatrix) == 13, TRUE)
-    expect_equal(all(1 <= createdMatrix, TRUE),TRUE)
+    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
 
     #no row correct
     createdMatrix <- .createMatrixRUnif(no.rows = 12)
     expect_equal(nrow(createdMatrix) == 12, TRUE)
     expect_equal(ncol(createdMatrix) == 13, TRUE)
-    expect_equal(all(1 <= createdMatrix, TRUE),TRUE)
+    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
 
     #no column incorrect
     createdMatrix <- .createMatrixRUnif(no.rows = 13, no.columns =11)
     expect_equal(nrow(createdMatrix) == 11, TRUE)
     expect_equal(ncol(createdMatrix) == 13, TRUE)
-    expect_equal(all(1 <= createdMatrix, TRUE),TRUE)
+    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
 
     #no row  and columns correct
     createdMatrix <- .createMatrixRUnif(no.rows = 15, no.columns = 17)
     expect_equal(nrow(createdMatrix) == 15, TRUE)
     expect_equal(ncol(createdMatrix) == 17, TRUE)
-    expect_equal(all(1 <= createdMatrix, TRUE),TRUE)
+    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
 
     #no row  and columns, min value correct
     createdMatrix <- .createMatrixRUnif(no.rows = 15, no.columns = 17, min.value = 12)
@@ -118,6 +118,8 @@ test_that(".occult",
     #incorrect parameters
     a.vector <- rep(2,4)
     a.matrix <- matrix(a.vector,2,2)
+    occultMatrix <- .occult()
+   
     expect_equal(is.null(.occult()), TRUE)
     expect_equal(is.null(.occult(a.matrix)), TRUE)
     expect_equal(is.null(.occult(a.matrix,a.matrix)), TRUE)
@@ -136,15 +138,24 @@ test_that(".occult",
     #correct paramaters
     a.vector          <- c(10,20,30)
     concealing.matrix <- matrix(c(1:15),3,5)
-    masking.matrix    <- matrix(c(101:115),5,5)
-    results            <- .occult(masking.matrix = masking.matrix,concealing.matrix = concealing.matrix, concealed.vector = a.vector)
-
-    #expected.result
+    masking.matrix    <- matrix(c(101:125),5,5)
+    
     column.hidden     <- concealing.matrix
     column.hidden[,3] <- a.vector
     masking.t         <- t(masking.matrix)
     hidden.t          <- t(column.hidden)
     expected.results  <- masking.t %*% hidden.t
+  
+    a.vector          <- c(10,20,30)
+    concealing.matrix <- matrix(c(1:15),3,5)
+    masking.matrix    <- matrix(c(101:125),5,5)
+    results           <- .occult(masking.matrix = masking.matrix,
+                                 concealing.matrix = concealing.matrix, 
+                                 concealed.vector = a.vector)
+    print(results)
+    
+    #expected.result
+   
     expect_equal(all(expected.results == results,TRUE),TRUE)
     expect_equal(nrow(results) == nrow(masking.t), TRUE)
     expect_equal(ncol(results) == ncol(hidden.t), TRUE)
