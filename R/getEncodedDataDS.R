@@ -43,14 +43,13 @@ getEncodedDataDS <- function()
   
   if(exists("sharing",where=1))
   {
-    print("in")
     sharing               <- get("sharing",pos = 1)
     encoded.matrix.exists <- "encoded.matrix" %in% names(sharing)
     no.columns            <- ncol(sharing$encoded.matrix)
     no.rows               <- nrow(sharing$encoded.matrix)
   
     
-    if(encoded.matrix.exists & no.rows >= 11 & no.columns >= 13)
+    if(encoded.matrix.exists & no.rows >= 13 & no.columns >= 11)
     {
       return.value <- .encode.data.with.sharing()
     }
