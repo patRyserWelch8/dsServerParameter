@@ -49,7 +49,7 @@
 .define_no_rows <- function()
 {
   no.rows <- 2
-  while(no.rows %% 2 == 0)
+  while(no.rows %% 2 == 0 & no.rows < 11)
   {
     no.rows <- as.integer(runif(1, min = 11, max = 21))
   }
@@ -65,7 +65,7 @@
       while(continue)
       {
         no.columns <- as.integer(runif(1, min = 13, max = 23))
-        continue <- (no.columns %% 2 == 0) | (no.columns == no.rows)
+        continue <- (no.columns %% 2 == 0) | (no.columns == no.rows) | (no.columns < 13)
       }
       return(no.columns)
   }
@@ -89,6 +89,7 @@
       no.columns <- 13
     }
 
+    
     random.numbers <- runif(no.rows * no.columns, min = min.value, max = max.value)
     #1/5/2020 - Changed to accomodate temporarily the parser issues - remove ceiling.
     result <- matrix(ceiling(random.numbers),no.rows,no.columns)

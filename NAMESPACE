@@ -2,4 +2,4 @@
 
 export(getEncodedDataDS)
 export(initiateExchangeDS)
-export(setReceivedMatrixDS)
+export(sendEncodedDataDS)
