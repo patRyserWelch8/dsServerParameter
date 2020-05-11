@@ -189,7 +189,7 @@
       no.columns <- 13
     }
     #remove ceiling after new parsers
-    random.numbers <- ceiling(runif(no.rows * no.columns, min = min.value, max = max.value))
+    random.numbers <- as.integer(ceiling(runif(no.rows * no.columns, min = min.value, max = max.value)))
     result <- matrix(random.numbers,no.rows,no.columns)
   }
 
@@ -228,6 +228,7 @@
       }
     }
   }
+  #parser issues remove as.integer when parser sorted....
   return(outcome)
 }
 
@@ -262,8 +263,8 @@ initiateExchangeDS <- function()
   #To be changed back to these values
  # MIN             <- runif(1, min=-10^16, max = -1)
 #  MAX               <- runif(1, min=1, max = 10^16)
-  MIN             <- runif(1, min=1, max = 200)
-  MAX               <- runif(1, min=300, max =400)
+  MIN             <- runif(1, min=1, max = 20)
+  MAX               <- runif(1, min=30, max =40)
   
   no.rows           <- .define_no_rows()
   no.columns        <- .define_no_columns(no.rows)

@@ -64,13 +64,13 @@ sendEncodedDataDS <- function(header = "", payload = "", property.a = 0,
                               property.b = 0, property.c = 0.0, property.d = 0.0)
 {
   outcome <- FALSE
-  if (is.character(header) & is.character(payload) & is.integer(property.a) &  is.integer(property.b) 
-      & is.numeric(property.c) & is.numeric(property.d))
-  {
+  #if (is.character(header) & is.character(payload) & is.integer(property.a) &  is.integer(property.b) 
+  #    & is.numeric(property.c) & is.numeric(property.d))
+  #{
     
     received.matrix <- .create.matrix(payload,property.b)
     .save.matrix(received.matrix)
     outcome <- .is.matrix.created()
-  }
+  #}
   return(outcome)
 }

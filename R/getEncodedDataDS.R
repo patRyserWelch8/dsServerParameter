@@ -1,8 +1,9 @@
 
 .encode.data.with.sharing <- function()
 {
+    #remove conversion once new parsers is available
     header        <- ""
-    data          <- as.character(paste(sharing$encoded.matrix,sep="",collapse=","))
+    data          <- as.character(paste(as.integer(sharing$encoded.matrix),sep="",collapse=","))
     size          <- as.integer(object.size(data)) #change to is numeric once parser is sorted ....
     no.columns    <- as.integer(ncol(sharing$encoded.matrix))
     timestamp     <- as.numeric(Sys.time())
@@ -45,13 +46,23 @@ getEncodedDataDS <- function()
   {
     sharing               <- get("sharing",pos = 1)
     encoded.matrix.exists <- "encoded.matrix" %in% names(sharing)
-    no.columns            <- ncol(sharing$encoded.matrix)
-    no.rows               <- nrow(sharing$encoded.matrix)
-  
     
-    if(encoded.matrix.exists & no.rows >= 13 & no.columns >= 11)
+
+    if(encoded.matrix.exists)
     {
-      return.value <- .encode.data.with.sharing()
+      no.columns            <- ncol(sharing$encoded.matrix)
+      no.rows               <- nrow(sharing$encoded.matrix)
+      if (no.rows >= 13 & no.columns >= 11)
+      {
+        #remove conversion once new parsers is available
+        sharing$encoded.matrix <- as.integer(sharing$encoded.matrix)
+       
+        return.value <- .encode.data.with.sharing()
+      }
+      else
+      {
+        return.value <- .encode.data.no.sharing()
+      }
     }
     else
     {
