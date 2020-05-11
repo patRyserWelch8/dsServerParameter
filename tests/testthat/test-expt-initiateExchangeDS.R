@@ -54,31 +54,31 @@ test_that(".createMatrixRUnif",
     createdMatrix <- .createMatrixRUnif()
     expect_equal(nrow(createdMatrix) == 11, TRUE)
     expect_equal(ncol(createdMatrix) == 13, TRUE)
-    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
+    expect_equal(all(createdMatrix <= 1, TRUE),TRUE)
 
     #no row
     createdMatrix <- .createMatrixRUnif(no.rows = 10)
     expect_equal(nrow(createdMatrix) == 11, TRUE)
     expect_equal(ncol(createdMatrix) == 13, TRUE)
-    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
+    expect_equal(all(createdMatrix <= 1, TRUE),TRUE)
 
     #no row correct
     createdMatrix <- .createMatrixRUnif(no.rows = 12)
     expect_equal(nrow(createdMatrix) == 12, TRUE)
     expect_equal(ncol(createdMatrix) == 13, TRUE)
-    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
+    expect_equal(all(createdMatrix <= 1, TRUE),TRUE)
 
     #no column incorrect
     createdMatrix <- .createMatrixRUnif(no.rows = 13, no.columns =11)
     expect_equal(nrow(createdMatrix) == 11, TRUE)
     expect_equal(ncol(createdMatrix) == 13, TRUE)
-    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
+    expect_equal(all(createdMatrix <= 1, TRUE),TRUE)
 
     #no row  and columns correct
     createdMatrix <- .createMatrixRUnif(no.rows = 15, no.columns = 17)
     expect_equal(nrow(createdMatrix) == 15, TRUE)
     expect_equal(ncol(createdMatrix) == 17, TRUE)
-    expect_equal(all(createdMatrix < 1, TRUE),TRUE)
+    expect_equal(all(createdMatrix <= 1, TRUE),TRUE)
 
     #no row  and columns, min value correct
     #createdMatrix <- .createMatrixRUnif(no.rows = 15, no.columns = 17, min.value = 12)

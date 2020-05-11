@@ -1,8 +1,4 @@
 
-
-
-
-
 .create_concealed_vector <- function(no.rows =2, min.value = 0, max.value = 1)
 {
   set.seed(as.numeric(Sys.time()))
@@ -192,8 +188,8 @@
       no.rows <- 11
       no.columns <- 13
     }
-
-    random.numbers <- runif(no.rows * no.columns, min = min.value, max = max.value)
+    #remove ceiling after new parsers
+    random.numbers <- ceiling(runif(no.rows * no.columns, min = min.value, max = max.value))
     result <- matrix(random.numbers,no.rows,no.columns)
   }
 
@@ -228,6 +224,7 @@
       if (ncol(masking.matrix.t) == nrow(concealing.matrix.t))
       {
         outcome <- masking.matrix.t %*% concealing.matrix.t
+      
       }
     }
   }
@@ -243,9 +240,9 @@
     no.elements <- length(sharing)
     if (no.elements == length(expected.list))
     {
-      list.attributes <- ls(sharing)
-      attributes.exist <- list.attributes == expected.list
-      correct <- sum(attributes.exist) == no.elements
+      list.attributes   <- ls(sharing)
+      attributes.exist  <- list.attributes == expected.list
+      correct           <- sum(attributes.exist) == no.elements
     }
 
   }

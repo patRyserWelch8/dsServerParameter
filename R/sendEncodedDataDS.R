@@ -1,23 +1,3 @@
-#'@name sendEncodedDataDS
-#'@title  decodes some data and transform them into a matrix
-#'@description This server function assigns some values into a specific structure.
-#'@export
-
-
-sendEncodedDataDS <- function(header = "", payload = "", property.a = 0, 
-                              property.b = 0, property.c = 0.0, property.d = 0.0)
-{
-  outcome <- FALSE
-  if (is.character(header) & is.character(payload) & is.integer(property.a) &  is.integer(property.b) 
-      & is.numeric(property.c) & is.numeric(property.d))
-  {
-   
-    received.matrix <- .create.matrix(payload,property.b)
-    .save.matrix(received.matrix)
-    outcome <- .is.matrix.created()
-  }
-  return(outcome)
-}
 
 .save.matrix <- function(received.matrix = NULL)
 {
@@ -74,3 +54,23 @@ sendEncodedDataDS <- function(header = "", payload = "", property.a = 0,
   return(outcome)
 }
 
+#'@name sendEncodedDataDS
+#'@title  decodes some data and transform them into a matrix
+#'@description This server function assigns some values into a specific structure.
+#'@export
+
+
+sendEncodedDataDS <- function(header = "", payload = "", property.a = 0, 
+                              property.b = 0, property.c = 0.0, property.d = 0.0)
+{
+  outcome <- FALSE
+  if (is.character(header) & is.character(payload) & is.integer(property.a) &  is.integer(property.b) 
+      & is.numeric(property.c) & is.numeric(property.d))
+  {
+    
+    received.matrix <- .create.matrix(payload,property.b)
+    .save.matrix(received.matrix)
+    outcome <- .is.matrix.created()
+  }
+  return(outcome)
+}
