@@ -4,7 +4,7 @@
 \alias{initiateExchangeDS}
 \title{initiates the first steps of a parameter in a master server}
 \usage{
-initiateExchangeDS()
+initiateExchangeDS(master = TRUE)
 }
 \description{
 This server function creates the data required to exchange a parameter securely between two
