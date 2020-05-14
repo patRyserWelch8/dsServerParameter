@@ -207,10 +207,24 @@ test_that("received matrix does not exist",
   expect_equal(is.matrix(sharing$encoded.matrix), FALSE)
   expect_equal(is.matrix(sharing$masking.matrix), FALSE)
   expect_equal(is.matrix(sharing$concealing.matrix), FALSE)
+  
+  a.list <- list(element = 3.1427)
+  assign("sharing",a.list, pos=1)
+  sharing <- .create.structure.receiver(4,23)
+  expect_equal(is.list(sharing),TRUE)
+  expect_equal(all(expected.list %in% names(sharing), FALSE), FALSE)
+  expect_equal(length(sharing) == 0, TRUE)
+  
+  expect_equal(is.vector(sharing$master.vector), FALSE)
+  expect_equal(is.matrix(sharing$encoded.matrix), FALSE)
+  expect_equal(is.matrix(sharing$masking.matrix), FALSE)
+  expect_equal(is.matrix(sharing$concealing.matrix), FALSE)
+  
+  
 })
 
 context("initiateExchangeDS::expt::.create.structure.receiver")
-test_that("received matrix does exist",
+test_that("received matrix exists",
 {
   expected.list <- c("concealing.matrix","encoded.matrix","masking.matrix","master.vector")
  
