@@ -250,33 +250,78 @@
   return(correct)
 }
 
+.create.structure.master <- function(min, max)
+{
+    no.rows           <- .define_no_rows()  
+    no.columns        <- .define_no_columns(no.rows) 
+    concealed.vector  <- .create_concealed_vector(no.rows,min, max) 
+    concealing.matrix <- .createMatrixRUnif(no.rows, no.columns, min, max) 
+    masking.matrix    <- .createMatrixRUnif(no.columns, no.columns, min, max) ######
+    encoded.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector)
+    
+    outcome           <- list(master.vector = concealed.vector,
+                                        concealing.matrix = concealing.matrix,
+                                        masking.matrix = masking.matrix,
+                                        encoded.matrix = encoded.matrix)
+    return(outcome)
+}
+
+.create.structure.receiver <- function(min, max)
+{
+  outcome <- list()
+  if(exists("sharing",where=1))
+  {
+    received.data     <-  get("sharing", pos = 1)
+    received.matrix.exists <- "received.matrix" %in% names(sharing)
+    if (received.matrix.exists)
+    {
+      #The matrix dimension uses again the dimension of the received matrix. The number of 
+      #rows is the number of columns of the received matrix and the number of rows is the 
+      #the number of rows. This is to accomodate the matrix multiplication. 
+      no.rows           <- ncol(sharing$received.matrix)
+      no.columns        <- nrow(sharing$received.matrix)
+      concealed.vector  <- .create_concealed_vector(no.rows,min, max) 
+      concealing.matrix <- .createMatrixRUnif(no.rows, no.columns, min, max) 
+      #this is different than the master.  We use again the information sent by the master to encode the data.
+      masking.matrix    <- sharing$received.matrix 
+      encoded.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector)
+    
+      outcome           <- list(master.vector = concealed.vector,
+                              concealing.matrix = concealing.matrix,
+                              masking.matrix = masking.matrix,
+                              encoded.matrix = encoded.matrix)
+    }
+  }
+  return(outcome)
+}
+
+
+
 #'@name initiateExchangeDS
 #'@title  initiates the first steps of a parameter in a master server
 #'@description This server function creates the data required to exchange a parameter securely between two
 #'DataSHIELD server.
 #'@export
 
-initiateExchangeDS <- function()
+initiateExchangeDS <- function(master=TRUE)
 {
 
   #set minimum and maximum values - MAY NEED TO BE AN OPTION IN  SERVERS ...
   #To be changed back to these values
  # MIN             <- runif(1, min=-10^16, max = -1)
 #  MAX               <- runif(1, min=1, max = 10^16)
-  MIN             <- runif(1, min=1, max = 20)
+ 
+  MIN               <- runif(1, min=1, max = 20)
   MAX               <- runif(1, min=30, max =40)
-  
-  no.rows           <- .define_no_rows()  #p1
-  no.columns        <- .define_no_columns(no.rows) #p2
-  concealed.vector  <- .create_concealed_vector(no.rows,MIN, MAX)
-  concealing.matrix <- .createMatrixRUnif(no.rows, no.columns, MIN, MAX)
-  masking.matrix    <- .createMatrixRUnif(no.columns, no.columns, MIN, MAX)
-  encoded.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector)
 
-  sharing           <- structure(list(master.vector = concealed.vector,
-                                      concealing.matrix = concealing.matrix,
-                                      masking.matrix = masking.matrix,
-                                      encoded.matrix = encoded.matrix))
+  if (master)
+  {
+    sharing <- .create.structure.master(MIN, MAX)
+  }
+  else
+  {
+    sharing <- .create.structure.receiver(MIN, MAX)
+  }
   assign("sharing", sharing, pos = 1)
   return(.isStructureValid())
 }
