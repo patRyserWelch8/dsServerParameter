@@ -266,8 +266,8 @@ initiateExchangeDS <- function()
   MIN             <- runif(1, min=1, max = 20)
   MAX               <- runif(1, min=30, max =40)
   
-  no.rows           <- .define_no_rows()
-  no.columns        <- .define_no_columns(no.rows)
+  no.rows           <- .define_no_rows()  #p1
+  no.columns        <- .define_no_columns(no.rows) #p2
   concealed.vector  <- .create_concealed_vector(no.rows,MIN, MAX)
   concealing.matrix <- .createMatrixRUnif(no.rows, no.columns, MIN, MAX)
   masking.matrix    <- .createMatrixRUnif(no.columns, no.columns, MIN, MAX)
