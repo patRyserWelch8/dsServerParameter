@@ -196,7 +196,7 @@
   return(result)
 }
 
-.occult <- function(masking.matrix = NULL, concealing.matrix = NULL, concealed.vector = NULL)
+.occult <- function(masking.matrix = NULL, concealing.matrix = NULL, concealed.vector = NULL, master = TRUE)
 {
   outcome <- NULL
   #check parameters
@@ -207,28 +207,34 @@
     no.row = nrow(concealing.matrix)
     no.col = ncol(masking.matrix)
     outcome <- matrix(rep(0,no.row * no.col),no.row, no.col)
-    
+   
     if (nrow(concealing.matrix) == length(concealed.vector))
     {
-      
       #hide the concealed vector into a column of the matrix
       column <- ceiling(ncol(concealing.matrix)/2)
       concealing.matrix[,column]<- concealed.vector
-     
-
-      #encode the concealing matrix with the masking matrix
-      masking.matrix.t    <- t(masking.matrix)
-      concealing.matrix.t <- t(concealing.matrix)
-     
-      
-      if (ncol(masking.matrix.t) == nrow(concealing.matrix.t))
+    
+      #apply rules master and receiver rules. 
+      if (master) 
+      { 
+          #encode the concealing matrix with the transpose of  masking matrix and concealing matrix
+          masking     <- t(masking.matrix)
+          concealing  <- t(concealing.matrix)
+      }
+      else
       {
-        outcome <- masking.matrix.t %*% concealing.matrix.t
+        #encode the concealing matrix without transporing masking matrix and concealing matrix
+        masking     <- masking.matrix
+        concealing  <- concealing.matrix
+      }
       
+      #complete multiplication
+      if (ncol(masking) == nrow(concealing))
+      {
+         outcome <- masking %*% concealing
       }
     }
   }
-  #parser issues remove as.integer when parser sorted....
   return(outcome)
 }
 
@@ -236,7 +242,7 @@
 {
   correct <- FALSE
   expected.list <- c("concealing.matrix","encoded.matrix","masking.matrix","master.vector")
-  if(exists("sharing"))
+  if(exists("sharing",where=1))
   {
     no.elements <- length(sharing)
     if (no.elements == length(expected.list))
@@ -257,7 +263,7 @@
     concealed.vector  <- .create_concealed_vector(no.rows,min, max) 
     concealing.matrix <- .createMatrixRUnif(no.rows, no.columns, min, max) 
     masking.matrix    <- .createMatrixRUnif(no.columns, no.columns, min, max) ######
-    encoded.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector)
+    encoded.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector, TRUE)
     
     outcome           <- list(master.vector = concealed.vector,
                                         concealing.matrix = concealing.matrix,
@@ -275,21 +281,26 @@
     received.matrix.exists <- "received.matrix" %in% names(sharing)
     if (received.matrix.exists)
     {
-      #The matrix dimension uses again the dimension of the received matrix. The number of 
-      #rows is the number of columns of the received matrix and the number of rows is the 
-      #the number of rows. This is to accomodate the matrix multiplication. 
-      no.rows           <- ncol(sharing$received.matrix)
-      no.columns        <- nrow(sharing$received.matrix)
-      concealed.vector  <- .create_concealed_vector(no.rows,min, max) 
-      concealing.matrix <- .createMatrixRUnif(no.rows, no.columns, min, max) 
+      no.rows.received     <- nrow(received.data$received.matrix)
+      no.columns.received  <- ncol(received.data$received.matrix)
+      concealed.vector     <- .create_concealed_vector(no.columns.received,min, max)
+  
+      
+      #The matrix dimension uses again the dimension of the received matrix. The number of rows for the concealing matrix is the 
+      #number of columns from the received.matrix. The number of columns for the concealing matrix is the 
+      #number of rows from the received.matrix. 
+      
+      concealing.matrix <- .createMatrixRUnif(no.columns.received, no.rows.received, min, max) 
+     
       #this is different than the master.  We use again the information sent by the master to encode the data.
-      masking.matrix    <- sharing$received.matrix 
-      encoded.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector)
+      masking.matrix    <- received.data$received.matrix 
+      encoded.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector, FALSE)
     
       outcome           <- list(master.vector = concealed.vector,
                               concealing.matrix = concealing.matrix,
                               masking.matrix = masking.matrix,
-                              encoded.matrix = encoded.matrix)
+                              encoded.matrix = encoded.matrix,
+                              received.matrix = received.data$received.matrix)
     }
   }
   return(outcome)

@@ -23,7 +23,6 @@ context("sendEncodedDataDS::expt::")
 test_that("variables exists",
 {
   .test.data.structure(data)
-  print(length(data$header))
   result  <- sendEncodedDataDS(data$header, data$payload, data$property.a, data$property.b, data$property.c, data$property.d)
   sharing <- get("sharing", pos=1)
   expect_equal("received.matrix" %in% names(sharing),TRUE)

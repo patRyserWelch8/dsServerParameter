@@ -4,8 +4,8 @@ context("initiateExchangeDS::expt::correct_parameters")
 test_that("variables exists",
 {
   rm(list = "sharing", pos=1)
-  test_sharing_is_created()
-  test_sharing_receiver()
+  .test_sharing_is_created()
+  .test_sharing_receiver()
   
 })
 
@@ -237,7 +237,7 @@ test_that("received matrix exists",
   sharing <- .create.structure.receiver(4,23)
   expect_equal(is.list(sharing),TRUE)
   expect_equal(all(expected.list %in% names(sharing), TRUE), TRUE)
-  expect_equal(length(sharing) == length(expected.list), TRUE)
+  expect_equal(length(sharing) >= length(expected.list), TRUE)
   expect_equal(is.vector(sharing$master.vector), TRUE)
   expect_equal(is.matrix(sharing$encoded.matrix), TRUE)
   expect_equal(is.matrix(sharing$masking.matrix), TRUE)
