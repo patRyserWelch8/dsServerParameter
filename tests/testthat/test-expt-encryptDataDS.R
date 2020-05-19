@@ -3,11 +3,10 @@ source("definition_tests/def_sharing_structure.R")
 context("encryptDataDS::expt::correct_parameters")
 test_that("variables exists",
 {
-  rm(list = "sharing", pos=1)
   .test_sharing_is_created()
-  .test_sharing_receiver()
-  
+  #.test_sharing_receiver()
 })
+
 
 
 context("encryptDataDS::expt::.define_no_rows")
@@ -102,54 +101,7 @@ test_that(".createMatrixRUnif",
     expect_equal(all(createdMatrix >= -12 & createdMatrix <= 298, TRUE),TRUE)
 })
 
-context("encryptDataDS::expt::.occult")
-test_that(".occult",
-{
-    #incorrect parameters
-    a.vector <- rep(2,4)
-    a.matrix <- matrix(a.vector,2,2)
-    occultMatrix <- .occult()
-   
-    expect_equal(is.null(.occult()), TRUE)
-    expect_equal(is.null(.occult(a.matrix)), TRUE)
-    expect_equal(is.null(.occult(a.matrix,a.matrix)), TRUE)
-    expect_equal(is.null(.occult(a.matrix,NULL,a.vector)), TRUE)
-    expect_equal(is.null(.occult("a",1,FALSE)), TRUE)
-    expect_equal(is.null(.occult(a.matrix,a.matrix,a.vector)), FALSE)
 
-
-    #incorrect length - vector and nrow of concealing matrix
-    a.vector    <- rep(2,6)
-    result      <- .occult(a.matrix,a.matrix,a.vector)
-    expect_equal(all(result == 0,TRUE),TRUE)
-    expect_equal(nrow(result) == nrow(a.matrix),TRUE)
-    expect_equal(ncol(result) == ncol(a.matrix),TRUE)
-
-    #correct paramaters
-    a.vector<- c(10,20,30)
-    concealing.matrix <- matrix(c(1:15),3,5)
-    masking.matrix    <- matrix(c(101:125),5,5)
-    
-    column.hidden     <- concealing.matrix
-    column.hidden[,3] <- a.vector
-    masking.t         <- t(masking.matrix)
-    hidden.t<- t(column.hidden)
-    expected.results  <- masking.t %*% hidden.t
-  
-    a.vector<- c(10,20,30)
-    concealing.matrix <- matrix(c(1:15),3,5)
-    masking.matrix    <- matrix(c(101:125),5,5)
-    results <- .occult(masking.matrix = masking.matrix,
-   concealing.matrix = concealing.matrix, 
-   concealed.vector = a.vector)
-    print(results)
-    
-    #expected.result
-   
-    expect_equal(all(expected.results == results,TRUE),TRUE)
-    expect_equal(nrow(results) == nrow(masking.t), TRUE)
-    expect_equal(ncol(results) == ncol(hidden.t), TRUE)
-})
 
 
 context("encryptDataDS::expt::.is.structure.valid")
@@ -159,10 +111,11 @@ test_that(".is.structure.valid",
   encryptDataDS()
   expect_equal(.is.structure.valid(),TRUE)
 
-  correct.structure  <- list(master.vector = c(1:4),
- concealing.matrix = matrix(1:2,1,1),
- masking.matrix = matrix(1:2,1,1),
- encoded.matrix = matrix(1:2,1,1))
+  correct.structure  <- list(data = c(1:4),
+  concealing.matrix = matrix(1:2,1,1),
+  masking.matrix = matrix(1:2,1,1),
+  encrypted.matrix = matrix(1:2,1,1),
+  index = 3)
   assign("sharing",correct.structure, pos=1)
   expect_equal(.is.structure.valid(),TRUE)
 
@@ -180,14 +133,13 @@ concealing.matrix = matrix(1:2,1,1))
 context("encryptDataDS::expt::.create.structure.master")
 test_that(".create.structure.master",
 {
-  expected.list <- c("concealing.matrix","encoded.matrix","masking.matrix","master.vector")
+  expected.list <- c("concealing.matrix","masking.matrix")
   
   sharing <- .create.structure.master(4,23)
   expect_equal(is.list(sharing),TRUE)
   expect_equal(all(expected.list %in% names(sharing), TRUE), TRUE)
   expect_equal(length(sharing) == length(expected.list), TRUE)
-  expect_equal(is.vector(sharing$master.vector), TRUE)
-  expect_equal(is.matrix(sharing$encoded.matrix), TRUE)
+
   expect_equal(is.matrix(sharing$masking.matrix), TRUE)
   expect_equal(is.matrix(sharing$concealing.matrix), TRUE)
 })
@@ -196,7 +148,7 @@ test_that(".create.structure.master",
 context("encryptDataDS::expt::.create.structure.receiver")
 test_that("received matrix does not exist",
 {
-  expected.list <- c("concealing.matrix","encoded.matrix","masking.matrix","master.vector")
+  expected.list <- c("concealing.matrix","masking.matrix","received.matrix")
   #the received matrix does not exists
   sharing <- .create.structure.receiver(4,23)
   expect_equal(is.list(sharing),TRUE)
@@ -226,10 +178,10 @@ test_that("received matrix does not exist",
 context("encryptDataDS::expt::.create.structure.receiver")
 test_that("received matrix exists",
 {
-  expected.list <- c("concealing.matrix","encoded.matrix","masking.matrix","master.vector")
+  expected.list <- c("concealing.matrix","masking.matrix","received.matrix")
  
   #simulate an secure exchange of date of phase I and II of the algorithm
-  encryptDataDS(master = TRUE)
+  encryptDataDS(master_mode = TRUE)
   data <- getEncodedDataDS()
   sendEncodedDataDS(data$header, data$payload, data$property.a, data$property.b,
                     data$property.c, data$property.d)
@@ -238,8 +190,9 @@ test_that("received matrix exists",
   expect_equal(is.list(sharing),TRUE)
   expect_equal(all(expected.list %in% names(sharing), TRUE), TRUE)
   expect_equal(length(sharing) >= length(expected.list), TRUE)
-  expect_equal(is.vector(sharing$master.vector), TRUE)
-  expect_equal(is.matrix(sharing$encoded.matrix), TRUE)
+  expect_equal(is.matrix(sharing$received.matrix), TRUE)
   expect_equal(is.matrix(sharing$masking.matrix), TRUE)
   expect_equal(is.matrix(sharing$concealing.matrix), TRUE)
 })
+
+

@@ -3,15 +3,27 @@
 
 create.init.matrices.master <- function ()
 {
-    rm("sharing.master", pos =1)
-    rm("sharing.receiver", pos =1 )
-    rm("sharing", pos=1)
+    if(exists("sharing.master",where=1))
+    {
+         rm("sharing.master", pos =1)
+    }
+    
+    if(exists("sharing.receiver",where=1))
+    {
+        rm("sharing.receiver", pos =1)
+    }
+    
+    if(exists("sharing",where=1))
+    {
+        rm("sharing", pos =1)
+    }
+   
     #step 1 - master 
-    success <- initiateExchangeDS(master = TRUE)
+    success <- encryptDataDS(master_mode = TRUE, blank_mode = TRUE)
     sharing.master <- get("sharing",pos =1)
     assign("sharing.master", sharing.master, pos=1)
-    ##print("step 1 - sharing.master")
-    ##print(dim(sharing.master$encoded.matrix))
+    print("step 1 - sharing.master")
+    print(dim(sharing.master$encoded.matrix))
 }
 
 transfer.matrices.from.master.to.receiver <- function ()
