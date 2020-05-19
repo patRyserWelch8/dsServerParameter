@@ -1,6 +1,6 @@
 source("definition_tests/def_sharing_structure.R")
 
-context("initiateExchangeDS::expt::correct_parameters")
+context("encryptDataDS::expt::correct_parameters")
 test_that("variables exists",
 {
   rm(list = "sharing", pos=1)
@@ -10,7 +10,7 @@ test_that("variables exists",
 })
 
 
-context("initiateExchangeDS::expt::.define_no_rows")
+context("encryptDataDS::expt::.define_no_rows")
 test_that("define.no.rows",
 {
   #numeric and odd number
@@ -23,7 +23,7 @@ test_that("define.no.rows",
 
 })
 
-context("initiateExchangeDS::expt::.define_no_columns")
+context("encryptDataDS::expt::.define_no_columns")
 test_that("define.no.columns",
 {
   #numeric and odd number
@@ -49,7 +49,7 @@ test_that("define.no.columns",
 })
 
 
-context("initiateExchangeDS::expt::.createMatrixRUnif")
+context("encryptDataDS::expt::.createMatrixRUnif")
 test_that(".createMatrixRUnif",
 {
     #no argument
@@ -102,7 +102,7 @@ test_that(".createMatrixRUnif",
     expect_equal(all(createdMatrix >= -12 & createdMatrix <= 298, TRUE),TRUE)
 })
 
-context("initiateExchangeDS::expt::.occult")
+context("encryptDataDS::expt::.occult")
 test_that(".occult",
 {
     #incorrect parameters
@@ -152,11 +152,11 @@ test_that(".occult",
 })
 
 
-context("initiateExchangeDS::expt::.is.structure.valid")
+context("encryptDataDS::expt::.is.structure.valid")
 test_that(".is.structure.valid",
 {
   #correct structure
-  initiateExchangeDS()
+  encryptDataDS()
   expect_equal(.is.structure.valid(),TRUE)
 
   correct.structure  <- list(master.vector = c(1:4),
@@ -177,7 +177,7 @@ concealing.matrix = matrix(1:2,1,1))
   expect_equal(.is.structure.valid(),FALSE)
 })
 
-context("initiateExchangeDS::expt::.create.structure.master")
+context("encryptDataDS::expt::.create.structure.master")
 test_that(".create.structure.master",
 {
   expected.list <- c("concealing.matrix","encoded.matrix","masking.matrix","master.vector")
@@ -193,7 +193,7 @@ test_that(".create.structure.master",
 })
 
 
-context("initiateExchangeDS::expt::.create.structure.receiver")
+context("encryptDataDS::expt::.create.structure.receiver")
 test_that("received matrix does not exist",
 {
   expected.list <- c("concealing.matrix","encoded.matrix","masking.matrix","master.vector")
@@ -223,13 +223,13 @@ test_that("received matrix does not exist",
   
 })
 
-context("initiateExchangeDS::expt::.create.structure.receiver")
+context("encryptDataDS::expt::.create.structure.receiver")
 test_that("received matrix exists",
 {
   expected.list <- c("concealing.matrix","encoded.matrix","masking.matrix","master.vector")
  
   #simulate an secure exchange of date of phase I and II of the algorithm
-  initiateExchangeDS(master = TRUE)
+  encryptDataDS(master = TRUE)
   data <- getEncodedDataDS()
   sendEncodedDataDS(data$header, data$payload, data$property.a, data$property.b,
                     data$property.c, data$property.d)
