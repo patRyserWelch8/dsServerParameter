@@ -1,0 +1,17 @@
+devtools::load_all(".")
+setSharingSettingsDS()
+encryptDataDS(TRUE, FALSE)
+
+a <- getDataDS()
+master <- get("sharing",pos=1)
+rm(sharing,pos=1)
+assignDataDS(a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
+encryptDataDS(FALSE, FALSE)
+b <- getDataDS()
+receiver <- get("sharing",pos=1)
+rm(sharing,pos=1)
+assign("sharing", master, pos=1)
+assignDataDS(b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
+pi_value = pi
+encryptParamDS("pi_value")
+master <- get("sharing",pos=1)

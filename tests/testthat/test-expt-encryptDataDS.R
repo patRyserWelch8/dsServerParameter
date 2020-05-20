@@ -7,6 +7,9 @@ test_that("variables exists",
   #.test_sharing_receiver()
 })
 
+if(FALSE)
+{
+  
 
 
 context("encryptDataDS::expt::.define_no_rows")
@@ -195,4 +198,4 @@ test_that("received matrix exists",
   expect_equal(is.matrix(sharing$concealing.matrix), TRUE)
 })
 
-
+}
