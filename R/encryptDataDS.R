@@ -18,13 +18,6 @@
   expected.data         <- c(settings$data, settings$index_x, settings$index_y, settings$no_columns, settings$no_rows)
   value.exists.sharing  <- settings$concealing %in% names(sharing)
   value.exists.data     <- all(expected.data %in% names(data))
-  print("^^^^^^^^^^^^^^^^^^^^")
-  print(settings$concealing %in% names(sharing))
-  print(expected.data %in% names(data))
-  print(all(expected.data %in% names(data)))
-  print(names(data))
-  print(expected.data)
-  print("^^^^^^^^^^^^^^^^^^^^")
   if(value.exists.sharing & value.exists.data)
   {
     print("I am in again")
@@ -33,10 +26,8 @@
     print(length(data[[settings$data]]) == nrow(sharing[[settings$concealing]]))
     if(length(data[[settings$data]]) == nrow(sharing[[settings$concealing]]))
     {
-      print("I am in again and again")
+      
       outcome[[settings$concealing]][,data[[settings$index_x]] ] <- data[[settings$data]]
-      print(data[[settings$data]])
-      print( outcome[[settings$concealing]])
       outcome[[settings$index_x]]                                   <- data[[settings$index_x]]
       outcome[[settings$index_y]]                                   <- data[[settings$index_y]]
       outcome[[settings$no_columns]]                                <- data[[settings$no_columns]]
@@ -136,7 +127,6 @@
     }
     
     outcome[[settings$encrypted]] <- matrix.product
-     names(outcome)
   }
    names(outcome)
   return(outcome)
@@ -153,9 +143,9 @@
     {
       no.rows                         <- .define_no_rows()  
       no.columns                      <- .define_no_columns(no.rows) 
+      outcome[[settings$index_y]]     <-  ceiling(runif(1, min = 0, max = no.columns-1))
     }
     outcome[[settings$concealing]]  <- .createMatrixRUnif(no.rows, no.columns, min, max) 
-    outcome[[settings$index_y]]     <-  ceiling(runif(1, min = 0, max = no.columns-1))
     outcome[[settings$masking]]     <- .createMatrixRUnif(no.columns, no.columns, min, max) 
     outcome[[settings$no_columns]]  <- no.columns
     outcome[[settings$no_rows]]     <- no.rows
@@ -273,11 +263,6 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       }
   
       sharing       <- .encrypt(sharing, master_mode)
-      print("**********")
-      print(names(sharing))
-      print("**********")
-      print(expected.list)
-      print("**********")
       sharing       <- sharing[names(sharing) %in% expected.list == TRUE]
       print(names(sharing))
      
