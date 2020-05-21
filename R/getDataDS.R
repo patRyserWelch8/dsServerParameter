@@ -1,14 +1,13 @@
 
-.encode.data.with.sharing <- function()
+.encode.data.with.sharing <- function(encrypted.data, no.columns, index)
 {
     #remove conversion once new parsers is available
     header        <- ""
-    data          <- as.character(paste(as.integer(sharing[[settings$encrypted]]),sep="",collapse=","))
+    data          <- as.character(paste(as.integer(encrypted.data),sep="",collapse=","))
     size          <- as.integer(object.size(data)) #change to is numeric once parser is sorted ....
-    no.columns    <- as.integer(ncol(sharing[[settings$encrypted]]))
     timestamp     <- as.numeric(Sys.time()) / size
-    index         <- ceiling(runif(1, min = 0, max = ncol(sharing[[settings$encrypted]])))
-    
+    print(index)
+  
     return.value  <- list(header = "FM1" , 
                           payload = data, 
                           property.a = size, 
@@ -40,7 +39,7 @@
 #'@title  Retrieves the encrypted data from a server to the analysis computer
 #'@description This server function retrieves some encrypted data to be passed onto the analysis computer
 #'@export
-getDataDS <- function()
+getDataDS <- function(master_mode = TRUE)
 {
   
   if (exists("settings",where=1))
@@ -57,9 +56,15 @@ getDataDS <- function()
           if (no.rows >= 13 & no.columns >= 11)
           {
             #remove conversion once new parsers is available
-            sharing[[settings$encrypted]] <- as.integer(sharing[[settings$encrypted]])
-           
-            return.value <- .encode.data.with.sharing()
+            encrypted.data <- as.integer(sharing[[settings$encrypted]])
+            if(master_mode)
+            {
+              return.value <- .encode.data.with.sharing(encrypted.data, no.columns, sharing[[settings$index_y]])
+            }
+            else
+            {
+              return.value <- .encode.data.with.sharing(encrypted.data, no.columns, sharing[[settings$index_x]])
+            }
           }
           else
           {

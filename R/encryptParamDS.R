@@ -136,15 +136,17 @@ encryptParamDS <- function(param.name = NULL)
      sharing <- .get.shared.secrets()
      if(.is.param.valid(param.name) & .is.shared.secrets.valid(sharing))
      {
+         #decrypt the received matrix: shared secret
          decrypted.matrix               <- .decrypt.received.matrix(sharing[[settings$masking]], sharing[[settings$received]]) 
          column                         <- sharing[[settings$index_x]]
          row                            <- ceiling(runif(1, min = 0, max = nrow(decrypted.matrix)))
          encoding.ratio                 <- .compute.encoding.ratio(decrypted.matrix,param.name,column, row) 
+         
+         #decrypt encrypted matrix to find concealed values: shared secret
          decrypted.matrix               <- t(solve(t(sharing[[settings$masking]])) %*% sharing[[settings$encrypted]])
          sharing[[settings$data]]       <- .encrypt.parameter(decrypted.matrix,column,encoding.ratio)
          sharing[[settings$index_y]]    <- row   
-         expected.list                  <- c(settings$data,settings$index_x, settings$index_y)
-         sharing                        <- sharing[names(sharing) %in% expected.list == TRUE]
+         expected.list                  <- c(settings$data,settings$index_x, settings$index_y, settings$encrypted, settings$masking)
          assign(settings$name.struct,sharing, pos=1)
          outcome <- .is.encrypted.structure.valid(expected.list)
      }

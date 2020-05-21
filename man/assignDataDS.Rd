@@ -5,6 +5,7 @@
 \title{assign data to one or multiple servers with some encrypted data from the analysis computer}
 \usage{
 assignDataDS(
+  master_mode = TRUE,
   header = "",
   payload = "",
   property.a = 0,

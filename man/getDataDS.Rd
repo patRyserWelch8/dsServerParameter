@@ -4,7 +4,7 @@
 \alias{getDataDS}
 \title{Retrieves the encrypted data from a server to the analysis computer}
 \usage{
-getDataDS()
+getDataDS(master_mode = TRUE)
 }
 \description{
 This server function retrieves some encrypted data to be passed onto the analysis computer

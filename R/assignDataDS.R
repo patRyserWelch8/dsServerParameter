@@ -1,19 +1,28 @@
 
-.save <- function(received.matrix = NULL, index = 199)
+.save <- function(received.matrix = NULL, index = settings$min_columns + 209, master_mode)
 {
     if (is.matrix(received.matrix) & is.numeric(index))
     {
-      if (!exists("sharing", where=1))
-      {
-        sharing <- list()
-      }
-      else
+      if (exists("sharing", where=1))
       {
         sharing = get("sharing", pos = 1)
       }
+      else
+      {
+        sharing <- list()
+      }
       
       sharing[[settings$received]] <- received.matrix
-      sharing[[settings$index_x]]  <- index
+      if(master_mode)
+      {
+        sharing[[settings$index_x]] <- index
+        
+      }
+      else
+      {
+        #receiver assignment: transpose in master taken into account
+        sharing[[settings$index_y]]    <- index
+      }
       assign(settings$name.struct, sharing, pos = 1)
     }
 }
@@ -48,22 +57,35 @@
 }
 
 
-.is.assigned.values.correct <- function()
+.is.assigned.values.correct <- function(master_mode)
 {
   outcome <- FALSE
   if (exists(settings$name.struct,where=1))
   {
     sharing       <- get(settings$name.struct,pos=1)
-    structure     <- c(settings$received,settings$index_x)
-    total.correct <- sum(structure %in% names(sharing))
+    if(master_mode)
+    {
+      structure     <- c(settings$received,settings$index_x)
+    }
+    else
+    {
+      structure     <- c(settings$received,settings$index_y)
+    }
    
+    total.correct <- sum(structure %in% names(sharing))
     value.exists  <- length(structure) %in%  total.correct
+    
     if (value.exists)
     {
-      outcome <- is.matrix(sharing[[settings$received]]) &  is.numeric(sharing[[settings$index_x]])
+      if(master_mode)
+      {
+        outcome <- is.numeric(sharing[[settings$index_x]])
+      }
+      else
+      {
+        outcome <- is.numeric(sharing[[settings$index_y]])
+      }
     }
-    
-   
   }
   return(outcome)
 }
@@ -74,11 +96,11 @@
 #'@export
 
 
-assignDataDS <- function(header = "", payload = "", property.a = 0, 
+assignDataDS <- function(master_mode = TRUE, header = "", payload = "", property.a = 0, 
                               property.b = 0, property.c = 0.0, property.d = 0.0)
 {
   outcome <- FALSE
-  if (is.character(header) & is.character(payload)
+  if ( is.character(header) & is.character(payload)
      & is.numeric(property.a) &  is.numeric(property.b) 
      & is.numeric(property.c) & is.numeric(property.d))
      {
@@ -87,8 +109,8 @@ assignDataDS <- function(header = "", payload = "", property.a = 0,
           {
             received.matrix  <- .create.matrix(payload,property.b)
             index            <- .compute.index(property.d, property.c)
-            .save(received.matrix, index)
-            outcome          <- .is.assigned.values.correct()
+            .save(received.matrix, index, master_mode)
+            outcome          <- .is.assigned.values.correct(master_mode)
           }
      }
   return(outcome)
