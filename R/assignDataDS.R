@@ -32,7 +32,7 @@
   index <- ceiling(runif(1, min= settings$max_columns+3, max = settings$max_columns+103))
   if (is.numeric(encrypted.index))
   {
-     index <- as.integer(encrypted.index * timestamp)
+     index <- floor(encrypted.index * timestamp)
   }
   return(index)
 }
@@ -47,7 +47,10 @@
     data.vector     <- unlist(data.list)
     data.numeric    <- as.numeric(data.vector)
     no.rows         <- length(data.numeric)/no.columns
-    
+    print("^^^^^^")
+    print(no.rows)
+    print(no.columns)
+    print("^^^^^^")
     if (no.rows > 1 & no.columns > 1)
     {
       received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)

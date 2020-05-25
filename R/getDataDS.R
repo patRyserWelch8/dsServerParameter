@@ -53,7 +53,9 @@ getDataDS <- function(master_mode = TRUE)
         {
           no.columns            <- ncol(sharing[[settings$encrypted]])
           no.rows               <- nrow(sharing[[settings$encrypted]])
-          if (no.rows >= 13 & no.columns >= 11)
+          print(no.rows >= settings$min_rows & no.columns >= settings$min_columns)
+          #may cause some issues ....
+          if (no.rows >= settings$min_columns & no.columns >= settings$min_rows)
           {
             #remove conversion once new parsers is available
             encrypted.data <- as.integer(sharing[[settings$encrypted]])
