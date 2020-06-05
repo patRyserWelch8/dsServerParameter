@@ -1,6 +1,7 @@
 
 .encode.data.with.sharing <- function(encrypted.data, no.columns, index)
 {
+    print(index)
     #remove conversion once new parsers is available
     header        <- ""
     data          <- as.character(paste(as.integer(encrypted.data),sep="",collapse=","))
@@ -40,10 +41,10 @@
 #'@description This server function retrieves some encrypted data to be passed onto the analysis computer
 #'@export
 getDataDS <- function(master_mode = TRUE)
-{
-  
-  if (exists("settings",where=1))
-  {  
+{ 
+   return.value <- .encode.data.no.sharing()
+   if(exists("settings",where=1))
+   {
       if(exists(settings$name.struct,where=1))
       {
         sharing      <- get(settings$name.struct,pos = 1)
@@ -53,35 +54,17 @@ getDataDS <- function(master_mode = TRUE)
         {
           no.columns            <- ncol(sharing[[settings$encrypted]])
           no.rows               <- nrow(sharing[[settings$encrypted]])
-          print(no.rows >= settings$min_rows & no.columns >= settings$min_columns)
-          #may cause some issues ....
+          print(sharing[[settings$encrypted]])
+          #transpose
           if (no.rows >= settings$min_columns & no.columns >= settings$min_rows)
           {
             #remove conversion once new parsers is available
             encrypted.data <- as.integer(sharing[[settings$encrypted]])
-            if(master_mode)
-            {
-              return.value <- .encode.data.with.sharing(encrypted.data, no.columns, sharing[[settings$index_y]])
-            }
-            else
-            {
-              return.value <- .encode.data.with.sharing(encrypted.data, no.columns, sharing[[settings$index_x]])
-            }
-          }
-          else
-          {
-            return.value <- .encode.data.no.sharing()
+            index <- runif(1, min =settings$min_rows, max= settings$max_rows)
+            return.value <- .encode.data.with.sharing(encrypted.data, no.columns, index)
           }
         }
-        else
-        {
-          return.value <- .encode.data.no.sharing()
-        }
-      }
-      else
-      {
-        return.value <- .encode.data.no.sharing()
-      }
+    }
   }
   return(return.value)
 }

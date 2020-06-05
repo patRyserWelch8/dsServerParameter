@@ -41,9 +41,10 @@ removeEncryptingDataDS <- function()
   outcome <- FALSE
   if(exists("settings", where=1))
   {
-    sharing <- .get.sharing.data()
-    expected.list                  <- c(settings$data,settings$index_x, settings$index_y,settings$no_columns, settings$no_rows)
+    sharing                        <- .get.sharing.data()
+    expected.list                  <- c(settings$data,settings$no_columns, settings$no_rows)
     sharing                        <- sharing[names(sharing) %in% expected.list == TRUE]
+  
     assign("sharing", sharing,pos=1)
     outcome <- .is.cleaned.structure.valid(expected.list)
   }

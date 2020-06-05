@@ -11,7 +11,7 @@
 # Datashield test suite set up
 #
 #library(R6)
-library(ds.server.wrapping.R.functions)
+#library(ds.server.wrapping.R.functions)
 
 print("setup.r")
 ds.test_env <- new.env()

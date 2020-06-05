@@ -10,37 +10,45 @@
   return(outcome)
 }
 
-
-.conceal.data <- function(sharing, data)
+.conceal.data <- function(concealing.matrix, data, column)
 {
-  outcome               <- sharing 
-  expected.data         <- c(settings$data, settings$index_x, settings$index_y, settings$no_columns, settings$no_rows)
-  value.exists.sharing  <- settings$concealing %in% names(sharing)
-  value.exists.data     <- all(expected.data %in% names(data))
-  if(value.exists.sharing & value.exists.data)
+  print("conceal - step 1")
+  outcome <- NULL
+  if(is.matrix(concealing.matrix) & is.vector(data))
   {
-    
-    if(length(data[[settings$data]]) == nrow(sharing[[settings$concealing]]))
+    print("conceal - step 2")
+    outcome <- concealing.matrix
+    print(length(data))
+    print(nrow(concealing.matrix))
+    if(length(data) == nrow(concealing.matrix))
     {
-      
-      outcome[[settings$concealing]][,data[[settings$index_x]] ]    <- data[[settings$data]]
-      outcome[[settings$index_x]]                                   <- data[[settings$index_x]]
-      outcome[[settings$index_y]]                                   <- data[[settings$index_y]]
-      outcome[[settings$no_columns]]                                <- data[[settings$no_columns]]
-      outcome[[settings$no_rows]]                                   <- data[[settings$no_rows]]
+      print("conceal - step 3")
+      #problem here >>>>>
+      print("problem here")
+      print(data)
+      print(column)
+      print(concealing.matrix)
+      concealing.matrix[,column]  <- data
+      print(concealing.matrix)
     }
   }
   
-  return(outcome)
+  return(concealing.matrix)
 }
 
 
 .define_no_rows <- function()
 {
   no.rows <- 2
-  while(no.rows %% 2 == 0 & no.rows < settings$min_rows)
+  continue <- TRUE
+  while(continue)
   {
     no.rows <- as.integer(runif(1, min = settings$min_rows, max = settings$max_rows))
+    if(no.rows %% 2 == 1  & 
+       no.rows >= settings$min_columns & no.rows <= settings$max_columns) 
+    {
+      continue = FALSE
+    }
   }
   return(no.rows)
 }
@@ -54,7 +62,12 @@
       while(continue)
       {
         no.columns <- as.integer(runif(1, min = settings$min_columns, max = settings$max_columns))
-        continue <- (no.columns %% 2 == 0) | (no.columns == no.rows) | (no.columns < settings$min_columns)
+        if(no.columns %% 2 == 1 &  no.columns != no.rows  & 
+           no.columns >= settings$min_columns & no.columns<= settings$max_columns) 
+        {
+           continue = FALSE
+        }
+        
       }
       return(no.columns)
   }
@@ -90,8 +103,8 @@
 .encrypt <- function(sharing, master_mode = TRUE)
 {
   outcome <- sharing
-  names(outcome)
   values.exists  <- all(c(settings$concealing,settings$masking) %in% names(sharing))
+  
   if(values.exists)
   {
     #initialise some variables
@@ -101,6 +114,7 @@
     
     if(is.matrix(sharing[[settings$concealing]]) & is.matrix(sharing[[settings$masking]]))
     {
+      
       #apply rules master and receiver rules. 
       if (master_mode) 
       { 
@@ -116,31 +130,32 @@
       }
       
       #complete multiplication
+      print(ncol(masking))
+      print(nrow(concealing))
+      
       if (ncol(masking) == nrow(concealing))
       {
         matrix.product <- masking %*% concealing
       }
     }
-    
+   
     outcome[[settings$encrypted]] <- matrix.product
+   
   }
-   names(outcome)
+  
   return(outcome)
 }
 
 #This helper function create a concealing.matrix and a master matrix. No data has yet to created.
 #The number of rows and columns is defined randomly. The index_y is set. When encrypted the matrix is transposed and 
 #the chosen column becomes a row. 
-.create.structure.master <- function(min, max, no.rows = 0, no.columns = 0)
+.create.structure.master <- function(min, max,no.rows, no.columns)
 {
     outcome                         <- list()
+    #to be removed
+     # outcome[[settings$index_y]]     <-  ceiling(runif(1, min = 0, max = no.columns-1))
+    #  outcome[[settings$index_x]]     <-  3
     
-    if (no.rows == 0 & no.columns == 0)
-    {
-      no.rows                         <- .define_no_rows()  
-      no.columns                      <- .define_no_columns(no.rows) 
-      outcome[[settings$index_y]]     <-  ceiling(runif(1, min = 0, max = no.columns-1))
-    }
     outcome[[settings$concealing]]  <- .createMatrixRUnif(no.rows, no.columns, min, max) 
     outcome[[settings$masking]]     <- .createMatrixRUnif(no.columns, no.columns, min, max) 
     outcome[[settings$no_columns]]  <- no.columns
@@ -161,13 +176,19 @@
     value.exists     <- settings$received %in% names(sharing)
     if (value.exists)
     {
-      no.rows.received               <- nrow(received.data[[settings$received]])
-      no.columns.received            <- ncol(received.data[[settings$received]])
-      outcome                        <- list()
-      outcome[[settings$concealing]] <- .createMatrixRUnif(no.columns.received, no.rows.received, min, max) 
-      outcome[[settings$index_x]]    <-  ceiling(runif(1, min = 0, max = no.columns.received-1))
-      outcome[[settings$data]]       <- outcome[[settings$concealing]][,outcome[[settings$index_x]]]
-      outcome[[settings$index_y]]    <- received.data[[settings$index_y]]
+      #transpose is required counter the transpose in master
+      no.rows.received               <- nrow(t(received.data[[settings$received]]))
+      no.columns.received            <- ncol(t(received.data[[settings$received]]))
+      
+      outcome[[settings$concealing]] <- .createMatrixRUnif(no.rows.received, no.columns.received, min, max) 
+      
+      #to be removed 
+      #outcome[[settings$index_x]]    <-  3
+      
+     # outcome[[settings$index_x]]    <-  ceiling(runif(1, min = 0, max = no.columns.received-1))
+     # outcome[[settings$data]]        <- outcome[[settings$concealing]][,outcome[[settings$index_x]]]
+    #  outcome[[settings$data]]        <- outcome[[settings$concealing]][,3]
+      #outcome[[settings$index_y]]    <- received.data[[settings$index_y]]
       #this is different than the master.  We use again the information sent by the master to encode the data.
       outcome[[settings$masking]]     <- received.data[[settings$received]]
       outcome[[settings$no_columns]]  <- no.columns.received
@@ -205,7 +226,10 @@
 encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
 {
   outcome <- FALSE
-  if (exists("settings", where = 1))
+
+  if (exists("settings", where = 1) & 
+      is.logical(master_mode) & 
+      is.logical(preserve_mode))
   {
       #set minimum and maximum values - MAY NEED TO BE AN OPTION IN  SERVERS ...
       #To be changed back to these values
@@ -225,17 +249,14 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       #preserve the data from previous exchange
       if (preserve_mode)
       {
-         preserved.data[[settings$data]]       <- sharing[[settings$data]]
-         preserved.data[[settings$index_x]]    <- sharing[[settings$index_x]]
-         preserved.data[[settings$index_y]]    <- sharing[[settings$index_y]]
-         preserved.data[[settings$no_columns]] <- sharing[[settings$no_columns]]
-         preserved.data[[settings$no_rows]]    <- sharing[[settings$no_rows]]
-         #transpose the number rows and columns. The length of the data matches the master. 
-         no.columns                            <- sharing[[settings$no_rows]]
-         no.rows                               <- sharing[[settings$no_columns]]
-         print("************")
-         print(preserved.data)
-         print("************")
+         preserved.data <- sharing[[settings$data]]
+         no.columns     <- sharing[[settings$no_columns]]
+         no.rows        <- sharing[[settings$no_rows]]
+      }
+      else
+      {
+          no.rows       <- .define_no_rows()  
+          no.columns    <- .define_no_columns(no.rows) 
       }
       
       #create matrices for encryption
@@ -245,29 +266,27 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
                                               no.rows = no.rows, 
                                               no.columns = no.columns)
           
-          expected.list <- c(settings$masking,settings$encrypted, settings$index_y,settings$no_columns, settings$no_rows)
+          expected.list <- c(settings$masking,settings$encrypted, settings$no_columns, settings$no_rows)
       }
       else
       {
          sharing <- .create.structure.receiver(MIN, MAX)
-         expected.list <- c(settings$masking,settings$encrypted, settings$index_x,settings$index_y, 
+        
+         sharing[[settings$data]] <- sharing[[settings$concealing]][,3]
+         expected.list <- c(settings$masking,settings$encrypted, 
                             settings$data,settings$no_columns, settings$no_rows)
       }
         
       if (preserve_mode)
       {
-         sharing       <- .conceal.data(sharing,preserved.data)
-         expected.list <- c(settings$masking,settings$encrypted, settings$index_x,settings$index_y, 
+         sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],preserved.data,3)
+         expected.list <- c(settings$masking,settings$encrypted,
                             settings$no_columns, settings$no_rows)
-         
-         print("************")
-         print(sharing)
-         print("************")
-        
       }
   
-      sharing       <- .encrypt(sharing, master_mode)
-      sharing       <- sharing[names(sharing) %in% expected.list == TRUE]
+    
+      sharing     <- .encrypt(sharing, master_mode)
+      #sharing     <- sharing[names(sharing) %in% expected.list == TRUE]
       
       assign(settings$name.struct, sharing, pos = 1)
       outcome       <- .is.encrypted.valid(sharing, expected.list) & 

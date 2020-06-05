@@ -1,32 +1,20 @@
-
-.save <- function(received.matrix = NULL, index = settings$min_columns + 209, master_mode)
+#index is not needed now 
+.save <- function(received.matrix = NULL, master_mode)
 {
-    if (is.matrix(received.matrix) & is.numeric(index))
+    if (is.matrix(received.matrix))
     {
+      sharing <- list()
       if (exists("sharing", where=1))
       {
         sharing = get("sharing", pos = 1)
       }
-      else
-      {
-        sharing <- list()
-      }
-      
+    
       sharing[[settings$received]] <- received.matrix
-      if(master_mode)
-      {
-        sharing[[settings$index_x]] <- index
-        
-      }
-      else
-      {
-        #receiver assignment: transpose in master taken into account
-        sharing[[settings$index_y]]    <- index
-      }
       assign(settings$name.struct, sharing, pos = 1)
     }
 }
 
+#not required 
 .compute.index <- function(encrypted.index,timestamp)
 {
   index <- ceiling(runif(1, min= settings$max_columns+3, max = settings$max_columns+103))
@@ -43,14 +31,17 @@
   
   if (is.character(data) & is.integer(no.columns))
   {
+    print(data)
     data.list       <- strsplit(data,",")
+    print(data.list)
     data.vector     <- unlist(data.list)
+    print(data.vector)
     data.numeric    <- as.numeric(data.vector)
+    print(data.numeric)
     no.rows         <- length(data.numeric)/no.columns
-    print("^^^^^^")
     print(no.rows)
     print(no.columns)
-    print("^^^^^^")
+    
     if (no.rows > 1 & no.columns > 1)
     {
       received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)
@@ -59,35 +50,20 @@
     return(received.matrix)
 }
 
-
 .is.assigned.values.correct <- function(master_mode)
 {
   outcome <- FALSE
   if (exists(settings$name.struct,where=1))
   {
     sharing       <- get(settings$name.struct,pos=1)
-    if(master_mode)
-    {
-      structure     <- c(settings$received,settings$index_x)
-    }
-    else
-    {
-      structure     <- c(settings$received,settings$index_y)
-    }
+    structure     <- c(settings$received)
    
     total.correct <- sum(structure %in% names(sharing))
-    value.exists  <- length(structure) %in%  total.correct
+    value.exists  <- length(structure) ==  total.correct
     
     if (value.exists)
     {
-      if(master_mode)
-      {
-        outcome <- is.numeric(sharing[[settings$index_x]])
-      }
-      else
-      {
-        outcome <- is.numeric(sharing[[settings$index_y]])
-      }
+      outcome <- is.matrix(sharing[[settings$received]])
     }
   }
   return(outcome)
@@ -111,8 +87,8 @@ assignDataDS <- function(master_mode = TRUE, header = "", payload = "", property
            & property.b > 0 & property.c > 0 & property.d > 0)
           {
             received.matrix  <- .create.matrix(payload,property.b)
-            index            <- .compute.index(property.d, property.c)
-            .save(received.matrix, index, master_mode)
+            #index            <- .compute.index(property.d, property.c)
+            .save(received.matrix, master_mode)
             outcome          <- .is.assigned.values.correct(master_mode)
           }
      }

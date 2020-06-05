@@ -1,4 +1,8 @@
-
+init.process <- function()
+{
+    assign("param", 1000, pos=1)
+    assignSharingSettingsDS()
+}
 
 
 create.init.matrices.master <- function ()

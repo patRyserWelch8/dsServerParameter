@@ -1,5 +1,5 @@
 
-.get_encrypted_data <- function()
+.get_received_data <- function()
 {
   outcome <- list()
   
@@ -11,14 +11,14 @@
   return(outcome)
 }
 
-.is.encrypted.data.valid <- function(encrypted.data)
+.is.received.data.valid <- function(received.data)
 {
   correct <- FALSE
-  expected.list <- c(settings$encrypted,settings$masking)
+  expected.list <- c(settings$received,settings$masking)
   
-  if (is.list(encrypted.data))
+  if (is.list(received.data))
   {
-    list.attributes <- names(encrypted.data)
+    list.attributes <- names(received.data)
     attributes.exist <- list.attributes %in% expected.list
     total.correct = sum(attributes.exist == TRUE)
     correct <- (total.correct == length(expected.list))
@@ -26,19 +26,25 @@
   return(correct)
 }
 
-.decrypt.received.matrix <- function(masking.matrix = NULL, encrypted.matrix = NULL)
+.decrypt.received.matrix <- function(masking.matrix = NULL, received.matrix = NULL)
 {
   result <- NULL
-  if(is.matrix(masking.matrix) & is.matrix(encrypted.matrix))
+  
+  if(is.matrix(masking.matrix) & is.matrix(received.matrix))
   {
-    masking.inverse  <- solve(masking.matrix)
+    masking.inverse  <- solve(t(masking.matrix))
+    print(masking.inverse)
     no.col           <- ncol(masking.inverse)
-    no.row           <- nrow(encrypted.matrix)
+    no.row           <- nrow(received.matrix)
     result           <- matrix(rep(0,no.row * no.col),no.row, no.col)
-    
+    print("HERE ")
+    print(no.col)
+    print(no.row)
     if (no.row == no.col)
     {
-      result <- masking.inverse %*% encrypted.matrix
+      result <- masking.inverse %*% received.matrix
+      print("results ********")
+      print(result)
     }
   }
   
@@ -51,8 +57,6 @@
   
   if(exists("sharing",where=1))
   {
-    
-    
     sharing       <- get("sharing",pos=1)
     
     if (is.list(sharing))
@@ -75,12 +79,12 @@
 decryptDataDS  <- function()
 {
   outcome <- FALSE
-  sharing <- .get_encrypted_data()
-  if(.is.encrypted.data.valid(sharing))
+  sharing <- .get_received_data()
+  if(.is.received.data.valid(sharing))
   {
-    sharing[[settings$decrypted]] = .decrypt.received.matrix(sharing[[settings$masking]], sharing[[settings$encrypted]])
+    sharing[[settings$decrypted]] = .decrypt.received.matrix(sharing[[settings$masking]], sharing[[settings$received]])
     assign("sharing", sharing, pos=1)
-    expected.list <- c(settings$encrypted,settings$masking, settings$decrypted)
+    expected.list <- c(settings$received,settings$masking, settings$decrypted)
     outcome <- .is.decrypted.data.valid(expected.list)
   }
   return(outcome)
