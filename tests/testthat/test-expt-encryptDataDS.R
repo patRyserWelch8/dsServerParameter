@@ -128,6 +128,7 @@ test_that("no row  and columns, min value incorrect",
   expect_equal(ncol(createdMatrix) == 17, TRUE)
   expect_equal(all(createdMatrix >= -12 & createdMatrix <= 1, TRUE),TRUE)
 })
+ 
 test_that("no row  and columns, min value, max value correct",
 {
   createdMatrix <- .createMatrixRUnif(no.rows = 15, no.columns = 17, min.value = -12, max.value = 298)
@@ -136,26 +137,13 @@ test_that("no row  and columns, min value, max value correct",
   expect_equal(all(createdMatrix >= -12 & createdMatrix <= 298, TRUE),TRUE)
 })
 
-
-if(FALSE)
-{
-  
-
-
-
-
-
-
-
-
-
-
-context("encryptDataDS::expt::.is.structure.valid")
-test_that(".is.structure.valid",
+context("encryptDataDS::expt::.is.encrypted.valid")
+test_that(".is.encrypted.valid",
 {
   #correct structure
-  encryptDataDS()
-  expect_equal(.is.structure.valid(),TRUE)
+  encryptDataDS(TRUE,TRUE)
+  sharing <- get("sharing",pos = 1)
+  expect_equal(.is.encrypted.valid(sharing,expected.list),TRUE)
 
   correct.structure  <- list(data = c(1:4),
   concealing.matrix = matrix(1:2,1,1),
@@ -163,32 +151,36 @@ test_that(".is.structure.valid",
   encrypted.matrix = matrix(1:2,1,1),
   index = 3)
   assign("sharing",correct.structure, pos=1)
-  expect_equal(.is.structure.valid(),TRUE)
+  expect_equal(.is.encrypted.valid(sharing,expected.list),TRUE)
 
   #incorrect structure
   incorrect.structure <- list()
   assign("sharing",incorrect.structure, pos=1)
-  expect_equal(.is.structure.valid(),FALSE)
+  sharing <- get("sharing",pos = 1)
+  expect_equal(.is.encrypted.valid(sharing,expected.list),FALSE)
 
   incorrect.structure <- list(master.vector = c(1,2,3),
-concealing.matrix = matrix(1:2,1,1))
+  concealing.matrix = matrix(1:2,1,1))
   assign("sharing",incorrect.structure, pos=1)
-  expect_equal(.is.structure.valid(),FALSE)
+  sharing <- get("sharing",pos = 1)
+  expect_equal(.is.encrypted.valid(sharing,expected.list),FALSE)
 })
 
 context("encryptDataDS::expt::.create.structure.master")
 test_that(".create.structure.master",
 {
-  expected.list <- c("concealing.matrix","masking.matrix")
+  expected.list <- c("concealing","masking","no_columns","no_rows")
   
-  sharing <- .create.structure.master(4,23)
+  sharing <- .create.structure.master(min=1, max=2,no.rows=11, no.columns=13)
+  print(names(sharing))
   expect_equal(is.list(sharing),TRUE)
   expect_equal(all(expected.list %in% names(sharing), TRUE), TRUE)
   expect_equal(length(sharing) == length(expected.list), TRUE)
 
-  expect_equal(is.matrix(sharing$masking.matrix), TRUE)
-  expect_equal(is.matrix(sharing$concealing.matrix), TRUE)
+  expect_equal(is.matrix(sharing$masking), TRUE)
+  expect_equal(is.matrix(sharing$concealing), TRUE)
 })
+
 
 
 context("encryptDataDS::expt::.create.structure.receiver")
@@ -221,6 +213,8 @@ test_that("received matrix does not exist",
   
 })
 
+if(FALSE)
+{
 context("encryptDataDS::expt::.create.structure.receiver")
 test_that("received matrix exists",
 {
@@ -240,5 +234,5 @@ data$property.c, data$property.d)
   expect_equal(is.matrix(sharing$masking.matrix), TRUE)
   expect_equal(is.matrix(sharing$concealing.matrix), TRUE)
 })
+} 
 
-}
