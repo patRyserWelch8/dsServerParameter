@@ -12,14 +12,6 @@ expected.list <- c("concealing","encrypted","masking")
   expect_error(get("sharing", pos=1))
   success <- encryptDataDS(master_mode = TRUE, preserve_mode = FALSE)
   print(success)
-  
- # expect_equal(is.list(get("sharing", envir=globalenv())),TRUE)
-#  expect_equal(all(expected.list %in% names(sharing), TRUE), TRUE)
- # expect_equal(length(sharing) >= length(expected.list), TRUE)
-  #expect_equal(is.vector(sharing$data), TRUE)
-  #expect_equal(is.matrix(sharing$encrypted.matrix), TRUE)
-  #expect_equal(is.matrix(sharing$masking.matrix), TRUE)
-  #expect_equal(is.matrix(sharing$concealing.matrix), TRUE)
 }
 
 if(FALSE)

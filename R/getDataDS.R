@@ -1,13 +1,13 @@
 
 .encode.data.with.sharing <- function(encrypted.data, no.columns, index)
 {
-    print(index)
+    
     #remove conversion once new parsers is available
     header        <- ""
     data          <- as.character(paste(as.integer(encrypted.data),sep="",collapse=","))
     size          <- as.integer(object.size(data)) #change to is numeric once parser is sorted ....
     timestamp     <- as.numeric(Sys.time()) / size
-    print(index)
+    
   
     return.value  <- list(header = "FM1" , 
                           payload = data, 
@@ -54,7 +54,7 @@ getDataDS <- function(master_mode = TRUE)
         {
           no.columns            <- ncol(sharing[[settings$encrypted]])
           no.rows               <- nrow(sharing[[settings$encrypted]])
-          print(sharing[[settings$encrypted]])
+         
           #transpose
           if (no.rows >= settings$min_columns & no.columns >= settings$min_rows)
           {

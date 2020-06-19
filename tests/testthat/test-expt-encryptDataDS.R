@@ -1,4 +1,5 @@
 source("definition_tests/def_sharing_structure.R")
+source("definition_tests/def_process.R")
 
 context("encryptDataDS::expt::incorrect_parameters")
 test_that("variables exists",
@@ -40,6 +41,8 @@ test_that("define.no.rows",
   expect_equal((no.rows >= 11 & no.rows <= 21),TRUE)
   
 })
+assignSharingSettingsDS()
+settings <- get("settings", pos = 1)
 
 context("encryptDataDS::expt::.define_no_columns")
 test_that("numeric and odd number",
@@ -74,14 +77,14 @@ context("encryptDataDS::expt::.createMatrixRUnif")
 test_that("no argument",
 {
   createdMatrix <- .createMatrixRUnif()
-  expect_equal(nrow(createdMatrix) == 11, TRUE)
-  expect_equal(ncol(createdMatrix) == 13, TRUE)
+  expect_equal(nrow(createdMatrix) == settings$min_rows, TRUE)
+  expect_equal(ncol(createdMatrix) == settings$min_columns, TRUE)
   expect_equal(all(createdMatrix <= 1, TRUE),TRUE)
 })
 
+
 test_that("no row",
 {
- 
   createdMatrix <- .createMatrixRUnif(no.rows = 10)
   expect_equal(nrow(createdMatrix) == 11, TRUE)
   expect_equal(ncol(createdMatrix) == 13, TRUE)
@@ -113,19 +116,19 @@ test_that("no row  and columns correct",
   expect_equal(all(createdMatrix <= 1, TRUE),TRUE)
 })
 
+
 test_that("no row  and columns, min value correct",
 {
-  createdMatrix <- .createMatrixRUnif(no.rows = 15, no.columns = 17, min.value = 12)
-  expect_equal(nrow(createdMatrix) == 15, TRUE)
-  expect_equal(ncol(createdMatrix) == 17, TRUE)
-  expect_equal(all(is.nan(createdMatrix), TRUE),TRUE)
+  expect_warning(.createMatrixRUnif(no.rows = 15, no.columns = 17, min.value = 15))
+
 }) 
 
 test_that("no row  and columns, min value incorrect", 
 {  
-  createdMatrix <- .createMatrixRUnif(no.rows = 15, no.columns = 17, min.value = -12)
-  expect_equal(nrow(createdMatrix) == 15, TRUE)
-  expect_equal(ncol(createdMatrix) == 17, TRUE)
+
+  createdMatrix <- .createMatrixRUnif(no.rows = settings$min_rows+1, no.columns = settings$min_columns+1, min.value = -12)
+  expect_equal(nrow(createdMatrix) == settings$min_rows+1, TRUE)
+  expect_equal(ncol(createdMatrix) == settings$min_columns+1, TRUE)
   expect_equal(all(createdMatrix >= -12 & createdMatrix <= 1, TRUE),TRUE)
 })
  
@@ -172,7 +175,6 @@ test_that(".create.structure.master",
   expected.list <- c("concealing","masking","no_columns","no_rows")
   
   sharing <- .create.structure.master(min=1, max=2,no.rows=11, no.columns=13)
-  print(names(sharing))
   expect_equal(is.list(sharing),TRUE)
   expect_equal(all(expected.list %in% names(sharing), TRUE), TRUE)
   expect_equal(length(sharing) == length(expected.list), TRUE)
@@ -209,30 +211,14 @@ test_that("received matrix does not exist",
   expect_equal(is.matrix(sharing$encoded.matrix), FALSE)
   expect_equal(is.matrix(sharing$masking.matrix), FALSE)
   expect_equal(is.matrix(sharing$concealing.matrix), FALSE)
-  
-  
 })
 
-if(FALSE)
+
+
+context("encryptDataDS::expt::correct outcome")
+test_that("received matrix does not exist",
 {
-context("encryptDataDS::expt::.create.structure.receiver")
-test_that("received matrix exists",
-{
-  expected.list <- c("concealing.matrix","masking.matrix","received.matrix")
- 
-  #simulate an secure exchange of date of phase I and II of the algorithm
-  encryptDataDS(master_mode = TRUE)
-  data <- getEncodedDataDS()
-  sendEncodedDataDS(data$header, data$payload, data$property.a, data$property.b,
-data$property.c, data$property.d)
-  
-  sharing <- .create.structure.receiver(4,23)
-  expect_equal(is.list(sharing),TRUE)
-  expect_equal(all(expected.list %in% names(sharing), TRUE), TRUE)
-  expect_equal(length(sharing) >= length(expected.list), TRUE)
-  expect_equal(is.matrix(sharing$received.matrix), TRUE)
-  expect_equal(is.matrix(sharing$masking.matrix), TRUE)
-  expect_equal(is.matrix(sharing$concealing.matrix), TRUE)
+  expect_equal(encryptDataDS(master_mode = TRUE, preserve_mode = FALSE),TRUE)
+  #expect_equal(encryptDataDS(master_mode = TRUE, preserve_mode = TRUE),TRUE)
 })
-} 
 

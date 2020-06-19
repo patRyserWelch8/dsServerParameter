@@ -16,5 +16,5 @@ test_that("correct fields",
                     "data", "index_x", "index_y", "no_columns", "no_rows", "min_rows","max_rows",
                     "min_columns", "max_columns", "min_value")
    settings <- get("settings", pos=1)
-   test_that(all(list.fields %in% names(settings)), TRUE)
+   expect_equal(all(list.fields %in% names(settings)), TRUE)
 })

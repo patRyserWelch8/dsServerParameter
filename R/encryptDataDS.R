@@ -12,24 +12,18 @@
 
 .conceal.data <- function(concealing.matrix, data, column)
 {
-  print("conceal - step 1")
+  
   outcome <- NULL
   if(is.matrix(concealing.matrix) & is.vector(data))
   {
-    print("conceal - step 2")
+   
     outcome <- concealing.matrix
-    print(length(data))
-    print(nrow(concealing.matrix))
+   
     if(length(data) == nrow(concealing.matrix))
     {
-      print("conceal - step 3")
-      #problem here >>>>>
-      print("problem here")
-      print(data)
-      print(column)
-      print(concealing.matrix)
+      
       concealing.matrix[,column]  <- data
-      print(concealing.matrix)
+      
     }
   }
   
@@ -80,20 +74,19 @@
 .createMatrixRUnif <- function(no.rows = settings$min_rows, no.columns = settings$min_columns, min.value=0, max.value=1)
 {
   result <- matrix(c(0),settings$min_rows,settings$min_columns)
+ 
 
   if (is.numeric(no.rows) && is.numeric(no.columns)
       && length(no.rows)  ==  1 && length(no.columns) == 1)
   {
-
     if (no.rows < settings$min_rows || no.columns < settings$min_columns)
     {
       no.rows    <- settings$min_rows
       no.columns <- settings$min_columns
     }
-    
     random.numbers <- runif(no.rows * no.columns, min = min.value, max = max.value)
-    #1/5/2020 - Changed to accomodate temporarily the parser issues - remove ceiling.
-    result <- matrix(ceiling(random.numbers),no.rows,no.columns)
+    result         <-  matrix(random.numbers,no.rows,no.columns)
+    
   }
 
   return(result)
@@ -130,8 +123,7 @@
       }
       
       #complete multiplication
-      print(ncol(masking))
-      print(nrow(concealing))
+     
       
       if (ncol(masking) == nrow(concealing))
       {
@@ -151,11 +143,8 @@
 #the chosen column becomes a row. 
 .create.structure.master <- function(min, max,no.rows, no.columns)
 {
+  
     outcome                         <- list()
-    #to be removed
-     # outcome[[settings$index_y]]     <-  ceiling(runif(1, min = 0, max = no.columns-1))
-    #  outcome[[settings$index_x]]     <-  3
-    
     outcome[[settings$concealing]]  <- .createMatrixRUnif(no.rows, no.columns, min, max) 
     outcome[[settings$masking]]     <- .createMatrixRUnif(no.columns, no.columns, min, max) 
     outcome[[settings$no_columns]]  <- no.columns
@@ -231,6 +220,7 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       is.logical(master_mode) & 
       is.logical(preserve_mode))
   {
+    
       #set minimum and maximum values - MAY NEED TO BE AN OPTION IN  SERVERS ...
       #To be changed back to these values
      # MIN             <- runif(1, min=-10^16, max = -1)
@@ -242,21 +232,17 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       data           <- NULL
       expected.list  <- c()
       preserved.data <- c()
-      no.columns     <- 0
-      no.rows        <- 0 
+      no.rows        <- .define_no_rows()  
+      no.columns     <- .define_no_columns(no.rows)   
       sharing        <- .get_sharing()
       
       #preserve the data from previous exchange
+     
       if (preserve_mode)
       {
          preserved.data <- sharing[[settings$data]]
          no.columns     <- sharing[[settings$no_columns]]
          no.rows        <- sharing[[settings$no_rows]]
-      }
-      else
-      {
-          no.rows       <- .define_no_rows()  
-          no.columns    <- .define_no_columns(no.rows) 
       }
       
       #create matrices for encryption
@@ -287,7 +273,7 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
     
       sharing     <- .encrypt(sharing, master_mode)
       #sharing     <- sharing[names(sharing) %in% expected.list == TRUE]
-      
+  
       assign(settings$name.struct, sharing, pos = 1)
       outcome       <- .is.encrypted.valid(sharing, expected.list) & 
                        exists(settings$name.struct, where=1)

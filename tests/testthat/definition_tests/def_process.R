@@ -23,7 +23,7 @@ create.init.matrices.master <- function ()
     }
    
     #step 1 - master 
-    success <- encryptDataDS(master_mode = TRUE, blank_mode = TRUE)
+    success <- encryptDataDS(master_mode = TRUE, preserve_mode = TRUE)
     sharing.master <- get("sharing",pos =1)
     assign("sharing.master", sharing.master, pos=1)
     print("step 1 - sharing.master")

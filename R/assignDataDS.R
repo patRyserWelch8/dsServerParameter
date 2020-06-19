@@ -31,16 +31,15 @@
   
   if (is.character(data) & is.integer(no.columns))
   {
-    print(data)
+   
     data.list       <- strsplit(data,",")
-    print(data.list)
+    
     data.vector     <- unlist(data.list)
-    print(data.vector)
+    
     data.numeric    <- as.numeric(data.vector)
-    print(data.numeric)
+   
     no.rows         <- length(data.numeric)/no.columns
-    print(no.rows)
-    print(no.columns)
+    
     
     if (no.rows > 1 & no.columns > 1)
     {
