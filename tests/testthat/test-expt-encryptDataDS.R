@@ -216,9 +216,43 @@ test_that("received matrix does not exist",
 
 
 context("encryptDataDS::expt::correct outcome")
-test_that("received matrix does not exist",
+test_that("step 1",
 {
   expect_equal(encryptDataDS(master_mode = TRUE, preserve_mode = FALSE),TRUE)
-  #expect_equal(encryptDataDS(master_mode = TRUE, preserve_mode = TRUE),TRUE)
+  expect_equal(exists("sharing",where=1),TRUE)
+  sharing     <- get("sharing", pos = 1)
+  encrypted   <- t(sharing$masking) %*% t(sharing$concealing)
+  expect_equal(all.equal(encrypted, sharing$encrypted),TRUE)
 })
+
+test_that("step 3",
+{
+  rm(sharing,pos=1)
+  encryptDataDS(TRUE, FALSE)
+  master.1           <- get("sharing", pos=1)
+  master.encrypted   <- t(master.1$masking) %*% t(master.1$concealing)
+  
+  #step 2
+  a <- getDataDS(master_mode =TRUE)
+  rm(sharing,pos=1)
+  assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
+  receiver.1 <- get("sharing",pos=1)
+  
+  #step 3
+  expect_equal(encryptDataDS(FALSE, FALSE),TRUE)
+  receiver.2 <- get("sharing",pos=1)
+  expect_equal(all.equal(master.encrypted,receiver.1$received),TRUE)
+  expect_equal(all.equal(receiver.1$received,receiver.2$masking),TRUE)
+  receiver.encrypted <- master.encrypted %*% receiver.2$concealing
+  expect_equal(all.equal(receiver.encrypted, receiver.2$encrypted),TRUE)
+})
+
+
+test_that("step 5",
+{
+ 
+  
+  
+})
+
 

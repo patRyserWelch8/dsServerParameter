@@ -68,8 +68,6 @@
   return(outcome)
 }
 
-
-
 .encrypt.parameter <- function(concealing.matrix = NULL, column = 0, encoding.ratio=NULL)
 {
   outcome <- 0

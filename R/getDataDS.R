@@ -4,8 +4,8 @@
     
     #remove conversion once new parsers is available
     header        <- ""
-    data          <- as.character(paste(as.integer(encrypted.data),sep="",collapse=","))
-    size          <- as.integer(object.size(data)) #change to is numeric once parser is sorted ....
+    data          <- as.character(paste(as.numeric(encrypted.data),sep="",collapse=","))
+    size          <- as.numeric(object.size(data)) 
     timestamp     <- as.numeric(Sys.time()) / size
     
   
@@ -22,7 +22,7 @@
 {
   header        <- ""
   data          <- as.character(paste(runif(11 *13, 100000, 400000),sep="", collapse=","))
-  size          <- as.integer(object.size(data))
+  size          <- as.numeric(object.size(data))
   no.columns    <- as.integer(runif(1, min=settings$min_rows, max=settings$max_rows))
   no.rows       <- as.integer(runif(1, min=settings$min_columns, max=settings$max_columns))
   index         <- ceiling(runif(1, min = 0, max = no.columns))
@@ -59,7 +59,7 @@ getDataDS <- function(master_mode = TRUE)
           if (no.rows >= settings$min_columns & no.columns >= settings$min_rows)
           {
             #remove conversion once new parsers is available
-            encrypted.data <- as.integer(sharing[[settings$encrypted]])
+            encrypted.data <- as.numeric(sharing[[settings$encrypted]])
             index <- runif(1, min =settings$min_rows, max= settings$max_rows)
             return.value <- .encode.data.with.sharing(encrypted.data, no.columns, index)
           }

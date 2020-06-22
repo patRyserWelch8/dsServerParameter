@@ -33,11 +33,8 @@
   {
    
     data.list       <- strsplit(data,",")
-    
     data.vector     <- unlist(data.list)
-    
     data.numeric    <- as.numeric(data.vector)
-   
     no.rows         <- length(data.numeric)/no.columns
     
     

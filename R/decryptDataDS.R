@@ -1,4 +1,3 @@
-
 .get_received_data <- function()
 {
   outcome <- list()

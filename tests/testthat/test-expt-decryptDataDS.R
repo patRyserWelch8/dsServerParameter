@@ -17,7 +17,7 @@ assignSharingSettingsDS()
 settings <- get("settings",pos=1)
 
 context("decryptData::expt::no_encryption")
-test_that("does ex",
+test_that("does exists",
 {
    if (exists(settings$name.struct,where = 1))
    {
@@ -57,10 +57,22 @@ master.2 <- get("sharing",pos=1)
 
 
 context("decryptData::expt::data_has_been_encrypted")
-test_that("",
+test_that("data has been encrypted correctly",
 {
+   expect_equal(exists(settings$name.struct, where = 1), TRUE)
+   expect_equal(.get_received_data(), master.2)
+   expect_equal(.is.received.data.valid(master.2), TRUE)
    
+   decrypted.data <- .decrypt.received.matrix(master.2$masking, master.2$received)
+   rows           <- nrow(decrypted.data)
+   cols           <- ncol(decrypted.data)
+   result         <- t(master.2$concealing) %*% receiver.2$concealing 
    
+   expect_equal(is.matrix(decrypted.data), TRUE)
+   expect_equal(rows == cols, TRUE)
+   expect_equal(decryptDataDS(),TRUE)
+   expected.list  <- c(settings$received,settings$masking, settings$decrypted)
+   expect_equal(.is.decrypted.data.valid(expected.list),TRUE)
 })
 
 
