@@ -45,6 +45,8 @@ test_that("is.param.valid",
   expect_equal(.is.param.valid("pi_integer"), TRUE)
 })
 
+pi_value = 1000
+assign("pi_value",pi_value, pos=1)
 context("encryptParamDS::expt::get_shared_secrets")
 test_that("no_sharing",
 {
@@ -120,8 +122,57 @@ test_that("params",
   expect_equal(.compute.encoding.ratio(NULL,"wrong_variable", 4,3),0)
   expect_equal(.compute.encoding.ratio(master.3$decrypted,"wrong_variable", 4,3),0)
   expect_equal(.compute.encoding.ratio(master.3$decrypted,"pi_value", 4,3)==0,FALSE)
+})
+
+ratio   <- .compute.encoding.ratio(master.3$decrypted,"pi_value", 4,3)
+test_that("computations",
+{
+ 
+  result  <- pi_value/master.3$decrypted[3,4]
+  expect_equal(ratio,result)
+})
+
+
+context("encryptParamDS::expt::.encrypt.parameter")
+test_that("params",
+{
+  expect_equal(.encrypt.parameter(),0)
+  expect_equal(.encrypt.parameter(master.3$concealing),0)
+  expect_equal(.encrypt.parameter(master.3$concealing,3),0)
+  expect_equal(.encrypt.parameter(master.3$concealing,ncol(master.3$concealing)+1),0)
+  expect_equal(.encrypt.parameter(master.3$concealing,"a"),0)
+  expect_equal(.encrypt.parameter(master.3$concealing,ncol(master.3$concealing)-4,"a"),0)
+})
+
+test_that("computations",
+{
+  expected.result <- ratio * master.3$concealing [,5]
+  outcome         <- .encrypt.parameter(master.3$concealing,5,ratio)
+  expect_equal(expected.result,outcome)
   
 })
 
-#NEED to test encrypt parameter
 
+context("encryptParamDS::expt::.is.encrypted.structure.valid")
+test_that("not valid",
+{
+   expect_equal(.is.encrypted.structure.valid(),FALSE)
+})
+
+outcome <- encryptParamDS("pi_value")
+master.4 <- get("sharing",pos=1)
+
+context("encryptParamDS::expt::param")
+test_that("parameters  correct",
+{
+  expect_equal(outcome,TRUE)
+})
+
+
+context("encryptParamDS::expt::.is.encrypted.structure.valid")
+test_that(" valid",
+{
+       
+  expect_equal(.is.encrypted.structure.valid(),TRUE)
+  
+})

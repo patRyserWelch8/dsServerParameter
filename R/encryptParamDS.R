@@ -81,23 +81,19 @@
   return(outcome)
 }
 
-.is.encrypted.structure.valid <- function(expected.list)
+.is.encrypted.structure.valid <- function()
 {
   correct <- FALSE
   
   if(exists("sharing",where=1))
   {
-    
-   
-    sharing       <- get("sharing",pos=1)
-    
-    if (is.list(sharing))
-    {
-      list.attributes  <- names(sharing)
-      attributes.exist <- list.attributes %in% expected.list
-      total.correct    <- sum(attributes.exist == TRUE)
-      correct          <- (total.correct == length(expected.list))
-    }
+      sharing       <- get("sharing",pos=1)
+      
+      if (is.list(sharing))
+      {
+        list.attributes  <- names(sharing)
+        correct <- settings$data %in% list.attributes  
+      }
   }
   return(correct)
 }
@@ -131,11 +127,10 @@ encryptParamDS <- function(param.name = NULL)
   
          
          #decrypt encrypted matrix to find concealed values: shared secret
-         concealing.matrix               <- t(solve(t(sharing[[settings$masking]])) %*% sharing[[settings$encrypted]])
+         concealing.matrix              <- t(solve(t(sharing[[settings$masking]])) %*% sharing[[settings$encrypted]])
          sharing[[settings$data]]       <- .encrypt.parameter(concealing.matrix,column = column,encoding.ratio)
-         expected.list                  <- c(settings$encrypted, settings$masking)
          assign(settings$name.struct,sharing, pos=1)
-         outcome <- .is.encrypted.structure.valid(expected.list)
+         outcome <- .is.encrypted.structure.valid()
          
      }
    }
