@@ -1,0 +1,80 @@
+context("decryptData::expt::no_settings")
+test_that("does not exist",
+{
+   if (exists("settings",where = 1))
+   {
+     rm("settings", pos=1)
+   }
+   expect_equal(exists("settings", where = 1), FALSE)
+   expect_equal(.get_received_data(), list())
+   expect_equal(.is.received.data.valid(), FALSE)
+   expect_equal(.decrypt.received.matrix(), NULL)
+   expect_equal(.is.decrypted.data.valid(),FALSE)
+   expect_equal(decryptDataDS(),FALSE)
+})
+
+assignSharingSettingsDS()
+settings <- get("settings",pos=1)
+
+context("decryptData::expt::no_encryption")
+test_that("does exists",
+{
+   if (exists(settings$name.struct,where = 1))
+   {
+      rm(settings$name.struct, pos=1)
+   }
+   expect_equal(exists(settings$name.struct, where = 1), FALSE)
+   expect_equal(.get_received_data(), list())
+   expect_equal(.is.received.data.valid(), FALSE)
+   expect_equal(.decrypt.received.matrix(), NULL)
+   expect_equal(.is.decrypted.data.valid(),FALSE)
+   expect_equal(decryptDataDS(),FALSE)
+})
+
+
+#complete set steps to reach the point of decryption
+#step 1
+
+encryptDataDS(TRUE, FALSE)
+master.1 <- get("sharing",pos=1)
+
+#step 2
+a <- getDataDS(master_mode =TRUE)
+rm(sharing,pos=1)
+assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
+receiver.1 <- get("sharing",pos=1)
+
+#step 3
+encryptDataDS(FALSE, FALSE)
+receiver.2 <- get("sharing",pos=1)
+
+#step 4
+b <- getDataDS(master_mode =  FALSE)
+rm(sharing,pos=1)
+assign("sharing", master.1, pos=1)
+assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
+master.2 <- get("sharing",pos=1)
+
+
+context("decryptData::expt::data_has_been_encrypted")
+test_that("data has been encrypted correctly",
+{
+   expect_equal(exists(settings$name.struct, where = 1), TRUE)
+   expect_equal(.get_received_data(), master.2)
+   expect_equal(.is.received.data.valid(master.2), TRUE)
+   
+   decrypted.data <- .decrypt.received.matrix(master.2$masking, master.2$received)
+   rows           <- nrow(decrypted.data)
+   cols           <- ncol(decrypted.data)
+   result         <- t(master.2$concealing) %*% receiver.2$concealing 
+   
+   expect_equal(is.matrix(decrypted.data), TRUE)
+   expect_equal(rows == cols, TRUE)
+   expect_equal(decryptDataDS(),TRUE)
+   expected.list  <- c(settings$received,settings$masking, settings$decrypted)
+   expect_equal(.is.decrypted.data.valid(expected.list),TRUE)
+})
+
+
+
+

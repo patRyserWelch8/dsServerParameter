@@ -1,44 +1,48 @@
-
-.extract.hidden.data <- function(sharing)
+.get_sharing <- function()
 {
-  outcome       <- sharing
-  values.exists <- "concealing.matrix" %in% names(sharing)
-  if (values.exists)
+  outcome <- list()
+
+  if(exists(settings$name.struct, where =1))
   {
-     concealing.matrix  <- sharing$concealing.matrix
-     column             <- as.integer(runif(1,min = 1, max = ncol(concealing.matrix)-1))
-     data               <- concealing.matrix[,column]
-     outcome[["data"]] <- data
-     outcome[["index"]] <- column
+    outcome <- get(settings$name.struct, pos=1) 
+   
   }
-  
   return(outcome)
 }
 
-.conceal.hidden.data <- function(sharing)
+.conceal.data <- function(concealing.matrix, data, column)
 {
-  outcome <- sharing
-  values.exists  <- all(c("concealing.matrix","data") %in% names(sharing))
-  if(values.exists)
+  
+  outcome <- NULL
+  if(is.matrix(concealing.matrix) & is.vector(data))
   {
-    if(length(sharing$data) == nrow(sharing$concealing.matrix))
+   
+    outcome <- concealing.matrix
+   
+    if(length(data) == nrow(concealing.matrix))
     {
-      column                               <- as.integer(runif(min = 1, max = ncol(sharing$concealing.matrix)))
-      outcome$concealing.matrix[,column]   <- sharing$data
-      outcome[["index"]]                   <- column
+      
+      concealing.matrix[,column]  <- data
+      
     }
   }
   
-  return(outcome)
+  return(concealing.matrix)
 }
 
 
 .define_no_rows <- function()
 {
   no.rows <- 2
-  while(no.rows %% 2 == 0 & no.rows < 11)
+  continue <- TRUE
+  while(continue)
   {
-    no.rows <- as.integer(runif(1, min = 11, max = 21))
+    no.rows <- as.integer(runif(1, min = settings$min_rows, max = settings$max_rows))
+    if(no.rows %% 2 == 1  & 
+       no.rows >= settings$min_columns & no.rows <= settings$max_columns) 
+    {
+      continue = FALSE
+    }
   }
   return(no.rows)
 }
@@ -51,8 +55,13 @@
       continue = TRUE
       while(continue)
       {
-        no.columns <- as.integer(runif(1, min = 13, max = 23))
-        continue <- (no.columns %% 2 == 0) | (no.columns == no.rows) | (no.columns < 13)
+        no.columns <- as.integer(runif(1, min = settings$min_columns, max = settings$max_columns))
+        if(no.columns %% 2 == 1 &  no.columns != no.rows  & 
+           no.columns >= settings$min_columns & no.columns<= settings$max_columns) 
+        {
+           continue = FALSE
+        }
+        
       }
       return(no.columns)
   }
@@ -62,118 +71,85 @@
   }
 }
 
-.createMatrixRUnif <- function(no.rows = 11, no.columns = 13, min.value=0, max.value=1)
+.createMatrixRUnif <- function(no.rows = settings$min_rows, no.columns = settings$min_columns, min.value=0, max.value=1)
 {
-  result <- matrix(c(0),11,13)
+  result <- matrix(c(0),settings$min_rows,settings$min_columns)
+ 
 
   if (is.numeric(no.rows) && is.numeric(no.columns)
       && length(no.rows)  ==  1 && length(no.columns) == 1)
   {
-
-    if (no.rows < 11 || no.columns < 13)
+    if (no.rows < settings$min_rows || no.columns < settings$min_columns)
     {
-      no.rows <- 11
-      no.columns <- 13
+      no.rows    <- settings$min_rows
+      no.columns <- settings$min_columns
     }
-
-    
     random.numbers <- runif(no.rows * no.columns, min = min.value, max = max.value)
-    #1/5/2020 - Changed to accomodate temporarily the parser issues - remove ceiling.
-    result <- matrix(ceiling(random.numbers),no.rows,no.columns)
-
+    result         <-  matrix(random.numbers,no.rows,no.columns)
+    
   }
 
   return(result)
 }
 
 
-.define_no_rows <- function()
-{
-  no.rows <- 2
-  while(no.rows %% 2 == 0)
-  {
-    no.rows <- as.integer(runif(1, min = 11, max = 21))
-  }
-  return(no.rows)
-}
-
-.define_no_columns <- function(no.rows = 2)
-{
-   no.columns = 0
-   if(is.numeric(no.rows))
-   {
-      no.columns <- no.rows
-      continue = TRUE
-      while(continue)
-      {
-        no.columns <- as.integer(runif(1, min = 13, max = 23))
-        continue <- (no.columns %% 2 == 0) | (no.columns == no.rows)
-      }
-      
-   }
-   return(no.columns)
-   
-}
-
-
-
-
-
 .encrypt <- function(sharing, master_mode = TRUE)
 {
   outcome <- sharing
-  values.exists  <- all(c("concealing.matrix","masking.matrix") %in% names(sharing))
+  values.exists  <- all(c(settings$concealing,settings$masking) %in% names(sharing))
+  
   if(values.exists)
   {
     #initialise some variables
-    no.row         <- nrow(sharing$concealing.matrix)
-    no.col         <- ncol(sharing$masking.matrix)
+    no.row         <- nrow(sharing[[settings$concealing]])
+    no.col         <- ncol(sharing[[settings$masking]])
     matrix.product <- matrix(rep(0,no.row * no.col),no.row, no.col)
     
-    if(is.matrix(sharing$concealing.matrix) & is.matrix(sharing$masking.matrix))
+    if(is.matrix(sharing[[settings$concealing]]) & is.matrix(sharing[[settings$masking]]))
     {
+      
       #apply rules master and receiver rules. 
       if (master_mode) 
       { 
         #encode the concealing matrix with the transpose of  masking matrix and concealing matrix
-        masking     <- t(sharing$masking.matrix)
-        concealing  <- t(sharing$concealing.matrix)
+        masking     <- t(sharing[[settings$masking]])
+        concealing  <- t(sharing[[settings$concealing]])
       }
       else
       {
         #encode the concealing matrix without transporing masking matrix and concealing matrix
-        masking     <- sharing$masking.matrix
-        concealing  <- sharing$concealing.matrix
+        masking     <- sharing[[settings$masking]]
+        concealing  <- sharing[[settings$concealing]]
       }
       
       #complete multiplication
+     
+      
       if (ncol(masking) == nrow(concealing))
       {
         matrix.product <- masking %*% concealing
       }
     }
-    
-    outcome[["encrypted.matrix"]] <- matrix.product
+   
+    outcome[[settings$encrypted]] <- matrix.product
+   
   }
   
   return(outcome)
 }
 
-
-
 #This helper function create a concealing.matrix and a master matrix. No data has yet to created.
-#The number of rows and columns is defined randomly.
-.create.structure.master <- function(min, max)
+#The number of rows and columns is defined randomly. The index_y is set. When encrypted the matrix is transposed and 
+#the chosen column becomes a row. 
+.create.structure.master <- function(min, max,no.rows, no.columns)
 {
-    no.rows           <- .define_no_rows()  
-    no.columns        <- .define_no_columns(no.rows) 
-  #  concealed.vector  <- .create_concealed_vector(no.rows,min, max) 
-    concealing.matrix <- .createMatrixRUnif(no.rows, no.columns, min, max) 
-    masking.matrix    <- .createMatrixRUnif(no.columns, no.columns, min, max) ######
-   # encrypted.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector, TRUE)
+  
+    outcome                         <- list()
+    outcome[[settings$concealing]]  <- .createMatrixRUnif(no.rows, no.columns, min, max) 
+    outcome[[settings$masking]]     <- .createMatrixRUnif(no.columns, no.columns, min, max) 
+    outcome[[settings$no_columns]]  <- no.columns
+    outcome[[settings$no_rows]]     <- no.rows
     
-    outcome           <- list(concealing.matrix = concealing.matrix,
-                              masking.matrix = masking.matrix)
     return(outcome)
 }
 
@@ -183,50 +159,47 @@
 .create.structure.receiver <- function(min, max)
 {
   outcome <- list()
-  if(exists("sharing",where=1))
+  if(exists(settings$name.struct,where=1))
   {
-    received.data          <-  get("sharing", pos = 1)
-    received.matrix.exists <- "received.matrix" %in% names(sharing)
-    if (received.matrix.exists)
+    received.data    <-  get(settings$name.struct, pos = 1)
+    value.exists     <- settings$received %in% names(sharing)
+    if (value.exists)
     {
-      no.rows.received      <- nrow(received.data$received.matrix)
-      no.columns.received   <- ncol(received.data$received.matrix)
-     # concealed.vector     <- .create_concealed_vector(no.columns.received,min, max)
-      concealing.matrix <- .createMatrixRUnif(no.columns.received, no.rows.received, min, max) 
-     
+      #transpose is required counter the transpose in master
+      no.rows.received               <- nrow(t(received.data[[settings$received]]))
+      no.columns.received            <- ncol(t(received.data[[settings$received]]))
+      
+      outcome[[settings$concealing]] <- .createMatrixRUnif(no.rows.received, no.columns.received, min, max) 
+      
+      #to be removed 
+      #outcome[[settings$index_x]]    <-  3
+      
+     # outcome[[settings$index_x]]    <-  ceiling(runif(1, min = 0, max = no.columns.received-1))
+     # outcome[[settings$data]]        <- outcome[[settings$concealing]][,outcome[[settings$index_x]]]
+    #  outcome[[settings$data]]        <- outcome[[settings$concealing]][,3]
+      #outcome[[settings$index_y]]    <- received.data[[settings$index_y]]
       #this is different than the master.  We use again the information sent by the master to encode the data.
-      masking.matrix    <- received.data$received.matrix 
-     # encoded.matrix    <- .occult(masking.matrix, concealing.matrix, concealed.vector, FALSE)
-    
-      outcome           <- list(concealing.matrix = concealing.matrix,
-                                masking.matrix = masking.matrix,
-                                received.matrix = received.data$received.matrix)
+      outcome[[settings$masking]]     <- received.data[[settings$received]]
+      outcome[[settings$no_columns]]  <- no.columns.received
+      outcome[[settings$no_rows]]     <- no.rows.received
     }
   }
   return(outcome)
 }
 
 
-.is.structure.valid <- function()
+.is.encrypted.valid <- function(sharing, expected.fields)
 {
   correct <- FALSE
-  expected.list <- c("concealing.matrix","encrypted.matrix","masking.matrix","data","index")
  
-  if(exists("sharing",where=1))
+  if (is.list(sharing) & is.vector(expected.fields))
   {
-   
-    sharing <- get("sharing", pos=1)
-    if (is.list(sharing))
-    {
-      no.elements <- length(sharing)
-      if (no.elements == length(expected.list))
-      {
-        list.attributes <- names(sharing)
-        attributes.exist <- list.attributes %in% expected.list
-        correct <- all(list.attributes %in% expected.list)
-      }
-    }
-  }
+    list.attributes <- names(sharing)
+    attributes.exist <- list.attributes %in% expected.fields
+    total.correct = sum(attributes.exist == TRUE)
+    correct <- total.correct == length(expected.fields)
+   }
+ 
   return(correct)
 }
 
@@ -236,44 +209,77 @@
 #'@description This server function uses some matrices operations to encrypts some data required to exchange a parameter securely between two
 #'DataSHIELD server.
 #'@param master_mode Boolean argument. It indicates the mode of the encryption. By default, set to TRUE.
-#'@param blank_mode  Boolean argument. It indicates the mode of data used for encryption. By default, set to TRUE.
+#'@param preserve_mode  Boolean argument. It indicates to presever some data exchanged previously between servers. By default, set to FALSE.
 #'@export
 
-encryptDataDS <- function(master_mode=TRUE, blank_mode = TRUE)
+encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
 {
+  outcome <- FALSE
 
-  #set minimum and maximum values - MAY NEED TO BE AN OPTION IN  SERVERS ...
-  #To be changed back to these values
- # MIN             <- runif(1, min=-10^16, max = -1)
-#  MAX               <- runif(1, min=1, max = 10^16)
- 
-  MIN               <- runif(1, min=1, max = 20)
-  MAX               <- runif(1, min=30, max =40)
-
-  #create matrices for encryption
-  if (master_mode)
+  if (exists("settings", where = 1) & 
+      is.logical(master_mode) & 
+      is.logical(preserve_mode))
   {
-    sharing <- .create.structure.master(MIN, MAX)
-  }
-  else
-  {
-    sharing <- .create.structure.receiver(MIN, MAX)
-  }
+    
+      #set minimum and maximum values - MAY NEED TO BE AN OPTION IN  SERVERS ...
+      #To be changed back to these values
+     # MIN             <- runif(1, min=-10^16, max = -1)
+    #  MAX  <- runif(1, min=1, max = 10^16)
+      
+      #init variables
+      MIN            <- runif(1, min=settings$min_value, max  = settings$min_value + 20)
+      MAX            <- runif(1, min=settings$min_value+30, max = settings$min_value + 40)
+      data           <- NULL
+      expected.list  <- c()
+      preserved.data <- c()
+      no.rows        <- .define_no_rows()  
+      no.columns     <- .define_no_columns(no.rows)   
+      sharing        <- .get_sharing()
+      
+      #preserve the data from previous exchange
+     
+      if (preserve_mode)
+      {
+         preserved.data <- sharing[[settings$data]]
+         no.columns     <- sharing[[settings$no_columns]]
+         no.rows        <- sharing[[settings$no_rows]]
+      }
+      
+      #create matrices for encryption
+      if (master_mode)
+      {
+          sharing <- .create.structure.master(MIN, MAX, 
+                                              no.rows = no.rows, 
+                                              no.columns = no.columns)
+          
+          expected.list <- c(settings$masking,settings$encrypted, settings$no_columns, settings$no_rows)
+      }
+      else
+      {
+         sharing <- .create.structure.receiver(MIN, MAX)
+        
+         sharing[[settings$data]] <- sharing[[settings$concealing]][,3]
+         expected.list <- c(settings$masking,settings$encrypted, 
+                            settings$data,settings$no_columns, settings$no_rows)
+      }
+        
+      if (preserve_mode)
+      {
+         sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],preserved.data,3)
+         expected.list <- c(settings$masking,settings$encrypted,
+                            settings$no_columns, settings$no_rows)
+      }
   
-  #extract or conceals data in concealing matrix
-  if(blank_mode)
-  {
-
-    sharing <- .extract.hidden.data(sharing) 
-  }
-  else
-  {
-    sharing <- .conceal.hidden.data(sharing)
-  }
+    
+      sharing     <- .encrypt(sharing, master_mode)
+      #sharing     <- sharing[names(sharing) %in% expected.list == TRUE]
   
-  sharing <- .encrypt(sharing, master_mode)
-  
-  assign("sharing", sharing, pos = 1)
-  return(.is.structure.valid())
+      assign(settings$name.struct, sharing, pos = 1)
+      outcome       <- .is.encrypted.valid(sharing, expected.list) & 
+                       exists(settings$name.struct, where=1)
+  }
+  return(outcome)
 }
+
+
 

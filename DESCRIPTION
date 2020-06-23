@@ -15,4 +15,6 @@ LazyData: true
 AggregateMethods:
   getEncodedDataDS,
   initiateExchangeDS
-RoxygenNote: 7.0.2
+Options:
+ name.struct = "sharing"
+RoxygenNote: 7.1.0
