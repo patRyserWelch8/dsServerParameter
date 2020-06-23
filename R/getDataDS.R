@@ -36,15 +36,37 @@
   return(return.value)
 }
 
+
+.encode.data.no.settings <- function()
+{
+  header        <- ""
+  data          <- as.character(paste(runif(11 *13, 100000, 400000),sep="", collapse=","))
+  size          <- as.numeric(object.size(data))
+  no.columns    <- as.integer(runif(1, min=11, max=13))
+  no.rows       <- as.integer(runif(1, min=13, max=15))
+  index         <- ceiling(runif(1, min = 0, max = no.columns))
+  timestamp     <- as.numeric(Sys.time()) / size
+  return.value  <- list(header = "FM2" , 
+                        payload = data, 
+                        property.a = size, 
+                        property.b = no.columns, 
+                        property.c = timestamp,
+                        property.d = index/timestamp)
+  return(return.value)
+}
+
+
+
 #'@name getDataDS
 #'@title  Retrieves the encrypted data from a server to the analysis computer
 #'@description This server function retrieves some encrypted data to be passed onto the analysis computer
 #'@export
 getDataDS <- function(master_mode = TRUE)
 { 
-   return.value <- .encode.data.no.sharing()
+   return.value <- .encode.data.no.settings()
    if(exists("settings",where=1))
    {
+      return.value <- .encode.data.no.sharing()
       if(exists(settings$name.struct,where=1))
       {
         sharing      <- get(settings$name.struct,pos = 1)

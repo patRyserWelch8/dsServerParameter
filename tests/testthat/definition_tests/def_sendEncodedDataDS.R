@@ -28,19 +28,19 @@
 .test.save.matrix.parameters.correct <- function()
 {
   empty.matrix   <- matrix(c(0,0), 2,2)
-  .save.matrix(empty.matrix)
+  .save(empty.matrix)
   list.variables <- ls(pos=1)
   sharing <- get("sharing", pos=1)
   expect_equal("sharing" %in% list.variables, TRUE)
-  expect_equal("received.matrix" %in% names(sharing), TRUE)
+  expect_equal("received" %in% names(sharing), TRUE)
   
-  expect_equal(is.matrix(sharing$received.matrix),TRUE)
+  expect_equal(is.matrix(sharing$received),TRUE)
 }
 
 .test.save.matrix.parameters.incorrect <- function()
 {
   rm("sharing",pos=1)
-  .save.matrix()
+  .save()
   list.variables <- ls(pos=1)
   expect_equal("sharing" %in% list.variables, FALSE)
  

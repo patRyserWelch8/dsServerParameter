@@ -1,7 +1,7 @@
-rm(list=ls())
+rm(list=ls(),pos=1)
 print("Step 0")
 pi_value = 1000
-setSharingSettingsDS()
+assignSharingSettingsDS()
 
 print("Step 1")
 encryptDataDS(TRUE, FALSE)
@@ -64,5 +64,5 @@ receiver.5 <- get("sharing",pos=1)
 
 
 print("step 10")
-decryptDataDS() 
+print(decryptDataDS())
 receiver.6 <- get("sharing",pos=1)
