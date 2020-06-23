@@ -213,46 +213,96 @@ test_that("received matrix does not exist",
   expect_equal(is.matrix(sharing$concealing.matrix), FALSE)
 })
 
+#start again from clean environment to test the outcome
+rm(list=ls(),pos=1)
+#("Step 0")
+pi_value = 1000
+assignSharingSettingsDS()
 
+#("Step 1")
+
+outcome <- encryptDataDS(master_mode = TRUE, preserve_mode = FALSE)
+master.1 <- get("sharing",pos=1)
+master.encrypted   <- t(master.1$masking) %*% t(master.1$concealing)
 
 context("encryptDataDS::expt::correct outcome")
 test_that("step 1",
 {
-  expect_equal(encryptDataDS(master_mode = TRUE, preserve_mode = FALSE),TRUE)
+  expect_equal(outcome,TRUE)
   expect_equal(exists("sharing",where=1),TRUE)
   sharing     <- get("sharing", pos = 1)
-  encrypted   <- t(sharing$masking) %*% t(sharing$concealing)
-  expect_equal(all.equal(encrypted, sharing$encrypted),TRUE)
+  expect_equal(all.equal(master.encrypted, sharing$encrypted),TRUE)
 })
+
+
+#("Step 2")
+a <- getDataDS(master_mode =TRUE)
+rm(sharing,pos=1)
+assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
+receiver.1 <- get("sharing",pos=1)
+
+#("Step 3")
+outcome <- encryptDataDS(FALSE, FALSE)
+receiver.2 <- get("sharing",pos=1)
+
+print(dim(master.encrypted))
+print(dim(receiver.1$received))
 
 test_that("step 3",
 {
-  rm(sharing,pos=1)
-  encryptDataDS(TRUE, FALSE)
-  master.1           <- get("sharing", pos=1)
-  master.encrypted   <- t(master.1$masking) %*% t(master.1$concealing)
-  
-  #step 2
-  a <- getDataDS(master_mode =TRUE)
-  rm(sharing,pos=1)
-  assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
-  receiver.1 <- get("sharing",pos=1)
-  
-  #step 3
-  expect_equal(encryptDataDS(FALSE, FALSE),TRUE)
-  receiver.2 <- get("sharing",pos=1)
+  expect_equal(outcome, TRUE)
+  print(names(receiver.2))
   expect_equal(all.equal(master.encrypted,receiver.1$received),TRUE)
   expect_equal(all.equal(receiver.1$received,receiver.2$masking),TRUE)
   receiver.encrypted <- master.encrypted %*% receiver.2$concealing
   expect_equal(all.equal(receiver.encrypted, receiver.2$encrypted),TRUE)
 })
 
+#("step 4")
+b <- getDataDS(master_mode =  FALSE)
+rm(sharing,pos=1)
+assign("sharing", master.1, pos=1)
+assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
+master.2 <- get("sharing",pos=1)
 
-test_that("step 5",
+#("step 5")
+decryptDataDS()
+master.3 <- get("sharing",pos=1)
+encryptParamDS("pi_value")
+master.4 <- get("sharing",pos=1)
+removeEncryptingDataDS()
+master.5 <- get("sharing",pos=1)
+
+
+#("step 6 - Receiver becomes master .... ")
+assign("sharing", receiver.2, pos=1)
+removeEncryptingDataDS()
+receiver.3 <- get("sharing",pos=1)
+outcome <-encryptDataDS(TRUE, TRUE)
+receiver.4 <- get("sharing",pos=1)
+
+test_that("step 6",
 {
- 
-  
-  
+   expect_equal(outcome, TRUE)
+   
 })
+
+#("step 7")
+c <- getDataDS(master_mode = TRUE)
+rm(sharing,pos=1)
+assign("sharing", master.5, pos=1)
+assignDataDS(master_mode = FALSE,c$header,c$payload,c$property.a,c$property.b,c$property.c,c$property.d)
+master.6 <- get("sharing",pos=1)
+
+#("step 8 ")
+outcome <- encryptDataDS(FALSE, TRUE)
+master.7 <- get("sharing",pos=1)
+
+test_that("step 8",
+{
+  expect_equal(outcome, TRUE)
+})
+
+
 
 
