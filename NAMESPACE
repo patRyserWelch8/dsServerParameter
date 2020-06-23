@@ -3,6 +3,7 @@
 export(assignDataDS)
 export(assignSharingSettingsDS)
 export(decryptDataDS)
+export(decryptParamDS)
 export(encryptDataDS)
 export(encryptParamDS)
 export(getDataDS)
