@@ -13,8 +13,12 @@ Encoding: UTF-8
 Depends: R (>= 3.6.3)
 LazyData: true
 AggregateMethods:
-  getEncodedDataDS,
-  initiateExchangeDS
+  assignDataDS,
+  assignSharingSettingsDS,
+  decryptDataDS,
+  encryptDataDS,
+  getDataDS,
+  setLengthDS
 Options:
  name.struct = "sharing"
 RoxygenNote: 7.1.0
