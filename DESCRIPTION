@@ -1,6 +1,6 @@
 Package: dsServerParameter
 Title: share parameters between servers in a non-disclosive manner
-Version: 0.0.0.0
+Version: 0.0.0.1
 Authors@R: 
     person(given = "Patricia",
            family = "Ryser-Welch",
@@ -14,10 +14,13 @@ Depends: R (>= 3.6.3)
 LazyData: true
 AggregateMethods:
   assignDataDS,
+  getDataDS,
   assignSharingSettingsDS,
   decryptDataDS,
   encryptDataDS,
-  getDataDS,
+  decryptParamDS,
+  encryptParamDS,
+  removeEncryptingDataDS
   setLengthDS
 Options:
  name.struct = "sharing"
