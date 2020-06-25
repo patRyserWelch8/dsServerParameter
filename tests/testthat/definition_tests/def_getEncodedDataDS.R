@@ -8,8 +8,8 @@
     expect_equal(all(expected.list %in% names(data), TRUE), TRUE)
     expect_equal(is.character(data$header),TRUE)
     expect_equal(is.character(data$payload),TRUE)
-    expect_equal(is.integer(data$property.a),TRUE)
-    expect_equal(is.integer(data$property.b),TRUE)
+    expect_equal(is.numeric(data$property.a),TRUE)
+    expect_equal(is.numeric(data$property.b),TRUE)
     expect_equal(is.numeric(data$property.c),TRUE)
     expect_equal(is.numeric(data$property.d),TRUE)
     

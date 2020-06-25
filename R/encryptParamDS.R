@@ -123,10 +123,8 @@ encryptParamDS <- function(param.name = NULL)
                                                                    param.name,
                                                                    column = column, 
                                                                    row = column) 
-         
-  
-         
-         #decrypt encrypted matrix to find concealed values: shared secret
+   
+          #decrypt encrypted matrix to find concealed values: shared secret
          concealing.matrix              <- t(solve(t(sharing[[settings$masking]])) %*% sharing[[settings$encrypted]])
          sharing[[settings$data]]       <- .encrypt.parameter(concealing.matrix,column = column,encoding.ratio)
          assign(settings$name.struct,sharing, pos=1)
