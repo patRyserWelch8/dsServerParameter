@@ -27,17 +27,17 @@
   return(correct)
 }
 
-.is.param.valid <- function(param.name = NULL)
+.is.param.valid <- function(param_name = NULL)
 {
   #use existsDS...
   outcome <- FALSE
  
-  if(is.character(param.name))
+  if(is.character(param_name))
   {
-    if(exists(param.name,where=1))
+    if(exists(param_name,where=1))
     {
       
-      param <- get(param.name, pos=1)
+      param <- get(param_name, pos=1)
       if(is.numeric(param))
       { 
         outcome <- TRUE
@@ -47,15 +47,15 @@
   return(outcome)
 }
 
-.compute.encoding.ratio <- function(decrypted.matrix = NULL,param.name, column, row)
+.compute.encoding.ratio <- function(decrypted.matrix = NULL,param_name, column, row)
 {
   outcome <- 0
   
-  if (is.matrix(decrypted.matrix) & is.character(param.name))
+  if (is.matrix(decrypted.matrix) & is.character(param_name))
   {
-    if (exists(param.name, where = 1))
+    if (exists(param_name, where = 1))
     {
-      param <- get(param.name, pos=1)
+      param <- get(param_name, pos=1)
       
       if ((nrow(decrypted.matrix) %% 2) == 1 &  (ncol(decrypted.matrix) %% 2) == 1)
       {
@@ -102,14 +102,15 @@
 #'@name encryptParamDS
 #'@title  encrypt a server parameter 
 #'@description This server function encrypts a given parameter using a dot product and two shared secrets.
+#'@param param_name character argument. Name of the server parameter to encrypt.
 #'@export
-encryptParamDS <- function(param.name = NULL)
+encryptParamDS <- function(param_name = NULL)
 {
    outcome <- FALSE
    if (exists("settings", where = 1))
    {
      sharing <- .get.shared.secrets()
-     if(.is.param.valid(param.name) & .is.shared.secrets.valid(sharing))
+     if(.is.param.valid(param_name) & .is.shared.secrets.valid(sharing))
      {
        
          #decrypt the received matrix: shared secret
@@ -120,7 +121,7 @@ encryptParamDS <- function(param.name = NULL)
          column = 3
          row = 3
          encoding.ratio                 <- .compute.encoding.ratio(sharing[[settings$decrypted]],
-                                                                   param.name,
+                                                                   param_name,
                                                                    column = column, 
                                                                    row = column) 
    

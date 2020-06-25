@@ -14,6 +14,28 @@ assignDataDS(
   property.d = 0
 )
 }
+\arguments{
+\item{master_mode}{Boolean argument. It indicates the mode of a server is a \strong{master} or a \strong{receiver}. By default, set to TRUE.}
+
+\item{header}{character argument. Header information received from another server.}
+
+\item{payload}{character argument. Payload information received from another server.}
+
+\item{property.a}{numeric argument. Property.a received from another server.}
+
+\item{property.b}{numeric argument. Property.a received from another server.}
+
+\item{property.c}{numeric argument. Property.a received from another server.}
+
+\item{property.d}{numeric argument. Property.a received from another server.}
+}
 \description{
 This server function assigns some values into a specific structure.
+}
+\details{
+Some data are being assign into a specific structure used to share parameter in some privacy-protection settings. The process used by 
+\link[dsParamServer]{getDataDS} is reversed.
+}
+\seealso{
+\link[dsParamServer]{getDataDS}
 }
