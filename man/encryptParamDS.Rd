@@ -9,3 +9,6 @@ encryptParamDS(param.name = NULL)
 \description{
 This server function encrypts a given parameter using a dot product and two shared secrets.
 }
+\details{
+hhh
+}

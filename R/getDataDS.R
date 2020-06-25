@@ -44,7 +44,7 @@
   size          <- as.numeric(object.size(data))
   no.columns    <- as.integer(runif(1, min=11, max=13))
   no.rows       <- as.integer(runif(1, min=13, max=15))
-  index         <- ceiling(runif(1, min = 0, max = no.columns))
+  index         <- runif(1, min = 0, max = no.columns)
   timestamp     <- as.numeric(Sys.time()) / size
   return.value  <- list(header = "FM2" , 
                         payload = data, 
@@ -60,6 +60,11 @@
 #'@name getDataDS
 #'@title  Retrieves the encrypted data from a server to the analysis computer
 #'@description This server function retrieves some encrypted data to be passed onto the analysis computer
+#'@param master_mode Boolean argument. It indicates the mode of a server is a \strong{master} or a \strong{receiver}. By default, set to TRUE.
+#'@return a list made of a header, a payload, and four properties[a-d]
+#'@details Some encrypted data are transformed into a suitable format to be transferred from a DataSHIELD server to a DataSHIELD client. The property.a indicates
+#'the size of the data at encoding time. Property b is the number of columns and property c a timestamp. property d a random number.
+#'@seealso \link[dsParamServer]{assignDataDS}
 #'@export
 getDataDS <- function(master_mode = TRUE)
 { 

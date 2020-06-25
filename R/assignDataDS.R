@@ -68,6 +68,16 @@
 #'@name assignDataDS
 #'@title  assign data to one or multiple servers with some encrypted data from the analysis computer
 #'@description This server function assigns some values into a specific structure.
+#'@param master_mode Boolean argument. It indicates the mode of a server is a \strong{master} or a \strong{receiver}. By default, set to TRUE.
+#'@param header character argument. Header information received from another server.
+#'@param payload  character argument. Payload information received from another server. 
+#'@param property.a numeric argument. Property.a received from another server. 
+#'@param property.b numeric argument. Property.a received from another server. 
+#'@param property.c numeric argument. Property.a received from another server. 
+#'@param property.d numeric argument. Property.a received from another server. 
+#'@details Some data are being assign into a specific structure used to share parameter in some privacy-protection settings. The process used by 
+#'\link[dsParamServer]{getDataDS} is reversed. 
+#'@seealso \link[dsParamServer]{getDataDS}
 #'@export
 
 

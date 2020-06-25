@@ -208,7 +208,13 @@
 #'@title  encrypt some data on the server 
 #'@description This server function uses some matrices operations to encrypts some data required to exchange a parameter securely between two
 #'DataSHIELD server.
-#'@param master_mode Boolean argument. It indicates the mode of the encryption. By default, set to TRUE.
+#'@details This function encrypts data in four different ways; each of them are defined by the combination of argument values.
+#'\itemize{
+#'\item{\code{master_mode = TRUE, preserve_mode = FALSE}} {- This combination of argument values indicates the server is in \strong{master_mode}. An exchange of encrypted data is  initiated. It is the first step of the exchange.}  
+#'\item{\code{master_mode = FALSE, preserve_mode = FALSE}} {- This set of argument values states the server is in \strong{receiver_mode}. Some data received from the master is 
+#'used again to encrypted a \strong{receiver_server specific} data. }
+#'}
+#'@param master_mode Boolean argument. It indicates the mode of encryption. By default, set to TRUE.
 #'@param preserve_mode  Boolean argument. It indicates to presever some data exchanged previously between servers. By default, set to FALSE.
 #'@export
 
