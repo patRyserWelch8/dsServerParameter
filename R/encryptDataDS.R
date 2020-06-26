@@ -213,7 +213,10 @@
 #'\item{\code{master_mode = TRUE, preserve_mode = FALSE}} {- This combination of argument values indicates the server is in \strong{master_mode}. An exchange of encrypted data is  initiated. It is the first step of the exchange.}  
 #'\item{\code{master_mode = FALSE, preserve_mode = FALSE}} {- This set of argument values states the server is in \strong{receiver_mode}. Some data received from the master is 
 #'used again to encrypted a \strong{receiver_server specific} data. }
-#'}
+#'\item{\code{master_mode = TRUE, preserve_mode = TRUE}} {- When both argument values are set to true, some data used previously in the process are 
+#'concealed in within some newly generated data.}
+#'\item{\code{master_mode = FALSE, preserve_mode = TRUE}} {- This set of argument values states the server is in \strong{receiver_mode}. Some data received from the master is 
+#'used again to encrypted a \strong{receiver_server specific} data. Some data previously used by the process are preserved.}
 #'@param master_mode Boolean argument. It indicates the mode of encryption. By default, set to TRUE.
 #'@param preserve_mode  Boolean argument. It indicates to presever some data exchanged previously between servers. By default, set to FALSE.
 #'@export

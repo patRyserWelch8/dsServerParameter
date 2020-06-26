@@ -16,10 +16,5 @@ This server function uses some matrices operations to encrypts some data require
 DataSHIELD server.
 }
 \details{
-This function encrypts data in four different ways; each of them are defined by the combination of argument values.
-\itemize{
-\item{\code{master_mode = TRUE, preserve_mode = FALSE}} {- This combination of argument values indicates the server is in \strong{master_mode}. An exchange of encrypted data is  initiated. It is the first step of the exchange.}  
-\item{\code{master_mode = FALSE, preserve_mode = FALSE}} {- This set of argument values states the server is in \strong{receiver_mode}. Some data received from the master is 
-used again to encrypted a \strong{receiver_server specific} data. }
-}
+
 }

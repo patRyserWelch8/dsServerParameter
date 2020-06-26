@@ -27,19 +27,20 @@
   return(correct)
 }
 
-#'@name deParamDS
+#'@name decryptParamDS
 #'@title  decrypt a server parameter 
 #'@description This server function decrypts a given parameter in matrix.
+#'@param param_name character argument. Name of the variable used  to store the parameter value on a server.
 #'@export
-decryptParamDS <- function(param.name = NULL)
+decryptParamDS <- function(param_name = NULL)
 {
    outcome <- FALSE
    param.value <- NA
    if (exists("settings", where = 1))
    {
-     print(1)
+    
      sharing <- .get.encoded.param()
-     print(2)
+    
      if(.is.encoded.param.valid(sharing))
      { 
          print(3)
@@ -53,7 +54,7 @@ decryptParamDS <- function(param.name = NULL)
          param.value <-  sharing$decrypted[column,row]
          param <- list()
          param[["param.1"]] <- param.value
-         assign("param",param, pos = 1)
+         assign(param_name,param, pos = 1)
          
      }
    }
