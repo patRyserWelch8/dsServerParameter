@@ -7,7 +7,7 @@
 #'@export
 assignSharingSettingsDS <- function()
 {
-    settings <- list(name.struct = "sharing",
+    settings <- list( name.struct = "sharing",
                       masking     = "masking",
                       concealing  = "concealing",
                       received    = "received",

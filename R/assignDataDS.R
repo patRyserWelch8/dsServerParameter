@@ -28,11 +28,12 @@
 .create.matrix <- function(data = "",  no.columns = 1)
 {
   received.matrix <- matrix (rep(0),2,2)
-  
-  if (is.character(data) & is.integer(no.columns))
+
+  if (is.character(data) & is.numeric(no.columns))
   {
    
-    data.list       <- strsplit(data,",")
+    data.list       <- strsplit(data,";")
+    print(data.list)
     data.vector     <- unlist(data.list)
     data.numeric    <- as.numeric(data.vector)
     no.rows         <- length(data.numeric)/no.columns
