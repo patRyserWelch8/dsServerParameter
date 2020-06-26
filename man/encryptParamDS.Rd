@@ -4,11 +4,11 @@
 \alias{encryptParamDS}
 \title{encrypt a server parameter}
 \usage{
-encryptParamDS(param.name = NULL)
+encryptParamDS(param_name = NULL)
+}
+\arguments{
+\item{param_name}{character argument. Name of the server parameter to encrypt.}
 }
 \description{
 This server function encrypts a given parameter using a dot product and two shared secrets.
-}
-\details{
-hhh
 }

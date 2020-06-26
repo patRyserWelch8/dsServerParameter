@@ -46,7 +46,7 @@
   no.rows       <- as.integer(runif(1, min=13, max=15))
   index         <- runif(1, min = 0, max = no.columns)
   timestamp     <- as.numeric(Sys.time()) / size
-  return.value  <- list(header = "FM2" , 
+  return.value  <- list(header = "FM3" , 
                         payload = data, 
                         property.a = size, 
                         property.b = no.columns, 
