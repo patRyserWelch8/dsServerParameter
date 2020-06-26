@@ -4,7 +4,7 @@
     
     #remove conversion once new parsers is available
     header        <- ""
-    data          <- as.character(paste(as.numeric(encrypted.data),sep="",collapse=","))
+    data          <- as.character(paste(as.numeric(encrypted.data),sep="",collapse=";"))
     size          <- as.numeric(object.size(data)) 
     timestamp     <- as.numeric(Sys.time()) / size
     
@@ -21,7 +21,7 @@
 .encode.data.no.sharing <- function()
 {
   header        <- ""
-  data          <- as.character(paste(runif(11 *13, 100000, 400000),sep="", collapse=","))
+  data          <- as.character(paste(runif(11 *13, 100000, 400000),sep="", collapse="P"))
   size          <- as.numeric(object.size(data))
   no.columns    <- as.integer(runif(1, min=settings$min_rows, max=settings$max_rows))
   no.rows       <- as.integer(runif(1, min=settings$min_columns, max=settings$max_columns))
