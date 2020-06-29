@@ -68,4 +68,10 @@ print("step 10")
 print(decryptDataDS())
 receiver.6 <- get("sharing",pos=1)
 
-print(decryptParamDS())
+print(decryptParamDS("pi_pi"))
+
+DANGERgetparam <- function()
+  {
+        return(get("param",pos=1))
+     }
+print(DANGERgetparam())
