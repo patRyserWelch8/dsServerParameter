@@ -52,10 +52,7 @@ decryptParamDS <- function(param_name = NULL)
          column = 3
          row = 3
          param.value <-  sharing$decrypted[column,row]
-         param <- list()
-         param[[param_name]] <- param.value
-         assign("param",param, pos = 1)
-         
+         assign(param_name,param, pos = 1)
      }
    }
    outcome <- !is.na(param.value)
