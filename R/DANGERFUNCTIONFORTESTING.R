@@ -6,6 +6,6 @@ DANGERgetSharing <- function()
 
 DANGERgetparam <- function()
 {
-  return(get("param",pos=1))
+  return(get("pi_value",pos=1))
 }
 
