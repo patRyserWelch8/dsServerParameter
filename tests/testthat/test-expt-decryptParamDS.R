@@ -91,15 +91,17 @@ receiver.5 <- get("sharing",pos=1)
 #("step 10")
 decryptDataDS()
 receiver.6 <- get("sharing",pos=1)
-outcome <- decryptParamDS()
+outcome <- decryptParamDS("param")
 
 context("decryptParamDS::expt::data_has_been_decrypted")
 test_that("data has been encrypted correctly",
 {
    expect_equal(exists(settings$name.struct, where = 1), TRUE)
    expect_equal(outcome, TRUE)
-   expect_equal(exists("param", where=1), TRUE)
-   expect_equal(param$param.1, pi_value)
+   list.var <- ls(pos=1)
+   param <- get("param",pos=1)
+   expect_equal("param" %in% list.var, TRUE)
+   expect_equal(param, pi_value)
 })
 
 

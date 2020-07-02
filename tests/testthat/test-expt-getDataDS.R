@@ -8,7 +8,7 @@ test_that("no_settings",
 {
   data <- getDataDS()
   .test.data.structure(data)
-  expect_equal(data$header,"FM2")
+  expect_equal(data$header,"FM3")
   
 })
 

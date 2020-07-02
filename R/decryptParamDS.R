@@ -52,6 +52,7 @@ decryptParamDS <- function(param_name = NULL)
          column = 3
          row = 3
          param.value <-  sharing$decrypted[column,row]
+         print(param.value)
          assign(param_name,param.value, pos = 1)
      }
    }
