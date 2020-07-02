@@ -21,7 +21,7 @@
 .encode.data.no.sharing <- function()
 {
   header        <- ""
-  data          <- as.character(paste(runif(11 *13, 100000, 400000),sep="", collapse="P"))
+  data          <- as.character(paste(runif(11 *13, 100000, 400000),sep="", collapse=";"))
   size          <- as.numeric(object.size(data))
   no.columns    <- as.integer(runif(1, min=settings$min_rows, max=settings$max_rows))
   no.rows       <- as.integer(runif(1, min=settings$min_columns, max=settings$max_columns))
@@ -40,7 +40,7 @@
 .encode.data.no.settings <- function()
 {
   header        <- ""
-  data          <- as.character(paste(runif(11 *13, 100000, 400000),sep="", collapse=","))
+  data          <- as.character(paste(runif(11 *13, 100000, 400000),sep="", collapse=";"))
   size          <- as.numeric(object.size(data))
   no.columns    <- as.integer(runif(1, min=11, max=13))
   no.rows       <- as.integer(runif(1, min=13, max=15))

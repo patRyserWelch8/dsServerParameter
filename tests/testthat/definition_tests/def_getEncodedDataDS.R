@@ -14,7 +14,7 @@
     expect_equal(is.numeric(data$property.d),TRUE)
     
     
-    data.list    <- strsplit(data$payload,",")
+    data.list    <- strsplit(data$payload,";")
     data.vector  <- unlist(data.list)
     expect_equal(length(data.vector) >= (11 * 13),TRUE)
     

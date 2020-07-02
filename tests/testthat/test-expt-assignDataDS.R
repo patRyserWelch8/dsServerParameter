@@ -47,12 +47,7 @@ test_that("variables exists",
   .test.create.matrix.parameters.incorrect()
 })
 
-context("assignDataDS::expt::.create.matrix")
-test_that("variables exists",
-{
-  .test.create.matrix.parameters.correct(as.character(a$payload), a$property.b)
-  .test.create.matrix.parameters.incorrect()
-})
+
 
 context("assignDataDS::expt::.save.matrix")
 test_that("variables exists",

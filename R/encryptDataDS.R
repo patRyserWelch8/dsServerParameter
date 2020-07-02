@@ -274,7 +274,7 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
         
       if (preserve_mode)
       {
-         sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],preserved.data,3)
+         sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],preserved.data,3) #column
          expected.list <- c(settings$masking,settings$encrypted,
                             settings$no_columns, settings$no_rows)
       }

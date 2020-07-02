@@ -27,24 +27,31 @@
 
 .create.matrix <- function(data = "",  no.columns = 1)
 {
-  received.matrix <- matrix (rep(0),2,2)
-
+  numbers         <- rep(x = 0, times=4)
+  received.matrix <- matrix(as.numeric(numbers),2,2)
+  
   if (is.character(data) & is.numeric(no.columns))
   {
+    can.be.converted <- grepl('^-?[0-9.;e]+$', data)
    
-    data.list       <- strsplit(data,";")
-    print(data.list)
-    data.vector     <- unlist(data.list)
-    data.numeric    <- as.numeric(data.vector)
-    no.rows         <- length(data.numeric)/no.columns
-    
-    
-    if (no.rows > 1 & no.columns > 1)
+    if(can.be.converted)
     {
-      received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)
+      data.list       <- strsplit(data,";")
+      if (length(data.list[[1]]) > 1)
+      {
+          data.vector      <- unlist(data.list)
+          no.rows          <- length(data.vector)/no.columns
+    
+          if (no.rows > 1 & no.columns > 1)
+          {
+              data.numeric    <- as.numeric(data.vector)
+              received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)
+          }
+      }
     }
   }
-    return(received.matrix)
+  
+  return(received.matrix)
 }
 
 .is.assigned.values.correct <- function(master_mode)
