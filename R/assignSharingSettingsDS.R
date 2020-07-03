@@ -16,6 +16,7 @@ assignSharingSettingsDS <- function()
                       data        = "data",
                       index_x     = "index_x",
                       index_y     = "index_y",
+                      param_names = "param_names",
                       no_columns  = "no_columns",
                       no_rows     = "no_rows",
                       min_rows    = 11,#11,

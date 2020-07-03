@@ -1,7 +1,10 @@
 library(dsServerParameter)
 rm(list=ls(),pos=1)
+
 print("Step 0")
-pi_value = 1000
+pi_value_1 = 1000
+pi_value_2 = 2000
+pi_value_3 = 3000
 assignSharingSettingsDS()
 
 print("Step 1")
@@ -29,7 +32,18 @@ master.2 <- get("sharing",pos=1)
 print("step 5")
 decryptDataDS()
 master.3 <- get("sharing",pos=1)
-encryptParamDS("pi_value")
+assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3"))
+master.3.5 <- get("sharing",pos=1)
+f<- getCoordinatesDS()
+rm(sharing,pos=1)
+assign("sharing", receiver.2, pos=1)
+assignCoordinatesDS(f$header, f$payload,f$property.a,f$property.b,f$property.c,f$property.d)
+receiver.2.5 <- get("sharing",pos=1)
+
+rm(sharing,pos=1)
+assign("sharing", master.3.5, pos=1)
+
+encryptParamDS()
 master.4 <- get("sharing",pos=1)
 removeEncryptingDataDS()
 master.5 <- get("sharing",pos=1)
@@ -48,18 +62,14 @@ assign("sharing", master.5, pos=1)
 assignDataDS(master_mode = FALSE,c$header,c$payload,c$property.a,c$property.b,c$property.c,c$property.d)
 master.6 <- get("sharing",pos=1)
 
-
 print("step 8 ")
 encryptDataDS(FALSE, TRUE)
 master.7 <- get("sharing",pos=1)
-
-
 
 print("step 9")
 d <- getDataDS(master_mode = FALSE)
 rm(sharing,pos=1)
 assign("sharing", receiver.4, pos=1)
-print(d$payload)
 assignDataDS(master_mode = TRUE,d$header,d$payload,d$property.a,d$property.b,d$property.c,d$property.d)
 receiver.5 <- get("sharing",pos=1)
 

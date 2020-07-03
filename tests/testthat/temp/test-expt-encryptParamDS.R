@@ -2,15 +2,6 @@ source("definition_tests/def_sharing_structure.R")
 source("definition_tests/def_getEncodedDataDS.R")
 source("definition_tests/def_process.R")
 
-context("encryptParamDS::expt::param")
-test_that("parameters incorrect",
-{
-   expect_equal(encryptParamDS(),FALSE)
-   expect_equal(encryptParamDS(1),FALSE)
-   expect_equal(encryptParamDS(TRUE),FALSE)
-   expect_equal(encryptParamDS(list()),FALSE)
-})
-
 context("encryptParamDS::expt::no_settings")
 test_that("no_setting",
 {
@@ -18,14 +9,21 @@ test_that("no_setting",
   {
     rm("settings",pos=1)
   }
+  
+  if(exists("sharing",where = 1))
+  {
+    rm("sharing",pos=1)
+  }
   expect_equal(exists("settings",where = 1),FALSE)
-  expect_equal(encryptParamDS("pi_value"),FALSE)
+  expect_equal(encryptParamDS(),FALSE)
 })
 
 #These steps are needed to complete the tests.....
-pi_value = 1000
-assign("pi_value",pi_value, pos=1)
-rm(sharing,pos=1)
+
+assign("pi_value_1",1000,pos=1)
+assign("pi_value_2",2000,pos=1)
+assign("pi_value_3",3000,pos=1)
+
 
 #"Step 0"
 assignSharingSettingsDS()
@@ -92,9 +90,13 @@ assign("sharing", master.1, pos=1)
 assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
 master.2 <- get("sharing",pos=1)
 
+
+
 #"step 5"
 decryptDataDS()
 master.3 <- get("sharing",pos=1)
+assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3"))
+master.3.5 <- get("sharing",pos=1)
 
 context("encryptParamDS::expt::get_shared_secrets")
 test_that("sharing_exists",
@@ -110,7 +112,8 @@ test_that("sharing and encryption exists",
 {
   expect_equal(exists("settings",where = 1),TRUE)
   expect_equal(exists("sharing",where = 1),TRUE)
-  expect_equal(.is.shared.secrets.valid(master.3),TRUE)
+  expect_equal(.is.shared.secrets.valid(master.3.5),TRUE)
+  expect_equal(.is.shared.secrets.valid(master.3),FALSE)
   expect_equal(.is.shared.secrets.valid(master.2),FALSE)
   expect_equal(.is.shared.secrets.valid(master.1),FALSE)
 })
@@ -136,18 +139,18 @@ test_that("computations",
 context("encryptParamDS::expt::.encrypt.parameter")
 test_that("params",
 {
-  expect_equal(.encrypt.parameter(),0)
-  expect_equal(.encrypt.parameter(master.3$concealing),0)
-  expect_equal(.encrypt.parameter(master.3$concealing,3),0)
-  expect_equal(.encrypt.parameter(master.3$concealing,ncol(master.3$concealing)+1),0)
-  expect_equal(.encrypt.parameter(master.3$concealing,"a"),0)
-  expect_equal(.encrypt.parameter(master.3$concealing,ncol(master.3$concealing)-4,"a"),0)
+  expect_equal(.encrypt(),0)
+  expect_equal(.encrypt(master.3$concealing),0)
+  expect_equal(.encrypt(master.3$concealing,3),0)
+  expect_equal(.encrypt(master.3$concealing,ncol(master.3$concealing)+1),0)
+  expect_equal(.encrypt(master.3$concealing,"a"),0)
+  expect_equal(.encrypt(master.3$concealing,ncol(master.3$concealing)-4,"a"),0)
 })
 
 test_that("computations",
 {
   expected.result <- ratio * master.3$concealing [,5]
-  outcome         <- .encrypt.parameter(master.3$concealing,5,ratio)
+  outcome         <- .encrypt(master.3$concealing,5,ratio)
   expect_equal(expected.result,outcome)
   
 })
@@ -159,7 +162,7 @@ test_that("not valid",
    expect_equal(.is.encrypted.structure.valid(),FALSE)
 })
 
-outcome <- encryptParamDS("pi_value")
+outcome <- encryptParamDS()
 master.4 <- get("sharing",pos=1)
 
 context("encryptParamDS::expt::param")

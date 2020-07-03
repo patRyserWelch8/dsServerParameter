@@ -12,18 +12,14 @@
 
 .conceal.data <- function(concealing.matrix, data, column)
 {
-  
   outcome <- NULL
   if(is.matrix(concealing.matrix) & is.vector(data))
   {
    
     outcome <- concealing.matrix
-   
     if(length(data) == nrow(concealing.matrix))
     {
-      
       concealing.matrix[,column]  <- data
-      
     }
   }
   
@@ -93,7 +89,7 @@
 }
 
 
-.encrypt <- function(sharing, master_mode = TRUE)
+.encrypt.concealed.data <- function(sharing, master_mode = TRUE)
 {
   outcome <- sharing
   values.exists  <- all(c(settings$concealing,settings$masking) %in% names(sharing))
@@ -224,6 +220,7 @@
 encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
 {
   outcome <- FALSE
+  print(1)
 
   if (exists("settings", where = 1) & 
       is.logical(master_mode) & 
@@ -239,11 +236,13 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       MIN            <- runif(1, min=settings$min_value, max  = settings$min_value + 20)
       MAX            <- runif(1, min=settings$min_value+30, max = settings$min_value + 40)
       data           <- NULL
+      
       expected.list  <- c()
       preserved.data <- c()
       no.rows        <- .define_no_rows()  
       no.columns     <- .define_no_columns(no.rows)   
       sharing        <- .get_sharing()
+     
       
       #preserve the data from previous exchange
      
@@ -261,13 +260,14 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
                                               no.rows = no.rows, 
                                               no.columns = no.columns)
           
+          
           expected.list <- c(settings$masking,settings$encrypted, settings$no_columns, settings$no_rows)
       }
       else
       {
          sharing <- .create.structure.receiver(MIN, MAX)
         
-         sharing[[settings$data]] <- sharing[[settings$concealing]][,3]
+         sharing[[settings$data]] <- sharing[[settings$concealing]][,3] #column
          expected.list <- c(settings$masking,settings$encrypted, 
                             settings$data,settings$no_columns, settings$no_rows)
       }
@@ -280,7 +280,8 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       }
   
     
-      sharing     <- .encrypt(sharing, master_mode)
+      sharing     <- .encrypt.concealed.data(sharing, master_mode)
+    
       #sharing     <- sharing[names(sharing) %in% expected.list == TRUE]
   
       assign(settings$name.struct, sharing, pos = 1)

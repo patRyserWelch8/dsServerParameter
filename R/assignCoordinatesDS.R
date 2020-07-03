@@ -1,7 +1,7 @@
 #index is not needed now 
-.save <- function(received.matrix = NULL, master_mode)
+.save.coordinates <- function(received.data = NULL, no.params)
 {
-    if (is.matrix(received.matrix))
+    if (is.vector(received.data))
     {
       sharing <- list()
       if (exists("sharing", where=1))
@@ -9,7 +9,8 @@
         sharing = get("sharing", pos = 1)
       }
     
-      sharing[[settings$received]] <- received.matrix
+      sharing[[settings$index_x]] <- received.data[1:no.params]
+      sharing[[settings$index_y]] <- received.data[(no.params+1):length(received.data)]
       assign(settings$name.struct, sharing, pos = 1)
     }
 }
@@ -25,12 +26,11 @@
   return(index)
 }
 
-.create.matrix <- function(data = "",  no.columns = 1)
+.create.data <- function(data = "",  no.params = 1)
 {
   numbers         <- rep(x = 0, times=4)
-  received.matrix <- matrix(as.numeric(numbers),2,2)
-  
-  if (is.character(data) & is.numeric(no.columns))
+
+  if (is.character(data) & is.numeric(no.params))
   {
     can.be.converted <- grepl('^-?[0-9.;e]+$', data)
    
@@ -39,47 +39,38 @@
       data.list       <- strsplit(data,";")
       if (length(data.list[[1]]) > 1)
       {
-          data.vector      <- unlist(data.list)
-          no.rows          <- length(data.vector)/no.columns
-          print(length(data.vector))
-          print(no.rows)
-          print(no.columns)
-    
-          if (no.rows > 1 & no.columns > 1)
-          {
-              data.numeric    <- as.numeric(data.vector)
-              received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)
-          }
+          data.vector    <- unlist(data.list)
+          data.numeric   <- as.numeric(data.vector)
+          middle.data    <- (length(data.numeric) - (2 * no.params))/2
+          received.data  <- data.numeric[(middle.data+1):((length(data.numeric)-middle.data))]
       }
     }
   }
-  
-  return(received.matrix)
+  return(received.data)
 }
 
-.is.assigned.values.correct <- function(master_mode)
+.is.assigned.coordinates.correct <- function()
 {
   outcome <- FALSE
   if (exists(settings$name.struct,where=1))
   {
     sharing       <- get(settings$name.struct,pos=1)
-    structure     <- c(settings$received)
+    structure     <- c(settings$index_x,settings$index_y)
    
     total.correct <- sum(structure %in% names(sharing))
     value.exists  <- length(structure) ==  total.correct
     
     if (value.exists)
     {
-      outcome <- is.matrix(sharing[[settings$received]])
+      outcome <- is.vector(sharing[[settings$index_x]]) & is.vector(sharing[[settings$index_y]])
     }
   }
   return(outcome)
 }
 
-#'@name assignDataDS
-#'@title  assign data to one or multiple servers with some encrypted data from the analysis computer
-#'@description This server function assigns some values into a specific structure.
-#'@param master_mode Boolean argument. It indicates the mode of a server is a \strong{master} or a \strong{receiver}. By default, set to TRUE.
+#'@name assignCoordinatesDS
+#'@title  assign data to one or multiple servers with some encrypted data from the analysis computer INCORRECT 
+#'@description This server function assigns some values into a specific structure. INCORRECT
 #'@param header character argument. Header information received from another server.
 #'@param payload  character argument. Payload information received from another server. 
 #'@param property.a numeric argument. Property.a received from another server. 
@@ -92,7 +83,7 @@
 #'@export
 
 
-assignDataDS <- function(master_mode = TRUE, header = "", payload = "", property.a = 0, 
+assignCoordinatesDS <- function(header = "", payload = "", property.a = 0, 
                               property.b = 0, property.c = 0.0, property.d = 0.0)
 {
   outcome <- FALSE
@@ -103,10 +94,9 @@ assignDataDS <- function(master_mode = TRUE, header = "", payload = "", property
         if (nchar(header) > 0 & nchar(payload) > 0 & property.a > 0 
            & property.b > 0 & property.c > 0 & property.d > 0)
           {
-            received.matrix  <- .create.matrix(payload,property.b)
-            #index            <- .compute.index(property.d, property.c)
-            .save(received.matrix, master_mode)
-            outcome          <- .is.assigned.values.correct(master_mode)
+            received.data  <- .create.data(payload,property.b)
+            .save.coordinates(received.data, property.b)
+            outcome          <- .is.assigned.coordinates.correct()
           }
      }
   return(outcome)
