@@ -1,16 +1,35 @@
 .has.correct.data <- function(param_names = c())
 {
-  outcome <- FALSE
+  
+  params.exist     <- FALSE
+  encrypted.exists <- FALSE
   if (exists("settings",where = 1)  &
       !is.null(param_names))
   {
-    if (exists(settings$name,where = 1))
+    if (exists(settings$name.struct,where = 1))
     {
       if(length(param_names) >= 1 & is.character(param_names) )
       {
-         outcome <- all(unlist(lapply(param_names,exists)))
+         params.exist <- all(unlist(lapply(param_names,exists)))
       }
+      
+      sharing           <- get(settings$name.struct, pos = 1)
+      encrypted.exists  <- settings$encrypted %in% names(sharing)
     }
+  }
+  
+  return(encrypted.exists & params.exist)
+}
+
+.generate.ratios <- function(no.elements = 0, coordinate = 0)
+{
+  stop    <-  no.elements == 0 & coordinate == 0
+ 
+  while(!stop)
+  {
+     outcome   <- as.vector(runif(no.elements, min = 0.01, max = 0.95))
+     no.levels <- length(levels(factor(ceiling(outcome * coordinate))))
+     stop <- (no.levels == no.elements)
   }
   
   return(outcome)
@@ -25,9 +44,11 @@
     random.number <- runif (1, min = 1, max = 10^6)
     
     set.seed(sys.time/random.number)
-    sharing[[settings$index_x]]     <- as.vector(runif(length(param_names), min = 0.01, max = 0.95))
-    sharing[[settings$index_y]]     <- as.vector(runif(length(param_names), min = 0.01, max = 0.95))
+    sharing[[settings$index_x]]     <- .generate.ratios(no.elements = length(param_names), coordinate = ncol(sharing[[settings$encrypted]]))
+    sharing[[settings$index_y]]     <- .generate.ratios(no.elements = length(param_names), coordinate = nrow(sharing[[settings$encrypted]]))
     sharing[[settings$param_names]] <- param_names
+    print("columns")
+    print(ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]]))
     return(sharing)
   }
   else
@@ -50,9 +71,6 @@
   
   return(correct)
 }
-
-
-
 
 #'@name   assignParamSettingsDS
 #'@title  assigns some settings used to encrypt and decrypt the parameters

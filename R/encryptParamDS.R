@@ -106,7 +106,6 @@
   param_name <- sharing[[settings$param_names]][index]
   if(.is.param.valid(param_name))
   {
-    
     column         <- ceiling(sharing[[settings$index_x]][index] * ncol(sharing[[settings$decrypted]]))
     row            <- ceiling(sharing[[settings$index_y]][index] * nrow(sharing[[settings$decrypted]]))
     encoding.ratio <- .compute.encoding.ratio(sharing[[settings$decrypted]], param_name, column, row)
@@ -128,29 +127,14 @@ encryptParamDS <- function() #remove param name ....
      if( .is.shared.secrets.valid(sharing))   #.is.param.valid(param_name) &
      {
         #decrypt encrypted matrix to find concealed values: shared secret         
-        concealing.matrix <- .compute.concealing.matrix() 
+        #concealing.matrix <- .compute.concealing.matrix() 
         no.params <- length(sharing[[settings$param_names]])
         data <- list()
         for (index in 1:no.params)
         {
-          data[[index]] <- .encrypt.param(index,concealing.matrix)
+          data[[index]] <- .encrypt.param(index,sharing[[settings$concealing]])
         }
-        #data <- lapply(seq(sharing[[settings$param_names]]),.encrypt.param)
-        
-        
-         #decrypt the received matrix: shared secret
-         #column                         <- sharing[[settings$index_x]]
-         #row                            <- sharing[[settings$index_y]]
-         #address this once columun and row are communicated ......
-         #column = 3
-         #row = 3
-         #encoding.ratio                 <- .compute.encoding.ratio(sharing[[settings$decrypted]],
-         #                                                           param_name,
-         #                                                           column = column, 
-         #                                                           row = column) 
-   
-         
-         #sharing[[settings$data]]       <- .encrypt(concealing.matrix,column = column,encoding.ratio)
+      
          sharing[[settings$data]] <- data
          assign(settings$name.struct,sharing, pos=1)
          outcome <- .is.encrypted.structure.valid()
