@@ -43,12 +43,16 @@ decryptParamDS <- function(param_names = NULL)
      if(.is.encoded.param.valid(sharing))
      { 
          no.params <- length(param_names)
-         rows      <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_columns]])
-         columns   <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_columns]])
+         rows      <- ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]])
+         columns   <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]])
+         
+         print(rows)
+         print(columns)
+         #those are swapped due to transpose in encoding process
          for (index in 1:no.params)
          {
            param_name <- param_names[index]
-           param.value <-  sharing$decrypted[rows[index],columns[index]]
+           param.value <-  sharing$decrypted[columns[index],rows[index]]
            print(param.value)
            assign(param_name,param.value, pos = 1)
          }

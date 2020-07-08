@@ -109,7 +109,8 @@
     column         <- ceiling(sharing[[settings$index_x]][index] * ncol(sharing[[settings$decrypted]]))
     row            <- ceiling(sharing[[settings$index_y]][index] * nrow(sharing[[settings$decrypted]]))
     encoding.ratio <- .compute.encoding.ratio(sharing[[settings$decrypted]], param_name, column, row)
-    data           <- .encrypt(concealing.matrix,column,encoding.ratio)
+    #column is becomes the index of the row. This is guided by the transpose when the concealing matrix is encrypted
+    data           <- .encrypt(concealing.matrix,column=row,encoding.ratio)
   }
 }
 

@@ -28,8 +28,13 @@
   while(!stop)
   {
      outcome   <- as.vector(runif(no.elements, min = 0.01, max = 0.95))
-     no.levels <- length(levels(factor(ceiling(outcome * coordinate))))
+     values    <- ceiling(outcome * coordinate)
+     no.levels <- length(levels(factor(values)))
      stop <- (no.levels == no.elements)
+     print(no.levels == no.elements)
+     print(no.levels)
+     print(outcome)
+     print(values)
   }
   
   return(outcome)
@@ -44,11 +49,14 @@
     random.number <- runif (1, min = 1, max = 10^6)
     
     set.seed(sys.time/random.number)
-    sharing[[settings$index_x]]     <- .generate.ratios(no.elements = length(param_names), coordinate = ncol(sharing[[settings$encrypted]]))
-    sharing[[settings$index_y]]     <- .generate.ratios(no.elements = length(param_names), coordinate = nrow(sharing[[settings$encrypted]]))
+    sharing[[settings$index_x]]     <- .generate.ratios(no.elements = length(param_names), coordinate = sharing[[settings$no_columns]])
+    sharing[[settings$index_y]]     <- .generate.ratios(no.elements = length(param_names), coordinate = sharing[[settings$no_rows]])
     sharing[[settings$param_names]] <- param_names
     print("columns")
     print(ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]]))
+    print("rows")
+    print(ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]]))
+  
     return(sharing)
   }
   else

@@ -1,3 +1,5 @@
+
+
 library(dsServerParameter)
 rm(list=ls(),pos=1)
 
@@ -33,7 +35,7 @@ print("step 5")
 decryptDataDS()
 master.3 <- get("sharing",pos=1)
 print(names(master.3))
-assignParamSettingsDS(c("pi_value_1")) #"pi_value_2","pi_value_3"))
+assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3"))
 master.3.5 <- get("sharing",pos=1)
 print(names(master.3.5))
 f<- getCoordinatesDS()
@@ -60,6 +62,7 @@ receiver.3 <- get("sharing",pos=1)
 print(names(receiver.3))
 encryptDataDS(TRUE, TRUE)
 receiver.4 <- get("sharing",pos=1)
+print(names(receiver.4))
 
 print("step 7")
 c <- getDataDS(master_mode = TRUE)
@@ -84,10 +87,13 @@ print("step 10")
 decryptDataDS()
 receiver.6 <- get("sharing",pos=1)
 
+
 print("columns")
 print(ceiling(receiver.6$index_x * receiver.6$no_columns))
 print("rows")
 print(ceiling(receiver.6$index_y * receiver.6$no_rows))
+print("decrypted")
+print(receiver.6$decrypted)
 
-decryptParamDS(c("pi_value_1"))
+decryptParamDS(c("pi_value_1_a", "pi_value_2_a", "pi_value_3_a"))
 

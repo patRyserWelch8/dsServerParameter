@@ -204,21 +204,23 @@
 {
   outcome      <- list()
   field_names  <- names(sharing)
-  correct_info <- all(c(settings$concealing,settings$index_x,settings$index_y) 
-                      %in% field_names )
+  correct_info <- all(c(settings$index_x,settings$index_y) 
+                      %in% field_names)
   data_exists <- all(settings$data %in% field_names)
+  print(correct_info)
+  print(data_exists)
   
   if(correct_info)
   {
        outcome[[settings$index_x]] <- sharing[[settings$index_x]]
        outcome[[settings$index_y]] <- sharing[[settings$index_y]]  
        outcome[["columns"]]        <- ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]])
-       print(outcome[["columns"]])
-       
+       outcome[["rows"]]           <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]])
+    
        if(data_exists)
        {
          #extract the data save earlier in the process 
-         outcome[[settings$data]]     <- sharing[[settings$data]]
+         outcome[[settings$data]] <- sharing[[settings$data]]
        }
        else
        {
@@ -231,7 +233,7 @@
          }
        }
   }
-  print("*****")
+  print('.preserve_info')
   print(outcome)
   return(outcome)
 }
@@ -277,9 +279,13 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       #preserve the data from previous exchange
       if(preserve_mode)
       {
+        print("===preserve_mode===")
+        print(sharing)
         saved.info    <- .preserve.info(sharing) 
         no.rows       <-  sharing[[settings$no_rows]]
         no.columns    <-  sharing[[settings$no_columns]]
+        print(saved.info)
+        print("===preserve_mode===")
       }
   
       #create matrices for encryption
@@ -288,24 +294,44 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
           sharing <- .create.structure.master(MIN, MAX, 
                                               no.rows = no.rows, 
                                               no.columns = no.columns)
-          expected.list <- c(settings$concealing,settings$masking,settings$encrypted, settings$no_columns, settings$no_rows)
+          expected.list <- c(settings$concealing,settings$masking,settings$encrypted,settings$no_columns, settings$no_rows)
       }
       else
       {
          sharing <- .create.structure.receiver(MIN, MAX)
-         expected.list <- c(settings$concealing,settings$masking,settings$encrypted, 
-                            settings$data,settings$no_columns, settings$no_rows)
+         print("==sharing new ====")
+         print(sharing)
+         print("==sharing new ====")
+         expected.list <- c(settings$concealing,settings$masking,settings$encrypted,settings$no_columns, settings$no_rows)
       }
         
       if (preserve_mode)
       {
+         print("=== after new structure ===")
          print(saved.info[["columns"]])
-         sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],saved.info[[settings$data]],saved.info[["columns"]])
+         print(saved.info[["rows"]])
+         #here ......
+         if(master_mode)
+         {
+            print("master mode")
+            print(sharing[[settings$concealing]])
+            sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],
+                                                            saved.info[[settings$data]],saved.info[["rows"]])
+            print(sharing[[settings$concealing]])
+         }
+         else
+         {
+            print("not master mode")
+            print(sharing[[settings$concealing]])
+            sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],
+                                                            saved.info[[settings$data]],saved.info[["columns"]])
+            print(sharing[[settings$concealing]])
+         }
          sharing[[settings$index_x]]    <-  saved.info[[settings$index_x]]
          sharing[[settings$index_y]]    <-  saved.info[[settings$index_y]]
-         print("============")
-         print(sharing)
-         
+         print(sharing$concealing)
+
+         print("=== after new structure ===")
          expected.list <- c(settings$concealing,settings$masking,settings$encrypted,
                             settings$no_columns, settings$no_rows, settings$index_x, settings$index_y)
       }
@@ -313,6 +339,7 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
     
       sharing     <- .encrypt.concealed.data(sharing, master_mode)
       assign(settings$name.struct, sharing, pos = 1)
+      print(expected.list)
       outcome       <- .is.encrypted.valid(sharing, expected.list) & 
                        exists(settings$name.struct, where=1)
   }
