@@ -4,7 +4,7 @@
 \alias{encryptParamDS}
 \title{encrypt a server parameter}
 \usage{
-encryptParamDS(param_name = NULL)
+encryptParamDS()
 }
 \arguments{
 \item{param_name}{character argument. Name of the server parameter to encrypt.}

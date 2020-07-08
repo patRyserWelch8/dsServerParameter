@@ -1,7 +1,12 @@
+
+
 library(dsServerParameter)
 rm(list=ls(),pos=1)
+
 print("Step 0")
-pi_value = 1000
+pi_value_1 = 100000
+pi_value_2 = 200000
+pi_value_3 = 300000
 assignSharingSettingsDS()
 
 print("Step 1")
@@ -24,22 +29,40 @@ rm(sharing,pos=1)
 assign("sharing", master.1, pos=1)
 assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
 master.2 <- get("sharing",pos=1)
-
+print(names(master.2))
 
 print("step 5")
 decryptDataDS()
 master.3 <- get("sharing",pos=1)
-encryptParamDS("pi_value")
+print(names(master.3))
+assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3"))
+master.3.5 <- get("sharing",pos=1)
+print(names(master.3.5))
+f<- getCoordinatesDS()
+rm(sharing,pos=1)
+assign("sharing", receiver.2, pos=1)
+assignCoordinatesDS(f$header, f$payload,f$property.a,f$property.b,f$property.c,f$property.d)
+receiver.2.5 <- get("sharing",pos=1)
+print(names(receiver.2.5))
+rm(sharing,pos=1)
+assign("sharing", master.3.5, pos=1)
+
+encryptParamDS()
+
 master.4 <- get("sharing",pos=1)
-removeEncryptingDataDS()
+print(names(master.4))
+removeEncryptingDataDS(master_mode = TRUE)
 master.5 <- get("sharing",pos=1)
+print(names(master.5))
 
 print("step 6 - Receiver becomes master .... ")
-assign("sharing", receiver.2, pos=1)
-removeEncryptingDataDS()
+assign("sharing", receiver.2.5, pos=1)
+removeEncryptingDataDS(master_mode = FALSE)
 receiver.3 <- get("sharing",pos=1)
+print(names(receiver.3))
 encryptDataDS(TRUE, TRUE)
 receiver.4 <- get("sharing",pos=1)
+print(names(receiver.4))
 
 print("step 7")
 c <- getDataDS(master_mode = TRUE)
@@ -48,30 +71,29 @@ assign("sharing", master.5, pos=1)
 assignDataDS(master_mode = FALSE,c$header,c$payload,c$property.a,c$property.b,c$property.c,c$property.d)
 master.6 <- get("sharing",pos=1)
 
-
 print("step 8 ")
 encryptDataDS(FALSE, TRUE)
 master.7 <- get("sharing",pos=1)
-
-
 
 print("step 9")
 d <- getDataDS(master_mode = FALSE)
 rm(sharing,pos=1)
 assign("sharing", receiver.4, pos=1)
-print(d$payload)
 assignDataDS(master_mode = TRUE,d$header,d$payload,d$property.a,d$property.b,d$property.c,d$property.d)
 receiver.5 <- get("sharing",pos=1)
 
 
 print("step 10")
-print(decryptDataDS())
+decryptDataDS()
 receiver.6 <- get("sharing",pos=1)
 
-print(decryptParamDS("pi_value"))
 
-DANGERgetparam <- function()
-  {
-        return(get("pi_value",pos=1))
-     }
-print(DANGERgetparam())
+print("columns")
+print(ceiling(receiver.6$index_x * receiver.6$no_columns))
+print("rows")
+print(ceiling(receiver.6$index_y * receiver.6$no_rows))
+print("decrypted")
+print(receiver.6$decrypted)
+
+decryptParamDS(c("pi_value_1_a", "pi_value_2_a", "pi_value_3_a"))
+

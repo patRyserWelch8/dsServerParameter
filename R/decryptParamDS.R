@@ -15,7 +15,7 @@
 .is.encoded.param.valid <- function(encoded.param = NULL)
 {
   correct <- FALSE
-  expected.list <- c(settings$encrypted,settings$masking,settings$received, settings$decrypted)
+  expected.list <- c(settings$encrypted,settings$masking,settings$received, settings$decrypted, settings$index_x, settings$index_y)
  
   if (is.list(encoded.param))
   {
@@ -32,28 +32,30 @@
 #'@description This server function decrypts a given parameter in matrix.
 #'@param param_name character argument. Name of the variable used  to store the parameter value on a server.
 #'@export
-decryptParamDS <- function(param_name = NULL)
+decryptParamDS <- function(param_names = NULL)
 {
    outcome <- FALSE
    param.value <- NA
    if (exists("settings", where = 1))
    {
-    
      sharing <- .get.encoded.param()
     
      if(.is.encoded.param.valid(sharing))
      { 
-         print(3)
-         #decrypt the received matrix: shared secret
-         #decrypted.matrix               <- .decrypt.received.matrix(sharing[[settings$masking]], sharing[[settings$received]]) 
-         #column                         <- sharing[[settings$index_x]]
-         #row                            <- sharing[[settings$index_y]]
-         #address this once columun and row are communicated ......
-         column = 3
-         row = 3
-         param.value <-  sharing$decrypted[column,row]
-         print(param.value)
-         assign(param_name,param.value, pos = 1)
+         no.params <- length(param_names)
+         rows      <- ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]])
+         columns   <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]])
+         
+         print(rows)
+         print(columns)
+         #those are swapped due to transpose in encoding process
+         for (index in 1:no.params)
+         {
+           param_name <- param_names[index]
+           param.value <-  sharing$decrypted[columns[index],rows[index]]
+           print(param.value)
+           assign(param_name,param.value, pos = 1)
+         }
      }
    }
    outcome <- !is.na(param.value)

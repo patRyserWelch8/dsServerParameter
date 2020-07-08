@@ -36,14 +36,26 @@
 #'@description This server function can be used to remove the data used to encrypt a parameter between
 #'a two servers
 #'@export
-removeEncryptingDataDS <- function()
+removeEncryptingDataDS <- function(master_mode = TRUE)
 {
   outcome <- FALSE
   if(exists("settings", where=1))
   {
     sharing                        <- .get.sharing.data()
-    expected.list                  <- c(settings$data,settings$no_columns, settings$no_rows)
+    if(master_mode)
+    {
+        expected.list                  <- c(settings$data,settings$no_columns, settings$no_rows, settings$index_x, 
+                                            settings$index_y,settings$param_names)
+    }
+    else
+    {
+      expected.list                  <- c(settings$concealing,settings$no_columns, settings$no_rows, settings$index_x, 
+                                          settings$index_y)
+    }
+    print("========")
+    print(names(sharing))
     sharing                        <- sharing[names(sharing) %in% expected.list == TRUE]
+    print(names(sharing))
   
     assign("sharing", sharing,pos=1)
     outcome <- .is.cleaned.structure.valid(expected.list)

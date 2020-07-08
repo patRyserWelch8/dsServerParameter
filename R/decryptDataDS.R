@@ -41,7 +41,7 @@
     no.col           <- ncol(masking.inverse)
     no.row           <- nrow(received.matrix)
     result           <- matrix(rep(0,no.row * no.col),no.row, no.col)
-    
+   
     if (no.row == no.col)
     {
       result <- masking.inverse %*% received.matrix

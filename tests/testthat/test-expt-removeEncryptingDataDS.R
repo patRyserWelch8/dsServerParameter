@@ -28,7 +28,11 @@ test_that("no_sharing",
 
 rm(list=ls(),pos=1)
 #"Step 0"
-pi_value = 1000
+assign("pi_value_1", 1000, pos = 1)
+assign("pi_value_2", 2000, pos = 1)
+assign("pi_value_3", 3000, pos = 1)
+
+
 assignSharingSettingsDS()
 
 #("Step 1")
@@ -52,16 +56,13 @@ assign("sharing", master.1, pos=1)
 assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
 master.2 <- get("sharing",pos=1)
 
-#("step 5")
+print("step 5")
 decryptDataDS()
 master.3 <- get("sharing",pos=1)
-encryptParamDS("pi_value")
+assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3"))
+master.3.5 <- get("sharing",pos=1)
+encryptParamDS()
 master.4 <- get("sharing",pos=1)
-removeEncryptingDataDS()
-master.5 <- get("sharing",pos=1)
-
-#("step 6 - Receiver becomes master .... ")
-assign("sharing", receiver.2, pos=1)
 
 
 context("removeEncryptingDataDS::expt::")
@@ -69,8 +70,9 @@ test_that("computations",
 {
   expect_equal(removeEncryptingDataDS(),TRUE)
   sharing <- get("sharing", pos = 1)
-  expect_equal(length(sharing),3)
-  expect_equal(all(names(sharing) %in% c(settings$data,settings$no_columns, settings$no_rows)), TRUE)
+  expect_equal(length(sharing),6)
+  expect_equal(all(names(sharing) %in% c(settings$data,settings$no_columns, settings$no_rows, 
+                                         settings$index_x, settings$index_y, settings$param_names)), TRUE)
 })
 
 

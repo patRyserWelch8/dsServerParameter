@@ -4,7 +4,7 @@
 \alias{removeEncryptingDataDS}
 \title{Remove data used to encrypt some parameters}
 \usage{
-removeEncryptingDataDS()
+removeEncryptingDataDS(master_mode = TRUE)
 }
 \description{
 This server function can be used to remove the data used to encrypt a parameter between
