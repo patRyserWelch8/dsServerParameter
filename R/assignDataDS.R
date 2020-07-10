@@ -1,6 +1,6 @@
-#index is not needed now 
+
 .save <- function(received.matrix = NULL, master_mode)
-{
+{ 
     if (is.matrix(received.matrix))
     {
       sharing <- list()
@@ -8,24 +8,12 @@
       {
         sharing = get("sharing", pos = 1)
       }
-    
       sharing[[settings$received]] <- received.matrix
       assign(settings$name.struct, sharing, pos = 1)
     }
 }
 
-#not required 
-.compute.index <- function(encrypted.index,timestamp)
-{
-  index <- ceiling(runif(1, min= settings$max_columns+3, max = settings$max_columns+103))
-  if (is.numeric(encrypted.index))
-  {
-     index <- floor(encrypted.index * timestamp)
-  }
-  return(index)
-}
-
-.create.matrix <- function(data = "",  no.columns = 1)
+.create.matrix <- function(data = NULL,  no.columns = 1)
 {
   numbers         <- rep(x = 0, times=4)
   received.matrix <- matrix(as.numeric(numbers),2,2)
@@ -33,6 +21,7 @@
   if (is.character(data) & is.numeric(no.columns))
   {
     can.be.converted <- grepl('^-?[0-9.;e]+$', data)
+
    
     if(can.be.converted)
     {
@@ -40,14 +29,11 @@
       if (length(data.list[[1]]) > 1)
       {
           data.vector      <- unlist(data.list)
+          data.vector <- gsub(" ", "",data.vector)
           no.rows          <- length(data.vector)/no.columns
-          print(length(data.vector))
-          print(no.rows)
-          print(no.columns)
-    
           if (no.rows > 1 & no.columns > 1)
           {
-              data.numeric    <- as.numeric(data.vector)
+              data.numeric    <- as.numeric(x =data.vector)
               received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)
           }
       }
@@ -104,7 +90,6 @@ assignDataDS <- function(master_mode = TRUE, header = "", payload = "", property
            & property.b > 0 & property.c > 0 & property.d > 0)
           {
             received.matrix  <- .create.matrix(payload,property.b)
-            #index            <- .compute.index(property.d, property.c)
             .save(received.matrix, master_mode)
             outcome          <- .is.assigned.values.correct(master_mode)
           }

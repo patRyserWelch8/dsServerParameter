@@ -14,14 +14,15 @@ test_that("does not exist",
 })
 
 assignSharingSettingsDS()
-settings <- get("settings",pos=1)
+settings <- get("settings",pos = 1)
+
 
 context("decryptData::expt::no_encryption")
 test_that("does exists",
 {
    if (exists(settings$name.struct,where = 1))
    {
-      rm(settings$name.struct, pos=1)
+      rm("sharing", pos = 1)
    }
    expect_equal(exists(settings$name.struct, where = 1), FALSE)
    expect_equal(.get_received_data(), list())
@@ -33,27 +34,28 @@ test_that("does exists",
 
 
 #complete set steps to reach the point of decryption
-#step 1
-
 encryptDataDS(TRUE, FALSE)
-master.1 <- get("sharing",pos=1)
+assign("master.1" ,get("sharing",pos=1), pos = 1)
 
-#step 2
-a <- getDataDS(master_mode =TRUE)
+
+#("Step 2")
+assign("a", getDataDS(master_mode =TRUE), pos = 1)
 rm(sharing,pos=1)
 assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
-receiver.1 <- get("sharing",pos=1)
+assign("receiver.1", get("sharing",pos=1), pos = 1)
 
-#step 3
+
+#("Step 3")
 encryptDataDS(FALSE, FALSE)
-receiver.2 <- get("sharing",pos=1)
+assign("receiver.2", get("sharing",pos=1), pos = 1)
 
-#step 4
-b <- getDataDS(master_mode =  FALSE)
+#("step 4")
+assign("b",getDataDS(master_mode =  FALSE), pos = 1)
 rm(sharing,pos=1)
-assign("sharing", master.1, pos=1)
+assign("sharing", get("master.1", pos = 1), pos=1)
 assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
-master.2 <- get("sharing",pos=1)
+assign("master.2", get("sharing",pos=1), pos = 1)
+
 
 
 context("decryptData::expt::data_has_been_encrypted")

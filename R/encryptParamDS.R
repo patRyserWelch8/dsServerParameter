@@ -119,7 +119,7 @@
 #'@description This server function encrypts a given parameter using a dot product and two shared secrets.
 #'@param param_name character argument. Name of the server parameter to encrypt.
 #'@export
-encryptParamDS <- function() #remove param name ....
+encryptParamDS <- function() 
 {
    outcome <- FALSE
    if (exists("settings", where = 1) )

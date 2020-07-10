@@ -30,7 +30,7 @@
 #'@name decryptParamDS
 #'@title  decrypt a server parameter 
 #'@description This server function decrypts a given parameter in matrix.
-#'@param param_name character argument. Name of the variable used  to store the parameter value on a server.
+#'@param param_names character argument. Name of the variable used  to store the parameter value on a server.
 #'@export
 decryptParamDS <- function(param_names = NULL)
 {
@@ -45,15 +45,12 @@ decryptParamDS <- function(param_names = NULL)
          no.params <- length(param_names)
          rows      <- ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]])
          columns   <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]])
-         
-         print(rows)
-         print(columns)
+        
          #those are swapped due to transpose in encoding process
          for (index in 1:no.params)
          {
            param_name <- param_names[index]
            param.value <-  sharing$decrypted[columns[index],rows[index]]
-           print(param.value)
            assign(param_name,param.value, pos = 1)
          }
      }

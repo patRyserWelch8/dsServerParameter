@@ -6,13 +6,17 @@
   if (exists("settings",where = 1)  &
       !is.null(param_names))
   {
+   
     if (exists(settings$name.struct,where = 1))
     {
+     
       if(length(param_names) >= 1 & is.character(param_names) )
       {
-         params.exist <- all(unlist(lapply(param_names,exists)))
+       
+        list.files <- ls(pos = 1)
+        params.exist  <- all(param_names %in% list.files)
       }
-      
+
       sharing           <- get(settings$name.struct, pos = 1)
       encrypted.exists  <- settings$encrypted %in% names(sharing)
     }
@@ -31,10 +35,6 @@
      values    <- ceiling(outcome * coordinate)
      no.levels <- length(levels(factor(values)))
      stop <- (no.levels == no.elements)
-     print(no.levels == no.elements)
-     print(no.levels)
-     print(outcome)
-     print(values)
   }
   
   return(outcome)
@@ -52,10 +52,7 @@
     sharing[[settings$index_x]]     <- .generate.ratios(no.elements = length(param_names), coordinate = sharing[[settings$no_columns]])
     sharing[[settings$index_y]]     <- .generate.ratios(no.elements = length(param_names), coordinate = sharing[[settings$no_rows]])
     sharing[[settings$param_names]] <- param_names
-    print("columns")
-    print(ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]]))
-    print("rows")
-    print(ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]]))
+
   
     return(sharing)
   }
@@ -90,8 +87,10 @@
 assignParamSettingsDS <- function(param_names = c())
 {
   outcome <-FALSE
+ 
   if (.has.correct.data(param_names))
   {
+  
     sharing <- get(settings$name, pos = 1)
     sharing <-.init.coordinates.ratios(param_names, sharing)
     expected.fields <- c(settings$index_x, settings$index_y, settings$param_names)

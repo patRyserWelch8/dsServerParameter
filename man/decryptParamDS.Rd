@@ -7,7 +7,7 @@
 decryptParamDS(param_names = NULL)
 }
 \arguments{
-\item{param_name}{character argument. Name of the variable used  to store the parameter value on a server.}
+\item{param_names}{character argument. Name of the variable used  to store the parameter value on a server.}
 }
 \description{
 This server function decrypts a given parameter in matrix.
