@@ -1,6 +1,8 @@
-#index is not needed now 
+
 .save.coordinates <- function(received.data = NULL, no.params)
 {
+  if(exists("settings", where =1))
+  {
     if (is.vector(received.data))
     {
       sharing <- list()
@@ -8,28 +10,22 @@
       {
         sharing = get("sharing", pos = 1)
       }
-    
-      sharing[[settings$index_x]] <- received.data[1:no.params]
-      sharing[[settings$index_y]] <- received.data[(no.params+1):length(received.data)]
-      assign(settings$name.struct, sharing, pos = 1)
+      
+      no.values <- length(received.data)
+      
+      if (no.values == (2 * no.params))
+      {
+        sharing[[settings$index_x]] <- received.data[1:no.params]
+        sharing[[settings$index_y]] <- received.data[(no.params+1):no.values]
+        assign(settings$name.struct, sharing, pos = 1)
+      }
     }
-}
-
-#not required 
-.compute.index <- function(encrypted.index,timestamp)
-{
-  index <- ceiling(runif(1, min= settings$max_columns+3, max = settings$max_columns+103))
-  if (is.numeric(encrypted.index))
-  {
-     index <- floor(encrypted.index * timestamp)
   }
-  return(index)
 }
 
-.create.data <- function(data = "",  no.params = 1)
+.create.data <- function(data = NULL,  no.params = 1)
 {
-  numbers         <- rep(x = 0, times=4)
-
+  received.data <- rep(0,4)
   if (is.character(data) & is.numeric(no.params))
   {
     can.be.converted <- grepl('^-?[0-9.;e]+$', data)
@@ -52,18 +48,21 @@
 .is.assigned.coordinates.correct <- function()
 {
   outcome <- FALSE
-  if (exists(settings$name.struct,where=1))
+  if(exists("settings", where =1))
   {
-    sharing       <- get(settings$name.struct,pos=1)
-    structure     <- c(settings$index_x,settings$index_y)
-   
-    total.correct <- sum(structure %in% names(sharing))
-    value.exists  <- length(structure) ==  total.correct
-    
-    if (value.exists)
-    {
-      outcome <- is.vector(sharing[[settings$index_x]]) & is.vector(sharing[[settings$index_y]])
-    }
+      if (exists(settings$name.struct,where=1))
+      {
+        sharing       <- get(settings$name.struct,pos=1)
+        structure     <- c(settings$index_x,settings$index_y)
+       
+        total.correct <- sum(structure %in% names(sharing))
+        value.exists  <- length(structure) ==  total.correct
+        
+        if (value.exists)
+        {
+          outcome <- is.vector(sharing[[settings$index_x]]) & is.vector(sharing[[settings$index_y]])
+        }
+      }
   }
   return(outcome)
 }
@@ -74,9 +73,9 @@
 #'@param header character argument. Header information received from another server.
 #'@param payload  character argument. Payload information received from another server. 
 #'@param property.a numeric argument. Property.a received from another server. 
-#'@param property.b numeric argument. Property.a received from another server. 
-#'@param property.c numeric argument. Property.a received from another server. 
-#'@param property.d numeric argument. Property.a received from another server. 
+#'@param property.b numeric argument. Property.b received from another server. 
+#'@param property.c numeric argument. Property.c received from another server. 
+#'@param property.d numeric argument. Property.d received from another server. 
 #'@details Some data are being assign into a specific structure used to share parameter in some privacy-protection settings. The process used by 
 #'\link[dsParamServer]{getDataDS} is reversed. 
 #'@seealso \link[dsParamServer]{getDataDS}
@@ -87,6 +86,7 @@ assignCoordinatesDS <- function(header = "", payload = "", property.a = 0,
                               property.b = 0, property.c = 0.0, property.d = 0.0)
 {
   outcome <- FALSE
+  
   if ( is.character(header) & is.character(payload)
      & is.numeric(property.a) &  is.numeric(property.b) 
      & is.numeric(property.c) & is.numeric(property.d))

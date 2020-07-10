@@ -20,11 +20,11 @@ assignCoordinatesDS(
 
 \item{property.a}{numeric argument. Property.a received from another server.}
 
-\item{property.b}{numeric argument. Property.a received from another server.}
+\item{property.b}{numeric argument. Property.b received from another server.}
 
-\item{property.c}{numeric argument. Property.a received from another server.}
+\item{property.c}{numeric argument. Property.c received from another server.}
 
-\item{property.d}{numeric argument. Property.a received from another server.}
+\item{property.d}{numeric argument. Property.d received from another server.}
 }
 \description{
 This server function assigns some values into a specific structure. INCORRECT

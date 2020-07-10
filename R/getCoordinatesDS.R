@@ -66,19 +66,20 @@
 #'@export
 getCoordinatesDS <- function()
 { 
+ 
    return.value <- .encode.data.no.settings()
-   if(exists("settings",where=1))
+   if(exists("settings",where = 1))
    {
+     
       return.value <- .encode.data.no.sharing()
       if(exists(settings$name.struct,where=1))
       {
+        
         sharing      <- get(settings$name.struct,pos = 1)
         value.exists <- all(c(settings$index_x, settings$index_y) %in% names(sharing))
-  
+        print(value.exists)
         if(value.exists)
         {
-          print(sharing[[settings$index_x]])
-          print(sharing[[settings$index_y]])
           data           <- c(sharing[[settings$index_x]],sharing[[settings$index_y]])
           no.params      <- length(sharing[[settings$index_x]])
           random.data    <- runif(100 - (2 * no.params), min = 0, max = 2)

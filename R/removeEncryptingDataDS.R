@@ -52,11 +52,7 @@ removeEncryptingDataDS <- function(master_mode = TRUE)
       expected.list                  <- c(settings$concealing,settings$no_columns, settings$no_rows, settings$index_x, 
                                           settings$index_y)
     }
-    print("========")
-    print(names(sharing))
-    sharing                        <- sharing[names(sharing) %in% expected.list == TRUE]
-    print(names(sharing))
-  
+   
     assign("sharing", sharing,pos=1)
     outcome <- .is.cleaned.structure.valid(expected.list)
   }

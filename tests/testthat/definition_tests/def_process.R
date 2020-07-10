@@ -26,22 +26,19 @@ create.init.matrices.master <- function ()
     success <- encryptDataDS(master_mode = TRUE, preserve_mode = TRUE)
     sharing.master <- get("sharing",pos =1)
     assign("sharing.master", sharing.master, pos=1)
-    print("step 1 - sharing.master")
-    print(dim(sharing.master$encoded.matrix))
 }
 
 transfer.matrices.from.master.to.receiver <- function ()
 {
     #step 2 - transfer 
     data    <- getEncodedDataDS()
-    ##print(data$header)
+  
     rm("sharing", pos=1)
-    #print(ls(pos=1))
+   
     result  <- sendEncodedDataDS(data$header, data$payload, data$property.a, data$property.b, data$property.c, data$property.d)
     sharing.receiver <- get("sharing",pos =1)
     assign("sharing.receiver", sharing.receiver, pos=1)
-    #print("step 2- sharing.receiver")
-    #print(dim(sharing.receiver$received.matrix))
+   
     
 }
 
@@ -51,20 +48,18 @@ create.init.matrices.receiver <- function ()
     success <- initiateExchangeDS(master = FALSE)
     sharing.receiver <- get("sharing",pos =1)
     assign("sharing.receiver", sharing.receiver, pos=1)
-    #print("step 3- sharing.receiver created ")
-    #print(dim(sharing.receiver$concealing.matrix))
-    #print(dim(sharing.receiver$encoded.matrix))
+   
 }
 
 transfer.matrices.from.receiver.to.master <- function()
 {
     #step 4 - transfer 
     data    <- getEncodedDataDS()
-    #print(data$header)
+   
     rm("sharing", pos=1)
     assign("sharing", sharing.master, pos=1)
     result  <- sendEncodedDataDS(data$header, data$payload, data$property.a, data$property.b, data$property.c, data$property.d)
     sharing.master <- get("sharing",pos =1)
     assign("sharing.master", sharing.master, pos=1)
-    #print("step 4- sharing.master")
+   
 }

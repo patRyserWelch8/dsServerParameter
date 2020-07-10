@@ -44,6 +44,7 @@
   .save()
   list.variables <- ls(pos=1)
   expect_equal("sharing" %in% list.variables, FALSE)
+  
  
 }
 .find.expected.results <- function(data, no.columns)

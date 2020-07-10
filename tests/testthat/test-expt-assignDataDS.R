@@ -2,7 +2,7 @@ source("definition_tests/def_getEncodedDataDS.R")
 source('definition_tests/def_sendEncodedDataDS.R')
 
 
-context("assignDataDS::expt::parameters")
+context("assignDataDS::expt:: incorrect parameters")
 test_that("parameters",
 {
  

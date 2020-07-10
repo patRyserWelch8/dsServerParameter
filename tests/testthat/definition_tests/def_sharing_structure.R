@@ -11,7 +11,7 @@ expected.list <- c("concealing","encrypted","masking")
   
   expect_error(get("sharing", pos=1))
   success <- encryptDataDS(master_mode = TRUE, preserve_mode = FALSE)
-  print(success)
+  
 }
 
 if(FALSE)

@@ -82,7 +82,6 @@ test_that("no argument",
   expect_equal(all(createdMatrix <= 1, TRUE),TRUE)
 })
 
-
 test_that("no row",
 {
   createdMatrix <- .createMatrixRUnif(no.rows = 10)
@@ -139,6 +138,63 @@ test_that("no row  and columns, min value, max value correct",
   expect_equal(ncol(createdMatrix) == 17, TRUE)
   expect_equal(all(createdMatrix >= -12 & createdMatrix <= 298, TRUE),TRUE)
 })
+
+
+#("Step 0")
+assign("pi_value_1", 100000, pos = 1)
+assign("pi_value_2", 200000, pos = 1)
+assign("pi_value_3", 300000, pos = 1)
+
+assignSharingSettingsDS()
+
+
+#("Step 1")
+encryptDataDS(TRUE, FALSE)
+assign("master.1" ,get("sharing",pos=1), pos = 1)
+
+#("Step 2")
+assign("a", getDataDS(master_mode =TRUE), pos = 1)
+rm(sharing,pos=1)
+assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
+assign("receiver.1", get("sharing",pos=1), pos = 1)
+
+#("Step 3")
+encryptDataDS(FALSE, FALSE)
+assign("receiver.2", get("sharing",pos=1), pos = 1)
+
+#("step 4")
+assign("b",getDataDS(master_mode =  FALSE), pos = 1)
+rm(sharing,pos=1)
+assign("sharing", get("master.1", pos = 1), pos=1)
+assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
+assign("master.2", get("sharing",pos=1), pos = 1)
+
+
+#("step 5")
+decryptDataDS()
+assign("master.3", get("sharing",pos=1), pos = 1)
+outcome <- assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3"))
+assign("master.3.5", get("sharing",pos = 1), pos = 1)
+assign("f", getCoordinatesDS(), pos = 1)
+rm(sharing,pos=1)
+assign("sharing", get("receiver.2", pos = 1), pos=1)
+assignCoordinatesDS(f$header, f$payload,f$property.a,f$property.b,f$property.c,f$property.d)
+assign("receiver.2.5", get("sharing", pos = 1), pos = 1)
+rm(sharing,pos=1)
+assign("sharing", get("master.3.5", pos = 1), pos=1)
+
+encryptParamDS()
+
+assign("master.4", get("sharing",pos = 1), pos = 1)
+removeEncryptingDataDS(master_mode = TRUE)
+assign("master.5", get("sharing",pos = 1), pos = 1)
+
+#("step 6 - Receiver becomes master .... ")
+assign("sharing", get("receiver.2.5", pos = 1), pos=1)
+removeEncryptingDataDS(master_mode = FALSE)
+assign("receiver.3", get("sharing",pos = 1), pos = 1)
+
+
 
 context("encryptDataDS::expt::.is.encrypted.valid")
 test_that(".is.encrypted.valid",
@@ -214,85 +270,77 @@ test_that("received matrix does not exist",
 })
 
 #start again from clean environment to test the outcome
-rm(list=ls(),pos=1)
+rm(list=ls(pos = 1),pos=1)
 #("Step 0")
-pi_value = 1000
+#("Step 0")
+assign("pi_value_1", 100000, pos = 1)
+assign("pi_value_2", 200000, pos = 1)
+assign("pi_value_3", 300000, pos = 1)
+
 assignSharingSettingsDS()
 
+
 #("Step 1")
-
-outcome <- encryptDataDS(master_mode = TRUE, preserve_mode = FALSE)
-master.1 <- get("sharing",pos=1)
-master.encrypted   <- t(master.1$masking) %*% t(master.1$concealing)
-
-context("encryptDataDS::expt::correct outcome")
-test_that("step 1",
-{
-  expect_equal(outcome,TRUE)
-  expect_equal(exists("sharing",where=1),TRUE)
-  sharing     <- get("sharing", pos = 1)
-  expect_equal(all.equal(master.encrypted, sharing$encrypted),TRUE)
-})
-
+encryptDataDS(TRUE, FALSE)
+assign("master.1" ,get("sharing",pos=1), pos = 1)
 
 #("Step 2")
-a <- getDataDS(master_mode =TRUE)
+assign ("a", getDataDS(master_mode =TRUE), pos = 1)
 rm(sharing,pos=1)
 assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
-receiver.1 <- get("sharing",pos=1)
+assign("receiver.1", get("sharing",pos=1), pos = 1)
 
 #("Step 3")
-outcome <- encryptDataDS(FALSE, FALSE)
-receiver.2 <- get("sharing",pos=1)
-
-print(dim(master.encrypted))
-print(dim(receiver.1$received))
-
-test_that("step 3",
-{
-  expect_equal(outcome, TRUE)
-  print(names(receiver.2))
-  expect_equal(all.equal(master.encrypted,receiver.1$received),TRUE)
-  expect_equal(all.equal(receiver.1$received,receiver.2$masking),TRUE)
-  receiver.encrypted <- master.encrypted %*% receiver.2$concealing
-  expect_equal(all.equal(receiver.encrypted, receiver.2$encrypted),TRUE)
-})
+encryptDataDS(FALSE, FALSE)
+assign("receiver.2", get("sharing",pos=1), pos = 1)
 
 #("step 4")
-b <- getDataDS(master_mode =  FALSE)
+assign("b", getDataDS(master_mode =  FALSE), pos = 1)
 rm(sharing,pos=1)
-assign("sharing", master.1, pos=1)
+assign("sharing", get("master.1", pos = 1), pos=1)
 assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
-master.2 <- get("sharing",pos=1)
+assign("master.2", get("sharing",pos=1), pos = 1)
+
 
 #("step 5")
 decryptDataDS()
-master.3 <- get("sharing",pos=1)
-encryptParamDS("pi_value")
-master.4 <- get("sharing",pos=1)
-removeEncryptingDataDS()
-master.5 <- get("sharing",pos=1)
+assign("master.3", get("sharing",pos=1), pos = 1)
+outcome <- assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3"))
+assign("master.3.5", get("sharing",pos = 1), pos = 1)
+assign("f", getCoordinatesDS(), pos = 1)
+rm(sharing,pos=1)
+assign("sharing", get("receiver.2", pos = 1), pos=1)
+assignCoordinatesDS(f$header, f$payload,f$property.a,f$property.b,f$property.c,f$property.d)
+assign("receiver.2.5", get("sharing", pos = 1), pos = 1)
+rm(sharing,pos=1)
+assign("sharing", get("master.3.5", pos = 1), pos=1)
 
+encryptParamDS()
+
+assign("master.4", get("sharing",pos = 1), pos = 1)
+removeEncryptingDataDS(master_mode = TRUE)
+assign("master.5", get("sharing",pos = 1), pos = 1)
 
 #("step 6 - Receiver becomes master .... ")
-assign("sharing", receiver.2, pos=1)
-removeEncryptingDataDS()
-receiver.3 <- get("sharing",pos=1)
-outcome <-encryptDataDS(TRUE, TRUE)
-receiver.4 <- get("sharing",pos=1)
+assign("sharing", get("receiver.2.5", pos = 1), pos=1)
+removeEncryptingDataDS(master_mode = FALSE)
+assign("receiver.3", get("sharing",pos = 1), pos = 1)
+assign("outcome", encryptDataDS(TRUE, TRUE), pos = 1)
+assign("receiver.4", get("sharing",pos = 1), pos = 1)
 
 test_that("step 6",
 {
-   expect_equal(outcome, TRUE)
+   expect_equal(get("outcome", pos = 1), TRUE)
    
 })
 
 #("step 7")
-c <- getDataDS(master_mode = TRUE)
+assign("c", getDataDS(master_mode = TRUE), pos = 1)
 rm(sharing,pos=1)
-assign("sharing", master.5, pos=1)
+assign("sharing", master.5, pos = 1)
+c <- get("c" ,pos = 1)
 assignDataDS(master_mode = FALSE,c$header,c$payload,c$property.a,c$property.b,c$property.c,c$property.d)
-master.6 <- get("sharing",pos=1)
+assign("master.6", get("sharing",pos = 1), pos = 1)
 
 #("step 8 ")
 outcome <- encryptDataDS(FALSE, TRUE)
