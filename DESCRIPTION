@@ -15,6 +15,7 @@ LazyData: true
 AggregateMethods:
   assignCoordinatesDS,
   assignDataDS,
+  assignParamSettingsDS,
   getDataDS,
   getCoordinatesDS,
   assignSharingSettingsDS,
