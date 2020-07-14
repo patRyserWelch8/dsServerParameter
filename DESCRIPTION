@@ -13,8 +13,10 @@ Encoding: UTF-8
 Depends: R (>= 3.6.3)
 LazyData: true
 AggregateMethods:
+  assignCoordinatesDS,
   assignDataDS,
   getDataDS,
+  getCoordinatesDS,
   assignSharingSettingsDS,
   decryptDataDS,
   encryptDataDS,
