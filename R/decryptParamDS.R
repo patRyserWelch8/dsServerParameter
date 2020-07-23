@@ -15,7 +15,8 @@
 .is.encoded.param.valid <- function(encoded.param = NULL)
 {
   correct <- FALSE
-  expected.list <- c(settings$encrypted,settings$masking,settings$received, settings$decrypted, settings$index_x, settings$index_y)
+  expected.list <- c(settings$encrypted,settings$masking,settings$received, settings$decrypted, 
+                     settings$index_x, settings$index_y)
  
   if (is.list(encoded.param))
   {
@@ -26,6 +27,15 @@
   }
   return(correct)
 }
+
+.create.vector.params <- function (param_names = "")
+{
+  outcome <- c()
+  names.list <- strsplit(param_names,";")
+  outcome <- unlist(names.list)
+  return(outcome)
+}
+
 
 #'@name decryptParamDS
 #'@title  decrypt a server parameter 
@@ -41,15 +51,16 @@ decryptParamDS <- function(param_names = NULL)
      sharing <- .get.encoded.param()
     
      if(.is.encoded.param.valid(sharing))
-     { 
-         no.params <- length(param_names)
+     {   
+         params    <- .create.vector.params(param_names)
+         no.params <- length(params)
          rows      <- ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]])
          columns   <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]])
         
          #those are swapped due to transpose in encoding process
          for (index in 1:no.params)
          {
-           param_name <- param_names[index]
+           param_name  <- params[index]
            param.value <-  sharing$decrypted[columns[index],rows[index]]
            assign(param_name,param.value, pos = 1)
          }
