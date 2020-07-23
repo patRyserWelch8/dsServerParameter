@@ -21,8 +21,6 @@
   if (is.character(data) & is.numeric(no.columns))
   {
     can.be.converted <- grepl('^-?[0-9.;e]+$', data)
-
-   
     if(can.be.converted)
     {
       data.list       <- strsplit(data,";")

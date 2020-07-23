@@ -9,10 +9,9 @@
    
     if (exists(settings$name.struct,where = 1))
     {
-     
-      if(length(param_names) >= 1 & is.character(param_names) )
+      if(length(param_names) >=1  & is.character(param_names) )
       {
-       
+        
         list.files <- ls(pos = 1)
         params.exist  <- all(param_names %in% list.files)
       }
@@ -77,6 +76,14 @@
   return(correct)
 }
 
+.create.vector <- function (param_names = "")
+{
+  outcome <- c()
+  names.list <- strsplit(param_names,";")
+  outcome <- unlist(names.list)
+  return(outcome)
+}
+
 #'@name   assignParamSettingsDS
 #'@title  assigns some settings used to encrypt and decrypt the parameters
 #'@description This server function sets some settings specific to the parameters encryption and decryption mechanisms. 
@@ -84,15 +91,16 @@
 #'on the server and cannot be analysed directly.
 #'@param param_names  character vector. Name of the server parameter to encrypt.
 #'@export
-assignParamSettingsDS <- function(param_names = c())
+assignParamSettingsDS <- function(param_names = "")
 {
   outcome <-FALSE
- 
-  if (.has.correct.data(param_names))
+  params <- .create.vector(param_names)
+  print(params)
+  if (.has.correct.data(params))
   {
   
     sharing <- get(settings$name, pos = 1)
-    sharing <-.init.coordinates.ratios(param_names, sharing)
+    sharing <-.init.coordinates.ratios(params, sharing)
     expected.fields <- c(settings$index_x, settings$index_y, settings$param_names)
     outcome <- .is.outcome.valid(sharing,expected.fields)
     

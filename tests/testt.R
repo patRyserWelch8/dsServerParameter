@@ -8,7 +8,7 @@ print("Step 0")
 pi_value_1 = 100000
 pi_value_2 = 200000
 
-pi_value_3 = pi
+pi_value_3 = 300000
 assignSharingSettingsDS()
 
 print("Step 1")
@@ -37,7 +37,7 @@ print("step 5")
 decryptDataDS()
 master.3 <- get("sharing",pos=1)
 print(names(master.3))
-assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3"))
+assignParamSettingsDS("pi_value_1;pi_value_2;pi_value_3")
 master.3.5 <- get("sharing",pos=1)
 print(names(master.3.5))
 
@@ -91,7 +91,9 @@ receiver.5 <- get("sharing",pos=1)
 print("step 10")
 decryptDataDS()
 receiver.6 <- get("sharing",pos=1)
-decryptParamDS(c("pi_value_1_a", "pi_value_2_a", "pi_value_3_a"))
+decryptParamDS("pi_value_1_a;pi_value_2_a;pi_value_3_a")
+print(pi_value_1_a)
+
 
 print("columns")
 print(ceiling(receiver.6$index_x * receiver.6$no_columns))

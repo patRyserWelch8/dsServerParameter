@@ -4,7 +4,7 @@
 \alias{assignParamSettingsDS}
 \title{assigns some settings used to encrypt and decrypt the parameters}
 \usage{
-assignParamSettingsDS(param_names = c())
+assignParamSettingsDS(param_names = "")
 }
 \arguments{
 \item{param_names}{character vector. Name of the server parameter to encrypt.}

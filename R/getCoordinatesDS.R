@@ -77,7 +77,7 @@ getCoordinatesDS <- function()
         
         sharing      <- get(settings$name.struct,pos = 1)
         value.exists <- all(c(settings$index_x, settings$index_y) %in% names(sharing))
-        print(value.exists)
+        
         if(value.exists)
         {
           data           <- c(sharing[[settings$index_x]],sharing[[settings$index_y]])
