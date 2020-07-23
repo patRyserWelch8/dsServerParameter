@@ -1,7 +1,13 @@
 #only used for testing ....
-setLengthDS <- function()
+setPiDS <- function(newobj = "newobj")
 {
-   param.name <- "pi_value"
-   assign(param.name, pi, pos=1)
-   return(param.name)
+   outcome <- list(FALSE, NULL)
+   assign(newobj, pi, pos = 1)
+   if(exists(newobj,where = 1))
+   {
+      outcome[[1]] <-  
+      new.var     <- get(newobj, pos = 1)
+      outcome[2]  <- class(new.var)
+   }
+   return(outcome)
 }

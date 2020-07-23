@@ -8,7 +8,7 @@ print("Step 0")
 pi_value_1 = 100000
 pi_value_2 = 200000
 
-pi_value_3 = 300000
+pi_value_3 = pi
 assignSharingSettingsDS()
 
 print("Step 1")
