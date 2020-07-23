@@ -21,6 +21,10 @@ rm(sharing,pos=1)
 assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
 receiver.1 <- get("sharing",pos=1)
 
+
+
+
+
 print("Step 3")
 encryptDataDS(FALSE, FALSE)
 receiver.2 <- get("sharing",pos=1)
@@ -92,7 +96,12 @@ print("step 10")
 decryptDataDS()
 receiver.6 <- get("sharing",pos=1)
 decryptParamDS("pi_value_1_a;pi_value_2_a;pi_value_3_a")
+
 print(pi_value_1_a)
+print(pi_value_1_b)
+print(pi_value_1_c)
+
+
 
 
 print("columns")
