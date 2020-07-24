@@ -4,10 +4,10 @@
   params.exist     <- FALSE
   encrypted.exists <- FALSE
   if (exists("settings",where = 1)  &
-      !is.null(param_names))
+      !is.null(param_names) )
   {
    
-    if (exists(settings$name.struct,where = 1))
+    if (exists(settings$name.struct,where = 1) & length(param_names) > 0)
     {
       if(length(param_names) >=1  & is.character(param_names) )
       {
@@ -79,8 +79,11 @@
 .create.vector <- function (param_names = "")
 {
   outcome <- c()
-  names.list <- strsplit(param_names,";")
-  outcome <- unlist(names.list)
+  if(is.character(param_names))
+  {
+    names.list <- strsplit(param_names,";")
+    outcome <- unlist(names.list)
+  }
   return(outcome)
 }
 
@@ -95,10 +98,8 @@ assignParamSettingsDS <- function(param_names = "")
 {
   outcome <-FALSE
   params <- .create.vector(param_names)
-  print(params)
   if (.has.correct.data(params))
   {
-  
     sharing <- get(settings$name, pos = 1)
     sharing <-.init.coordinates.ratios(params, sharing)
     expected.fields <- c(settings$index_x, settings$index_y, settings$param_names)

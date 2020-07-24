@@ -7,6 +7,7 @@ test_that("everything is incorrect",
   }
   expect_equal(exists("settings", where = 1), FALSE)
   expect_equal(assignParamSettingsDS(),FALSE)
+  expect_equal(assignParamSettingsDS(123),FALSE)
   expect_equal(.has.correct.data(param_names = c("first_var")), FALSE)
   expect_equal(.has.correct.data(param_names = c("first_var", "second_var")),FALSE)
   expect_equal(.has.correct.data(param_names = c("first_var", "second_var","third_var")),FALSE)
@@ -81,9 +82,9 @@ context("assignParamSettingsDS::smk::correct_outcome")
 test_that("everything is correct",
 {
   expect_equal(exists("settings", where = 1), TRUE)
-  expect_equal(assignParamSettingsDS(c("first_var")),TRUE)
-  expect_equal(assignParamSettingsDS(c("first_var", "second_var")),TRUE)
-  expect_equal(assignParamSettingsDS(c("first_var", "second_var","third_var")),TRUE)
+  expect_equal(assignParamSettingsDS("first_var"),TRUE)
+  expect_equal(assignParamSettingsDS("first_var;second_var"),TRUE)
+  expect_equal(assignParamSettingsDS("first_var;second_var;third_var"),TRUE)
 })
 context("assignParamSettingsDS::expt::.has.correct.data")
 test_that("everyting is correct",
@@ -113,6 +114,27 @@ test_that("everyting is correct",
   expect_equal("index_y" %in% names(sharing), TRUE)
   expect_equal("param_names" %in% names(sharing), TRUE)
   expect_equal(length(sharing$index_x), 3)
+  
+  
+})
+
+
+context("assignParamSettingsDS::expt::.create_vector")
+test_that("correct and incorrect arguments",
+{
+   outcome <- .create.vector(123)
+  
+   outcome <- .create.vector("")
+   expect_equal(length(outcome),0)
+   
+   outcome <- .create.vector("a")
+   expect_equal(length(outcome),1)
+   
+   outcome <-  outcome <- .create.vector("a;b")
+   expect_equal(length(outcome),2)
+   
+   outcome <- .create.vector("a;b;c;d;e")
+   expect_equal(length(outcome),5)
   
   
 })
