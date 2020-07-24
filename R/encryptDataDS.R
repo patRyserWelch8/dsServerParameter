@@ -12,26 +12,33 @@
 
 .conceal.data <- function(concealing.matrix, data, columns)
 {
-  
+ 
   if(is.matrix(concealing.matrix) & is.list(data) & is.vector(columns))
   {
+  
     no.params <- length(data)
+   
     if (length(data) == length(columns))
     {
+      
       outcome   <- concealing.matrix
-    
+      
       for (index in 1:no.params)
       {
+          
           column <- columns[index]
-          if(length(data[[index]]) == nrow(concealing.matrix))
+          print(column)
+          print(nrow(concealing.matrix))
+          print(ncol(concealing.matrix))
+          if(length(data[[index]]) == nrow(concealing.matrix) & 
+             column < ncol(concealing.matrix))
           {
-            concealing.matrix[,column]  <- data[[index]]
+             concealing.matrix[,column]  <- data[[index]]
           }
       }
-      
     }
   }
-  
+  print("I")
   return(concealing.matrix)
 }
 
@@ -307,6 +314,9 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       {
          if(master_mode)
          {
+            
+            print("******")
+            print(saved.info[["rows"]])
             sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],
                                                             saved.info[[settings$data]],saved.info[["rows"]])
          }
