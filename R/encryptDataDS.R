@@ -38,7 +38,6 @@
       }
     }
   }
-  print("I")
   return(concealing.matrix)
 }
 
