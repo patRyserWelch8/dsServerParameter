@@ -11,7 +11,7 @@
   }
 }
 
-#'@name removeEnchangeDataDS
+#'@name removeExchangeDataDS
 #'@title Remove data used to exchange some parameters from a DataSHIELD server
 #'@description This server function deletes the data used in the exchange of the parameters from a DataSHIELD server. The settings and sharing data structure are deleted. 
 #'This function is important, to keep temporary data being analysed by other processes. 
