@@ -23,7 +23,8 @@ AggregateMethods:
   encryptDataDS,
   decryptParamDS,
   encryptParamDS,
-  removeEncryptingDataDS
+  removeEncryptingDataDS,
+  removeEnchangeDataDS
 Options:
  name.struct = "sharing"
 RoxygenNote: 7.1.0

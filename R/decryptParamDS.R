@@ -58,7 +58,7 @@ decryptParamDS <- function(param_names = NULL)
          columns   <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]])
         
          #those are swapped due to transpose in encoding process
-         for (index in 1:no.params)
+         for(index in 1:no.params)
          {
            param_name  <- params[index]
            param.value <-  sharing$decrypted[columns[index],rows[index]]

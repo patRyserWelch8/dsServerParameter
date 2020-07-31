@@ -74,8 +74,6 @@
 #'\link[dsParamServer]{getDataDS} is reversed. 
 #'@seealso \link[dsParamServer]{getDataDS}
 #'@export
-
-
 assignDataDS <- function(master_mode = TRUE, header = "", payload = "", property.a = 0, 
                               property.b = 0, property.c = 0.0, property.d = 0.0)
 {

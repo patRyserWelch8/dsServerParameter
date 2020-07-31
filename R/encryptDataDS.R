@@ -25,11 +25,7 @@
       
       for (index in 1:no.params)
       {
-          
           column <- columns[index]
-          print(column)
-          print(nrow(concealing.matrix))
-          print(ncol(concealing.matrix))
           if(length(data[[index]]) == nrow(concealing.matrix) & 
              column < ncol(concealing.matrix))
           {
@@ -314,8 +310,6 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
          if(master_mode)
          {
             
-            print("******")
-            print(saved.info[["rows"]])
             sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],
                                                             saved.info[[settings$data]],saved.info[["rows"]])
          }
