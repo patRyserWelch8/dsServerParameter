@@ -114,7 +114,7 @@ assign("receiver.5", get("sharing",pos = 1), pos = 1)
 #("step 10")
 decryptDataDS()
 assign("receiver.6", get("sharing",pos=1), pos = 1)
-assign("outcome", decryptParamDS(c("pi_value_1_a", "pi_value_2_a", "pi_value_3_a")), pos = 1)
+assign("outcome", decryptParamDS(c("pi_value_1_a", "pi_value_2_a", "pi_value_3_a"),0), pos = 1)
 
 context("decryptParamDS::expt::data_has_been_decrypted")
 test_that("data has been encrypted correctly",

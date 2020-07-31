@@ -5,10 +5,9 @@ library(dsServerParameter)
 rm(list=ls(),pos=1)
 
 print("Step 0")
-pi_value_1 = 0.001
-pi_value_2 = 0.002
-
-pi_value_3 = 0.003
+pi_value_1 = 100000
+pi_value_2 = 200000
+pi_value_3 = 300000
 assignSharingSettingsDS()
 
 print("Step 1")
@@ -97,21 +96,18 @@ receiver.5 <- get("sharing",pos=1)
 print("step 10")
 decryptDataDS()
 receiver.6 <- get("sharing",pos=1)
-decryptParamDS("pi_value_1_a;pi_value_2_a;pi_value_3_a")
+decryptParamDS("pi_value_1_a;pi_value_2_a;pi_value_3_a", 1)
 
 print(pi_value_1_a)
 print(pi_value_2_a)
 print(pi_value_3_a)
-
-
-
 
 print("columns")
 print(ceiling(receiver.6$index_x * receiver.6$no_columns))
 print("rows")
 print(ceiling(receiver.6$index_y * receiver.6$no_rows))
 print("decrypted")
-print(receiver.6$encrypted)
+print(receiver.6$decrypted)
 
 outcome <- removeExchangeDataDS()
 print(outcome)
