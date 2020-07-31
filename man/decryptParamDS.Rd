@@ -4,7 +4,7 @@
 \alias{decryptParamDS}
 \title{decrypt a server parameter}
 \usage{
-decryptParamDS(param_names = NULL)
+decryptParamDS(param_names = NULL, tolerance = 0)
 }
 \arguments{
 \item{param_names}{character argument. Name of the variable used  to store the parameter value on a server.}

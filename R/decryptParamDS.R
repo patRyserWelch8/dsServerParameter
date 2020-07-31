@@ -42,7 +42,7 @@
 #'@description This server function decrypts a given parameter in matrix.
 #'@param param_names character argument. Name of the variable used  to store the parameter value on a server.
 #'@export
-decryptParamDS <- function(param_names = NULL)
+decryptParamDS <- function(param_names = NULL, tolerance = 0)
 {
    outcome <- FALSE
    param.value <- NA
@@ -61,7 +61,7 @@ decryptParamDS <- function(param_names = NULL)
          for(index in 1:no.params)
          {
            param_name  <- params[index]
-           param.value <-  sharing$decrypted[columns[index],rows[index]]
+           param.value <-  round(sharing$decrypted[columns[index],rows[index]], tolerance)
            assign(param_name,param.value, pos = 1)
          }
      }
