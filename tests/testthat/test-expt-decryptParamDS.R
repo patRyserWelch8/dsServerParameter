@@ -35,9 +35,9 @@ test_that("does exists",
 rm(list=ls(pos = 1),pos=1)
 
 #("Step 0")
-assign("pi_value_1", 100000, pos = 1)
-assign("pi_value_2", 200000, pos = 1)
-assign("pi_value_3", 300000, pos = 1)
+assign("pi_value_1", 100.523, pos = 1)
+assign("pi_value_2", 200.654, pos = 1)
+assign("pi_value_3", 300.789, pos = 1)
 
 assignSharingSettingsDS()
 
@@ -114,7 +114,7 @@ assign("receiver.5", get("sharing",pos = 1), pos = 1)
 #("step 10")
 decryptDataDS()
 assign("receiver.6", get("sharing",pos=1), pos = 1)
-assign("outcome", decryptParamDS(c("pi_value_1_a", "pi_value_2_a", "pi_value_3_a"),0), pos = 1)
+assign("outcome", decryptParamDS(c("pi_value_1_a", "pi_value_2_a", "pi_value_3_a"),3), pos = 1)
 
 context("decryptParamDS::expt::data_has_been_decrypted")
 test_that("data has been encrypted correctly",
@@ -123,6 +123,11 @@ test_that("data has been encrypted correctly",
    expect_equal(get("outcome", pos = 1), TRUE)
    list.var <- ls(pos = 1)
    param <- get("pi_value_1_a",pos = 1)
+   print(get("pi_value_1_a", pos = 1))
+   print(get("pi_value_2_a", pos = 1))
+   print(get("pi_value_3_a", pos = 1))
+   
+   
    expect_equal("pi_value_1_a" %in% list.var, TRUE)
    expect_equal(param, get("pi_value_1", pos = 1))
 })

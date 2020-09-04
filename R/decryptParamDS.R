@@ -41,8 +41,9 @@
 #'@title  decrypt a server parameter 
 #'@description This server function decrypts a given parameter in matrix.
 #'@param param_names character argument. Name of the variable used  to store the parameter value on a server.
+#'@param tolerance numerical argument. Number of decimal places aimed to used for accuracy
 #'@export
-decryptParamDS <- function(param_names = NULL, tolerance = 0)
+decryptParamDS <- function(param_names = NULL, tolerance = 8)
 {
    outcome <- FALSE
    param.value <- NA
