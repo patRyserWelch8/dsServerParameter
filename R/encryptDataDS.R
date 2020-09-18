@@ -245,6 +245,71 @@
   return(outcome)
 }
 
+.encrypt.data <- function(master_mode, preserve_mode)
+{
+  #init variables
+  MIN            <- runif(1, min=settings$min_value, max  = settings$min_value + 20)
+  MAX            <- runif(1, min=settings$min_value+30, max = settings$min_value + 40)
+  data           <- NULL
+  
+  expected.list  <- c()
+  no.rows        <- .define_no_rows()  
+  no.columns     <- .define_no_columns(no.rows)   
+  sharing        <- .get_sharing()
+  saved.info     <- list()  
+  
+  #preserve the data from previous exchange, if it is required.
+  if(preserve_mode) #steps 6 and 8
+  {
+    saved.info    <- .preserve.info(sharing) 
+    no.rows       <-  sharing[[settings$no_rows]]
+    no.columns    <-  sharing[[settings$no_columns]]
+  }
+  
+  #create matrices for encryption. 
+ 
+  if (master_mode)
+  {
+    #master_mode is in steps 1 and 6 of the exchange 
+    sharing <- .create.structure.master(MIN, MAX, 
+                                        no.rows = no.rows, 
+                                        no.columns = no.columns)
+    expected.list <- c(settings$concealing,settings$masking,
+                       settings$encrypted,settings$no_columns, settings$no_rows)
+  }
+  else
+  {
+    # not master mode: steps 3 and 8
+    sharing <- .create.structure.receiver(MIN, MAX)
+    expected.list <- c(settings$concealing,settings$masking,settings$encrypted,settings$no_columns, settings$no_rows)
+  }
+  
+  if (preserve_mode) #steps 6 and 8
+  {
+    if(master_mode) #step 6 
+    {
+      
+      sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],
+                                                      saved.info[[settings$data]],saved.info[["rows"]])
+    }
+    else #step 8
+    {
+      sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],
+                                                      saved.info[[settings$data]],saved.info[["columns"]])
+    }
+    sharing[[settings$index_x]]    <-  saved.info[[settings$index_x]]
+    sharing[[settings$index_y]]    <-  saved.info[[settings$index_y]]
+    
+    expected.list <- c(settings$concealing,settings$masking,settings$encrypted,
+                       settings$no_columns, settings$no_rows, settings$index_x, settings$index_y)
+  }
+  
+  
+  sharing     <- .encrypt.concealed.data(sharing, master_mode)
+  assign(settings$name.struct, sharing, pos = 1)
+  return(expected.list)
+  
+}
 
 #'@name encryptDataDS
 #'@title  encrypt some data on the server 
@@ -271,66 +336,21 @@ encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
       is.logical(master_mode) & 
       is.logical(preserve_mode))
   {
-      #init variables
-      MIN            <- runif(1, min=settings$min_value, max  = settings$min_value + 20)
-      MAX            <- runif(1, min=settings$min_value+30, max = settings$min_value + 40)
-      data           <- NULL
-      
-      expected.list  <- c()
-      no.rows        <- .define_no_rows()  
-      no.columns     <- .define_no_columns(no.rows)   
-      sharing        <- .get_sharing()
-      saved.info     <- list()  
      
-      
-      #preserve the data from previous exchange
-      if(preserve_mode)
-      {
-        saved.info    <- .preserve.info(sharing) 
-        no.rows       <-  sharing[[settings$no_rows]]
-        no.columns    <-  sharing[[settings$no_columns]]
+     if(!settings$sharing.allowed)
+     {
+       stop("SERVER::ERR::PARAM::001")
+     }
+     else
+     {
+          expected.list <- .encrypt.data(master_mode, preserve_mode)   
+          outcome       <- .is.encrypted.valid(sharing, expected.list) & 
+                           exists(settings$name.struct, where=1)
       }
-  
-      #create matrices for encryption
-      if (master_mode)
-      {
-          sharing <- .create.structure.master(MIN, MAX, 
-                                              no.rows = no.rows, 
-                                              no.columns = no.columns)
-          expected.list <- c(settings$concealing,settings$masking,settings$encrypted,settings$no_columns, settings$no_rows)
-      }
-      else
-      {
-         sharing <- .create.structure.receiver(MIN, MAX)
-         expected.list <- c(settings$concealing,settings$masking,settings$encrypted,settings$no_columns, settings$no_rows)
-      }
-        
-      if (preserve_mode)
-      {
-         if(master_mode)
-         {
-            
-            sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],
-                                                            saved.info[[settings$data]],saved.info[["rows"]])
-         }
-         else
-         {
-            sharing[[settings$concealing]] <- .conceal.data(sharing[[settings$concealing]],
-                                                            saved.info[[settings$data]],saved.info[["columns"]])
-         }
-         sharing[[settings$index_x]]    <-  saved.info[[settings$index_x]]
-         sharing[[settings$index_y]]    <-  saved.info[[settings$index_y]]
-        
-         expected.list <- c(settings$concealing,settings$masking,settings$encrypted,
-                            settings$no_columns, settings$no_rows, settings$index_x, settings$index_y)
-      }
-  
-    
-      sharing     <- .encrypt.concealed.data(sharing, master_mode)
-      assign(settings$name.struct, sharing, pos = 1)
-      
-      outcome       <- .is.encrypted.valid(sharing, expected.list) & 
-                       exists(settings$name.struct, where=1)
+  }
+  else
+  {
+    stop("SERVER::ERR::PARAM::002")
   }
   return(outcome)
 }

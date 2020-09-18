@@ -1,14 +1,10 @@
 
 .encode.data.with.sharing <- function(encrypted.data, no.columns, index)
 {
-    
-    #remove conversion once new parsers is available
-    header        <- ""
     data          <- as.character(paste(as.numeric(encrypted.data),sep="",collapse=";"))
     size          <- as.numeric(object.size(data)) 
     timestamp     <- as.numeric(Sys.time()) / size
     
-  
     return.value  <- list(header = "FM1" , 
                           payload = data, 
                           property.a = size, 
@@ -18,6 +14,9 @@
     return(return.value)
 }
 
+#- OBSOLETE this helper function returns a matrix made of random values. The exchange would 
+#continue. However, the parameter exchange will not be correct. Its purpose is to
+#provide a continuation throught the process, even if an error has occured.
 .encode.data.no.sharing <- function()
 {
   header        <- ""
@@ -36,7 +35,9 @@
   return(return.value)
 }
 
-
+# OBSOLETE  - this helper function returns a matrix made of random values. The exchange would 
+#continue. However, the parameter exchange will not be correct. Its purpose is to
+#provide a continuation throught the process, even if an error has occured.
 .encode.data.no.settings <- function()
 {
   header        <- ""
@@ -55,7 +56,30 @@
   return(return.value)
 }
 
-
+.encode.encrypted.data <- function(master_mode = TRUE)
+{
+  sharing      <- get(settings$name.struct,pos = 1)
+  
+  if(!("encrypted" %in% names(sharing)))
+  {
+    stop("SERVER::ERR::PARAM::004")
+  }
+  else
+  {
+    no.columns            <- ncol(sharing[[settings$encrypted]])
+    no.rows               <- ncol(sharing[[settings$encrypted]])
+    
+    #transpose has occured. So need to compare rows with columns settings 
+    #and columns with rows settings
+    if (no.columns >= settings$min_columns & 
+        no.rows    >= settings$min_rows)
+    {
+      encrypted.data <- as.numeric(sharing[[settings$encrypted]])
+      index <- runif(1, min =settings$min_rows, max= settings$max_rows)
+      return(.encode.data.with.sharing(encrypted.data, no.columns, index))
+    }
+  }
+}
 
 #'@name getDataDS
 #'@title  Retrieves the encrypted data from a server to the analysis computer
@@ -68,30 +92,26 @@
 #'@export
 getDataDS <- function(master_mode = TRUE)
 { 
-   return.value <- .encode.data.no.settings()
-   if(exists("settings",where=1))
+   if(!exists("settings",where=1))
    {
-      return.value <- .encode.data.no.sharing()
-      if(exists(settings$name.struct,where=1))
+     stop("SERVER::ERR::PARAM::002")
+   }
+   else
+   {
+     if(!settings$sharing.allowed)
+     {
+       stop("SERVER::ERR::PARAM::001")
+     }
+     else
+     {
+      if(!exists(settings$name.struct,where=1))
       {
-        sharing      <- get(settings$name.struct,pos = 1)
-        value.exists <- "encrypted" %in% names(sharing)
-  
-        if(value.exists)
-        {
-          no.columns            <- ncol(sharing[[settings$encrypted]])
-          no.rows               <- nrow(sharing[[settings$encrypted]])
-         
-          #transpose
-          if (no.rows >= settings$min_columns & no.columns >= settings$min_rows)
-          {
-            #remove conversion once new parsers is available
-            encrypted.data <- as.numeric(sharing[[settings$encrypted]])
-            index <- runif(1, min =settings$min_rows, max= settings$max_rows)
-            return.value <- .encode.data.with.sharing(encrypted.data, no.columns, index)
-          }
-        }
+        stop("SERVER::ERR::PARAM::003")
+      }
+      else
+      {
+        return(.encode.encrypted.data(master_mode))
+      }
     }
   }
-  return(return.value)
 }

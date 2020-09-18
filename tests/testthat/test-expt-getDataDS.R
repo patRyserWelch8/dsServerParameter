@@ -6,10 +6,7 @@ rm("settings", pos=1)
 context("getDataDS::expt::no_settings")
 test_that("no_settings",
 {
-  data <- getDataDS()
-  .test.data.structure(data)
-  expect_equal(data$header,"FM3")
-  
+  expect_error(getDataDS(master_mode = TRUE), "SERVER::ERR::PARAM::002")
 })
 
 assignSharingSettingsDS()
@@ -17,9 +14,9 @@ assignSharingSettingsDS()
 context("getDataDS::expt::no_sharing")
 test_that("no_sharing",
 {
-  data <- getDataDS()
-  .test.data.structure(data)
-  expect_equal(data$header,"FM2")
+  expect_error(getDataDS(), "SERVER::ERR::PARAM::003")
+  assign("sharing", list(), pos = 1)
+  expect_error(.encode.encrypted.data(),"SERVER::ERR::PARAM::004")
 })
 
 encryptDataDS(TRUE, FALSE)

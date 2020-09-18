@@ -4,28 +4,41 @@ source("definition_tests/def_process.R")
 context("encryptDataDS::expt::incorrect_parameters")
 test_that("variables exists",
 {
-  expect_equal(encryptDataDS(123,134), FALSE)
-  expect_equal(encryptDataDS("123","134"), FALSE)
-  expect_equal(encryptDataDS(TRUE,"134"), FALSE)
-  expect_equal(encryptDataDS("123",FALSE), FALSE)
+  expect_error(encryptDataDS(123,134),"SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS("123","134"), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS(TRUE,"134"), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS("123",FALSE), "SERVER::ERR::PARAM::002")
 })
 
 context("encryptDataDS::expt::no_settings")
+test_that("variables exists",
 {
   if (exists("settings",where = 1))
   {
     rm("settings", pos=1)
   }
-  expect_equal(encryptDataDS(123,134), FALSE)
-  expect_equal(encryptDataDS("123","134"), FALSE)
-  expect_equal(encryptDataDS(TRUE,"134"), FALSE)
-  expect_equal(encryptDataDS("123",FALSE), FALSE)
-  expect_equal(encryptDataDS(123,134), FALSE)
-  expect_equal(encryptDataDS("123","134"), FALSE)
-  expect_equal(encryptDataDS(TRUE,"134"), FALSE)
-  expect_equal(encryptDataDS(FALSE,FALSE), FALSE)
-}
+  expect_error(encryptDataDS(123,134), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS("123","134"), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS(TRUE,"134"), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS("123",FALSE), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS(123,134), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS("123","134"), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS(TRUE,"134"), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS(FALSE,FALSE), "SERVER::ERR::PARAM::002")
+})
 
+
+
+set.default.options.restrictive()
+assignSharingSettingsDS()
+
+context("encryptDataDS::expt::not_allowed_to_share")
+test_that("not_allowed_to_take_part",
+{
+  expect_error(encryptDataDS(TRUE, FALSE),"SERVER::ERR::PARAM::001")
+})
+
+set.default.options.not.restrictive()
 assignSharingSettingsDS()
 
 context("encryptDataDS::expt::.define_no_rows")
@@ -139,6 +152,8 @@ test_that("no row  and columns, min value, max value correct",
   expect_equal(all(createdMatrix >= -12 & createdMatrix <= 298, TRUE),TRUE)
 })
 
+options(param.name.struct = "sharing")
+options(param.sharing.allowed = 1) 
 
 #("Step 0")
 assign("pi_value_1", 100000, pos = 1)
