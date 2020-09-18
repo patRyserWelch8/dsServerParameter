@@ -1,8 +1,14 @@
 
-
+# This file simulates the exchanges of parameters using a range of master and 
+# receiver variables. It is a good script to execute outside test_that to validate 
+# the code works.
 
 library(dsServerParameter)
 rm(list=ls(),pos=1)
+
+options(param.name.struct = "sharing_testing")
+options(param.sharing.allowed = 1) 
+
 
 print("Step 0")
 pi_value_1 = 100000
@@ -15,14 +21,10 @@ encryptDataDS(TRUE, FALSE)
 master.1 <- get("sharing",pos=1)
 
 print("Step 2")
-a <- getDataDS(master_mode =TRUE)
+a <- getDataDS(master_mode = TRUE)
 rm(sharing,pos=1)
 assignDataDS(master_mode = FALSE,a$header,a$payload,a$property.a,a$property.b,a$property.c,a$property.d)
 receiver.1 <- get("sharing",pos=1)
-
-
-
-
 
 print("Step 3")
 encryptDataDS(FALSE, FALSE)
