@@ -4,10 +4,12 @@
 \alias{decryptParamDS}
 \title{decrypt a server parameter}
 \usage{
-decryptParamDS(param_names = NULL, tolerance = 0)
+decryptParamDS(param_names = NULL, tolerance = 8)
 }
 \arguments{
 \item{param_names}{character argument. Name of the variable used  to store the parameter value on a server.}
+
+\item{tolerance}{numerical argument. Number of decimal places aimed to used for accuracy}
 }
 \description{
 This server function decrypts a given parameter in matrix.
