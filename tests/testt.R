@@ -6,7 +6,7 @@
 library(dsServerParameter)
 rm(list=ls(),pos=1)
 
-options(param.name.struct = "sharing_testing")
+options(param.name.struct = "sharing")
 options(param.sharing.allowed = 1) 
 
 

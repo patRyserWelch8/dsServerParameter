@@ -60,6 +60,33 @@
   return(outcome)
 }
 
+.assignData <- function(master_mode = TRUE, header = "", payload = "", property.a = 0, 
+              property.b = 0, property.c = 0.0, property.d = 0.0)
+{
+  outcome <- FALSE
+  if ( is.character(header) & is.character(payload)
+       & is.numeric(property.a) &  is.numeric(property.b) 
+       & is.numeric(property.c) & is.numeric(property.d))
+  {
+    if (nchar(header) > 0 & nchar(payload) > 0 & property.a > 0 
+        & property.b > 0 & property.c > 0 & property.d > 0)
+    {
+      received.matrix  <- .create.matrix(payload,property.b)
+      .save(received.matrix, master_mode)
+      outcome          <- .is.assigned.values.correct(master_mode)
+    }
+    else
+    {
+      stop("SERVER::ERR::PARAM::006")
+    }
+  }
+  else
+  {
+    stop("SERVER::ERR::PARAM::005")
+  }
+  return(outcome)
+}
+
 #'@name assignDataDS
 #'@title  assign data to one or multiple servers with some encrypted data from the analysis computer
 #'@description This server function assigns some values into a specific structure.
@@ -77,18 +104,21 @@
 assignDataDS <- function(master_mode = TRUE, header = "", payload = "", property.a = 0, 
                               property.b = 0, property.c = 0.0, property.d = 0.0)
 {
-  outcome <- FALSE
-  if ( is.character(header) & is.character(payload)
-     & is.numeric(property.a) &  is.numeric(property.b) 
-     & is.numeric(property.c) & is.numeric(property.d))
-     {
-        if (nchar(header) > 0 & nchar(payload) > 0 & property.a > 0 
-           & property.b > 0 & property.c > 0 & property.d > 0)
-          {
-            received.matrix  <- .create.matrix(payload,property.b)
-            .save(received.matrix, master_mode)
-            outcome          <- .is.assigned.values.correct(master_mode)
-          }
-     }
+  
+  if(!exists("settings",where=1))
+  {
+    stop("SERVER::ERR::PARAM::002")
+  }
+  else
+  {
+    if(!settings$sharing.allowed)
+    {
+      stop("SERVER::ERR::PARAM::001")
+    }
+    else
+    {
+      return(.assignData(master_mode,header, payload,property.a, property.b, property.c, property.d))
+    }
+  }
   return(outcome)
 }

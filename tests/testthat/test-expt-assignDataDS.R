@@ -5,17 +5,17 @@ source('definition_tests/def_sendEncodedDataDS.R')
 context("assignDataDS::expt:: incorrect parameters")
 test_that("parameters",
 {
- 
-  expect_equal(assignDataDS(), FALSE)
-  expect_equal(assignDataDS(1), FALSE)
-  expect_equal(assignDataDS("FM1",TRUE), FALSE)
-  expect_equal(assignDataDS("FM1","123,123","WRONG"), FALSE)
-  expect_equal(assignDataDS("FM1","123,123",1,"WRONG" ), FALSE)
-  expect_equal(assignDataDS("FM1","123,123",1,13,"WRING" ), FALSE)
-  expect_equal(assignDataDS("FM1","123,123",1,13,2.3,"INCORRECT" ), FALSE)
- 
-  
+  expect_error(assignDataDS(),"SERVER::ERR::PARAM::002")
+  expect_error(assignDataDS(1), "SERVER::ERR::PARAM::002")
+  expect_error(assignDataDS("FM1",TRUE), "SERVER::ERR::PARAM::002")
+  expect_error(assignDataDS("FM1","123,123","WRONG"),"SERVER::ERR::PARAM::002")
+  expect_error(assignDataDS("FM1","123,123",1,"WRONG" ), "SERVER::ERR::PARAM::002")
+  expect_error(assignDataDS("FM1","123,123",1,13,"WRING" ), "SERVER::ERR::PARAM::002")
+  expect_error(assignDataDS("FM1","123,123",1,13,2.3,"INCORRECT" ), "SERVER::ERR::PARAM::002")
 })
+
+options(param.name.struct = "sharing")
+options(param.sharing.allowed = 1) 
 
 pi_value = 1000
 assignSharingSettingsDS()
