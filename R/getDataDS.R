@@ -62,7 +62,7 @@
   
   if(!("encrypted" %in% names(sharing)))
   {
-    stop("SERVER::ERR::PARAM::004")
+    return(.encode.data.no.sharing())
   }
   else
   {
@@ -92,26 +92,27 @@
 #'@export
 getDataDS <- function(master_mode = TRUE)
 { 
-   if(!exists("settings",where=1))
+   if (is.sharing.allowed())
    {
-     stop("SERVER::ERR::PARAM::002")
-   }
-   else
-   {
-     if(!settings$sharing.allowed)
+     if(!exists(settings$name.struct,where=1))
      {
-       stop("SERVER::ERR::PARAM::001")
+       stop("SERVER::ERR::PARAM::003")
      }
      else
      {
-      if(!exists(settings$name.struct,where=1))
-      {
-        stop("SERVER::ERR::PARAM::003")
-      }
-      else
-      {
-        return(.encode.encrypted.data(master_mode))
-      }
-    }
-  }
+       encoded.data <- .encode.encrypted.data(master_mode)
+       if(identical(encoded.data$header, "FM2"))
+       {
+         stop("SERVER::ERR::PARAM::004") 
+       }
+       else
+       {
+         return(encoded.data)
+       }
+     }
+   }
+   else
+   {
+     stop("SERVER::ERR::PARAM::001")
+   }
 }

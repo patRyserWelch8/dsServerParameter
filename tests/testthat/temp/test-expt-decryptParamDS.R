@@ -1,16 +1,26 @@
 
-context("decryptParamDS::expt::no_settings")
+context("decryptParamDS::smk::no_settings")
 test_that("does not exist",
 {
-   if (exists("settings",where = 1))
-   {
-     rm("settings", pos=1)
-   }
+   rm(list=ls(pos = 1),pos=1)
    expect_equal(exists("settings", where = 1), FALSE)
    expect_error(.get.encoded.param())
    expect_error(.is.encoded.param.valid())
+   decryptDataDS()
    expect_equal(decryptParamDS(),FALSE)
 })
+
+context("decryptParamDS::expt::no_settings")
+test_that("does not exist",
+{
+   rm(list=ls(pos = 1),pos=1)
+   expect_equal(exists("settings", where = 1), FALSE)
+   expect_error(.get.encoded.param())
+   expect_error(.is.encoded.param.valid())
+   expect_false(decryptParamDS())
+   
+})
+
 
 assignSharingSettingsDS()
 settings <- get("settings",pos=1)
@@ -33,6 +43,8 @@ test_that("does exists",
 #complete set steps to reach the point of decryption
 #("Step 0")
 rm(list=ls(pos = 1),pos=1)
+options(param.name.struct = "sharing")
+options(param.sharing.allowed = 1) 
 
 #("Step 0")
 assign("pi_value_1", 100.523, pos = 1)

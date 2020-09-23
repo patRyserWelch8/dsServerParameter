@@ -2,16 +2,52 @@ source("definition_tests/def_getEncodedDataDS.R")
 source('definition_tests/def_sendEncodedDataDS.R')
 
 
-context("assignDataDS::expt:: incorrect parameters")
+context("assignDataDS::expt::no_settings")
+test_that("no_setting",
+{
+  expect_error(assignDataDS(),"SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS(1), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1",TRUE), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123","WRONG"),"SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123",1,"WRONG" ), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123",1,13,"WRING" ), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123",1,13,2.3,"INCORRECT" ), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123",1,13,2.3,5 ), "SERVER::ERR::PARAM::001")
+  
+})
+
+options(param.name.struct = "sharing")
+options(param.sharing.allowed = 0)
+assignSharingSettingsDS()
+
+context("assignDataDS::expt::not_allowed")
+test_that("not_allowed",
+{
+  expect_error(assignDataDS(),"SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS(1), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1",TRUE), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123","WRONG"),"SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123",1,"WRONG" ), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123",1,13,"WRING" ), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123",1,13,2.3,"INCORRECT" ), "SERVER::ERR::PARAM::001")
+  expect_error(assignDataDS("FM1","123,123",1,13,2.3,5 ), "SERVER::ERR::PARAM::001")
+  
+})
+
+options(param.name.struct = "sharing")
+options(param.sharing.allowed = 1)
+assignSharingSettingsDS()
+
+context("assignDataDS::expt::incorrect parameters")
 test_that("parameters",
 {
-  expect_error(assignDataDS(),"SERVER::ERR::PARAM::002")
-  expect_error(assignDataDS(1), "SERVER::ERR::PARAM::002")
-  expect_error(assignDataDS("FM1",TRUE), "SERVER::ERR::PARAM::002")
-  expect_error(assignDataDS("FM1","123,123","WRONG"),"SERVER::ERR::PARAM::002")
-  expect_error(assignDataDS("FM1","123,123",1,"WRONG" ), "SERVER::ERR::PARAM::002")
-  expect_error(assignDataDS("FM1","123,123",1,13,"WRING" ), "SERVER::ERR::PARAM::002")
-  expect_error(assignDataDS("FM1","123,123",1,13,2.3,"INCORRECT" ), "SERVER::ERR::PARAM::002")
+  expect_error(assignDataDS(),"SERVER::ERR::PARAM::006")
+  expect_error(assignDataDS(1), "SERVER::ERR::PARAM::006")
+  expect_error(assignDataDS("FM1",TRUE), "SERVER::ERR::PARAM::005")
+  expect_error(assignDataDS("FM1","123,123","WRONG"),"SERVER::ERR::PARAM::006")
+  expect_error(assignDataDS("FM1","123,123",1,"WRONG" ), "SERVER::ERR::PARAM::005")
+  expect_error(assignDataDS("FM1","123,123",1,13,"WRING" ), "SERVER::ERR::PARAM::005")
+  expect_error(assignDataDS("FM1","123,123",1,13,2.3,"INCORRECT" ), "SERVER::ERR::PARAM::005")
 })
 
 options(param.name.struct = "sharing")
