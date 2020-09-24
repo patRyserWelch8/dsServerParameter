@@ -20,5 +20,5 @@ Some encrypted data are transformed into a suitable format to be transferred fro
 the size of the data at encoding time. Property b is the number of columns and property c a timestamp. property d a random number.
 }
 \seealso{
-\link[dsParamServer]{assignDataDS}
+\link[dsServerParameter]{assignDataDS}
 }

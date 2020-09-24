@@ -1,3 +1,6 @@
+
+
+
 #'@name assignSharingSettingsDS
 #'@title  assign the settings required to share parameters
 #'@details The function assigns a variable in the global environment of a DataSHIELD server. A 

@@ -1,8 +1,8 @@
 
 .save.coordinates <- function(received.data = NULL, no.params)
 {
-  if(exists("settings", where =1))
-  {
+  #if(exists("settings", where =1))
+  #{
     if (is.vector(received.data))
     {
       sharing <- list()
@@ -20,7 +20,7 @@
         assign(settings$name.struct, sharing, pos = 1)
       }
     }
-  }
+  #}
 }
 
 .create.data <- function(data = NULL,  no.params = 1)
@@ -67,6 +67,16 @@
   return(outcome)
 }
 
+.assignCoordinates <- function(header = "", payload = "", property.a = 0, 
+                               property.b = 0, property.c = 0.0, property.d = 0.0)
+{
+  received.data  <- .create.data(payload,property.b)
+  .save.coordinates(received.data, property.b)
+  outcome          <- .is.assigned.coordinates.correct()
+}
+
+
+
 #'@name assignCoordinatesDS
 #'@title  assign data to one or multiple servers with some encrypted data from the analysis computer INCORRECT 
 #'@description This server function assigns some values into a specific structure. INCORRECT
@@ -86,18 +96,30 @@ assignCoordinatesDS <- function(header = "", payload = "", property.a = 0,
                               property.b = 0, property.c = 0.0, property.d = 0.0)
 {
   outcome <- FALSE
-  
-  if ( is.character(header) & is.character(payload)
-     & is.numeric(property.a) &  is.numeric(property.b) 
-     & is.numeric(property.c) & is.numeric(property.d))
-     {
-        if (nchar(header) > 0 & nchar(payload) > 0 & property.a > 0 
-           & property.b > 0 & property.c > 0 & property.d > 0)
-          {
-            received.data  <- .create.data(payload,property.b)
-            .save.coordinates(received.data, property.b)
-            outcome          <- .is.assigned.coordinates.correct()
-          }
-     }
+  if (is.sharing.allowed())
+  {
+    if ( is.character(header) & is.character(payload)
+       & is.numeric(property.a) &  is.numeric(property.b) 
+       & is.numeric(property.c) & is.numeric(property.d))
+       {
+          if (nchar(header) > 0 & nchar(payload) > 0 & property.a > 0 
+             & property.b > 0 & property.c > 0 & property.d > 0)
+            {
+               return(.assignCoordinates(header,payload,property.a, property.b, property.c, property.d))
+            }
+            else
+            {
+               stop("SERVER::ERR::PARAM::006")
+            }
+        }
+        else
+        {
+          stop("SERVER::ERR::PARAM::005")
+        }
+  }
+  else
+  {
+    stop("SERVER::ERR::PARAM::001")
+  }
   return(outcome)
 }

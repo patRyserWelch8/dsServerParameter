@@ -12,3 +12,7 @@ This server function checks some settings used exchange parameters between
 DataSHIELD server exists. It also verifies the data owners and governance have allowed the 
 sharing of parameters in a specific server.
 }
+\details{
+This is a helper function. It cannot be called directly from any client-side
+function.
+}

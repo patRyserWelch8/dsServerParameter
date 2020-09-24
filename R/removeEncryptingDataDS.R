@@ -39,12 +39,12 @@
 removeEncryptingDataDS <- function(master_mode = TRUE)
 {
   outcome <- FALSE
-  if(exists("settings", where=1))
+  if(is.sharing.allowed())
   {
     sharing                        <- .get.sharing.data()
     if(master_mode)
     {
-        expected.list                  <- c(settings$data,settings$no_columns, settings$no_rows, settings$index_x, 
+        expected.list               <- c(settings$data,settings$no_columns, settings$no_rows, settings$index_x, 
                                             settings$index_y,settings$param_names)
     }
     else
@@ -55,6 +55,10 @@ removeEncryptingDataDS <- function(master_mode = TRUE)
    
     assign("sharing", sharing,pos=1)
     outcome <- .is.cleaned.structure.valid(expected.list)
+  }
+  else
+  {
+    stop("SERVER::ERR::PARAM::001")
   }
   return(outcome)
 }

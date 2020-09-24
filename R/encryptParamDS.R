@@ -135,10 +135,9 @@ encryptParamDS <- function()
           data[[index]] <- .encrypt.param(index,sharing[[settings$concealing]])
         }
       
-         sharing[[settings$data]] <- data
-         assign(settings$name.struct,sharing, pos=1)
-         outcome <- .is.encrypted.structure.valid()
-         
+        sharing[[settings$data]] <- data
+        assign(settings$name.struct,sharing, pos=1)
+        outcome <- .is.encrypted.structure.valid()
      }
    }
    return(outcome)
