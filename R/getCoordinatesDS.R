@@ -36,7 +36,7 @@
 #'@export
 getCoordinatesDS <- function()
 { 
-  print(ls(pos = 1))
+  
   if (is.sharing.allowed())
   {
     if(!exists(settings$name.struct,where=1))

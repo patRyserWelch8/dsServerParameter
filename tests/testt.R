@@ -9,7 +9,6 @@ rm(list=ls(),pos=1)
 options(param.name.struct = "sharing")
 options(param.sharing.allowed = 1) 
 
-
 print("Step 0")
 pi_value_1 = 100000
 pi_value_2 = 200000
@@ -62,7 +61,7 @@ master.4 <- get("sharing",pos=1)
 print(names(master.4))
 print(master.4$concealing)
 print(master.4$encrypted)
-removeEncryptingDataDS(master_mode = TRUE)
+removeEncryptingDataDS(master_mode = TRUE) #done
 master.5 <- get("sharing",pos=1)
 print(names(master.5))
 
@@ -71,7 +70,7 @@ assign("sharing", receiver.2.5, pos=1)
 removeEncryptingDataDS(master_mode = FALSE)
 receiver.3 <- get("sharing",pos=1)
 print(names(receiver.3))
-encryptDataDS(TRUE, TRUE)
+encryptDataDS(TRUE, TRUE) 
 receiver.4 <- get("sharing",pos=1)
 print(names(receiver.4))
 

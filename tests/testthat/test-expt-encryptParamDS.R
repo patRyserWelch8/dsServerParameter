@@ -15,11 +15,13 @@ test_that("no_setting",
     rm("sharing",pos=1)
   }
   expect_equal(exists("settings",where = 1),FALSE)
-  expect_equal(encryptParamDS(),FALSE)
+  expect_error(encryptParamDS(),"SERVER::ERR::PARAM::001")
 })
 
 #These steps are needed to complete the tests.....
 
+options(param.name.struct = "sharing")
+options(param.sharing.allowed = 1) 
 assign("pi_value_1",1000,pos=1)
 assign("pi_value_2",2000,pos=1)
 assign("pi_value_3",3000,pos=1)
@@ -89,8 +91,6 @@ rm(sharing,pos=1)
 assign("sharing", master.1, pos=1)
 assignDataDS(master_mode = TRUE, b$header,b$payload,b$property.a,b$property.b,b$property.c,b$property.d)
 master.2 <- get("sharing",pos=1)
-
-
 
 #"step 5"
 decryptDataDS()

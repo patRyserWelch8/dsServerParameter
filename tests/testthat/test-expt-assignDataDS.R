@@ -1,7 +1,7 @@
 source("definition_tests/def_getEncodedDataDS.R")
 source('definition_tests/def_sendEncodedDataDS.R')
 
-
+rm(ls(),pos = 1)
 context("assignDataDS::expt::no_settings")
 test_that("no_setting",
 {

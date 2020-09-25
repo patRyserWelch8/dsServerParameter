@@ -39,8 +39,7 @@ master.1 <- get("sharing",pos=1)
 context("getDataDS::expt::")
 test_that("variables exists",
 {
-  data <- getDataDS()
-  print(class(data))
+   data <- getDataDS()
   .test.data.structure(data)
   expect_equal(data$header,"FM1")
   .test.data.structure(data)

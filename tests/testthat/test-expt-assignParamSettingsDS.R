@@ -8,13 +8,13 @@ test_that("everything is incorrect",
   expect_equal(exists("settings", where = 1), FALSE)
   expect_error(assignParamSettingsDS(),"SERVER::ERR::PARAM::001")
   expect_error(assignParamSettingsDS(123),"SERVER::ERR::PARAM::001")
-  expect_equal(.are.params.created(param_names = c("first_var")), FALSE)
-  expect_equal(.are.params.created(param_names = c("first_var", "second_var")),FALSE)
-  expect_equal(.are.params.created(param_names = c("first_var", "second_var","third_var")),FALSE)
-  expect_equal(.are.params.created(param_names = c("first_var",1)), FALSE)
-  expect_equal(.are.params.created(param_names = c(1,2,4)),FALSE)
-  expect_equal(.are.params.created(param_names = "hello"),FALSE)
-  expect_equal(.are.params.created(param_names = TRUE),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var")), FALSE)
+  expect_equal(are.params.created(param_names = c("first_var", "second_var")),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var", "second_var","third_var")),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var",1)), FALSE)
+  expect_equal(are.params.created(param_names = c(1,2,4)),FALSE)
+  expect_equal(are.params.created(param_names = "hello"),FALSE)
+  expect_equal(are.params.created(param_names = TRUE),FALSE)
 })
 
 context("assignParamSettingsDS::expt::.has.correct.data")
@@ -24,18 +24,6 @@ test_that("everyting is not correct",
     
 })
 
-context("assignParamSettingsDS::expt::.has.correct.data")
-test_that("everyting is not correct",
-{
-    expect_equal(.are.params.created(param_names = c(1)),FALSE)
-    expect_equal(.are.params.created(param_names = c("first_var")),FALSE)
-    assign("first_var",1, pos=1)
-    expect_equal(.are.params.created(param_names = c("first_var", 1)),FALSE)
-    expect_equal(.are.params.created(param_names = c("first_var", "second_var")),FALSE)
-    expect_equal(.are.params.created(param_names = "hello"),FALSE)
-    expect_equal(.are.params.created(param_names = 1),FALSE) 
-    expect_equal(.are.params.created(param_names = list()),FALSE)
-})
 
 context("assignParamSettingsDS::expt::.init.coordinates.ratios")
 test_that("everyting is incorrect",
@@ -46,7 +34,7 @@ test_that("everyting is incorrect",
 })
 
 
-options(param.name.struct = "sharing")
+options(param.name.struct = "sharing_setting")
 options(param.sharing.allowed = 0) 
 
 assignSharingSettingsDS()
@@ -58,13 +46,13 @@ test_that("not allowed sharingt",
   expect_equal(exists("settings", where = 1), TRUE)
   expect_error(assignParamSettingsDS(),"SERVER::ERR::PARAM::001")
   expect_error(assignParamSettingsDS(123),"SERVER::ERR::PARAM::001")
-  expect_equal(.are.params.created(param_names = c("first_var_X")), FALSE)
-  expect_equal(.are.params.created(param_names = c("first_var_X", "second_var_X")),FALSE)
-  expect_equal(.are.params.created(param_names = c("first_var_X", "second_var_X","third_var_X")),FALSE)
-  expect_equal(.are.params.created(param_names = c("first_var_X",1)), FALSE)
-  expect_equal(.are.params.created(param_names = c(1,2,4)),FALSE)
-  expect_equal(.are.params.created(param_names = "hello"),FALSE)
-  expect_equal(.are.params.created(param_names = TRUE),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var_X")), FALSE)
+  expect_equal(are.params.created(param_names = c("first_var_X", "second_var_X")),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var_X", "second_var_X","third_var_X")),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var_X",1)), FALSE)
+  expect_equal(are.params.created(param_names = c(1,2,4)),FALSE)
+  expect_equal(are.params.created(param_names = "hello"),FALSE)
+  expect_equal(are.params.created(param_names = TRUE),FALSE)
 })
 
 
@@ -78,14 +66,14 @@ test_that("not allowed sharing",
 context("assignParamSettingsDS::expt::.are.params.created")
 test_that("not allowed sharing",
 {
-  expect_equal(.are.params.created(param_names = c(1)),FALSE)
-  expect_equal(.are.params.created(param_names = c("first_var_X")),FALSE)
+  expect_equal(are.params.created(param_names = c(1)),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var_X")),FALSE)
   assign("first_var",1, pos=1)
-  expect_equal(.are.params.created(param_names = c("first_var", 1)),FALSE)
-  expect_equal(.are.params.created(param_names = c("first_var", "second_var_X")),FALSE)
-  expect_equal(.are.params.created(param_names = "hello"),FALSE)
-  expect_equal(.are.params.created(param_names = 1),FALSE) 
-  expect_equal(.are.params.created(param_names = list()),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var", 1)),FALSE)
+  expect_equal(are.params.created(param_names = c("first_var", "second_var_X")),FALSE)
+  expect_equal(are.params.created(param_names = "hello"),FALSE)
+  expect_equal(are.params.created(param_names = 1),FALSE) 
+  expect_equal(are.params.created(param_names = list()),FALSE)
 })
 
 context("assignParamSettingsDS::expt::.init.coordinates.ratios")
@@ -138,8 +126,8 @@ test_that("everything is correct",
 {
   expect_equal(exists("settings", where = 1), TRUE)
   expect_equal(assignParamSettingsDS("first_var"),TRUE)
-  expect_equal(assignParamSettingsDS("first_var;second_var"),"SERVER::ERR::PARAM::008")
-  expect_equu(assignParamSettingsDS("first_var;second_var;third_var"),"SERVER::ERR::PARAM::008")
+  expect_error(assignParamSettingsDS("first_var;second_var"),"SERVER::ERR::PARAM::008")
+  
 })
 
 context("assignParamSettingsDS::expt::.has.correct.data")

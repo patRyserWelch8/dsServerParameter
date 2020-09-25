@@ -76,3 +76,25 @@ encode.data.no.sharing <- function()
                         property.d = index/timestamp)
   return(return.value)
 }
+
+
+are.params.created <- function(param_names = c())
+{
+  params.exist     <- FALSE
+  all.numeric <- FALSE
+  
+  if (length(param_names) > 0)
+  {
+    if(length(param_names) >=1  & is.character(param_names) )
+    {
+      list.var <- ls(pos = 1)
+      params.exist  <- all(param_names %in% list.var)
+      if(params.exist)
+      {
+        params <-  mget(x = param_names, envir = as.environment(1))
+        all.numeric <- all(sapply(params, is.numeric))
+      }
+    }
+  }
+  return(params.exist & all.numeric)
+}

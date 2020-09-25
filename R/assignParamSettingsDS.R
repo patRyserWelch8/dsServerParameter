@@ -1,18 +1,3 @@
-.are.params.created <- function(param_names = c())
-{
-  params.exist     <- FALSE
-  if (length(param_names) > 0)
-  {
-    if(length(param_names) >=1  & is.character(param_names) )
-    {
-      list.var <- ls(pos = 1)
-      print(list.var)
-      print(param_names)
-      params.exist  <- all(param_names %in% list.var)
-    }
-  }
-  return(params.exist)
-}
 
 .has.correct.data <- function()
 {
@@ -93,7 +78,10 @@
 .assignParamSettings <- function(param_names = "")
 {
   outcome <-FALSE
+  
+  
   params <- .create.vector(param_names)
+  
   if (.has.correct.data())
   {
     sharing <- get(settings$name, pos = 1)
@@ -123,7 +111,7 @@ assignParamSettingsDS <- function(param_names = "")
   
   if (is.sharing.allowed())
   {
-    if(.are.params.created(param_names))
+    if(are.params.created(param_names))
     {
       return(.assignParamSettings(param_names))
     }
