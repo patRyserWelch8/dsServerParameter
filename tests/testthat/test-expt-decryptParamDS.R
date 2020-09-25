@@ -1,16 +1,25 @@
 
-context("decryptParamDS::expt::no_settings")
+context("decryptParamDS::smk::no_settings")
 test_that("does not exist",
 {
-   if (exists("settings",where = 1))
-   {
-     rm("settings", pos=1)
-   }
+   rm(list=ls(pos = 1),pos=1)
    expect_equal(exists("settings", where = 1), FALSE)
    expect_error(.get.encoded.param())
    expect_error(.is.encoded.param.valid())
-   expect_equal(decryptParamDS(),FALSE)
+   expect_error(decryptParamDS())
 })
+
+context("decryptParamDS::expt::no_settings")
+test_that("does not exist",
+{
+   rm(list=ls(pos = 1),pos=1)
+   expect_equal(exists("settings", where = 1), FALSE)
+   expect_error(.get.encoded.param())
+   expect_error(.is.encoded.param.valid())
+   expect_error(decryptParamDS(), "SERVER::ERR::PARAM::001")
+   
+})
+
 
 assignSharingSettingsDS()
 settings <- get("settings",pos=1)
@@ -25,7 +34,7 @@ test_that("does exists",
    expect_equal(exists("settings", where = 1), TRUE)
    expect_equal(.get.encoded.param(),list())
    expect_equal(.is.encoded.param.valid(),FALSE)
-   expect_equal(decryptParamDS(),FALSE)
+   expect_error(decryptParamDS(),"SERVER::ERR::PARAM::009")
    expect_equal(exists(settings$name.struct, where = 1), FALSE)
 })
 
@@ -33,6 +42,8 @@ test_that("does exists",
 #complete set steps to reach the point of decryption
 #("Step 0")
 rm(list=ls(pos = 1),pos=1)
+options(param.name.struct = "sharing")
+options(param.sharing.allowed = 1) 
 
 #("Step 0")
 assign("pi_value_1", 100.523, pos = 1)
@@ -123,11 +134,6 @@ test_that("data has been encrypted correctly",
    expect_equal(get("outcome", pos = 1), TRUE)
    list.var <- ls(pos = 1)
    param <- get("pi_value_1_a",pos = 1)
-   print(get("pi_value_1_a", pos = 1))
-   print(get("pi_value_2_a", pos = 1))
-   print(get("pi_value_3_a", pos = 1))
-   
-   
    expect_equal("pi_value_1_a" %in% list.var, TRUE)
    expect_equal(param, get("pi_value_1", pos = 1))
 })

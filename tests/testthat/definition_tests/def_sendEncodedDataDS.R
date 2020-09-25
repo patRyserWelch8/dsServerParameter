@@ -11,7 +11,7 @@
 
 .test.create.matrix.parameters.incorrect <- function()
 {
-  empty.matrix   <- matrix(c(0,0,0,0), 2,2)
+  empty.matrix   <- matrix(c(0,0,0,0),2,2)
   result         <- .create.matrix()
   expect_equal(as.logical(all(result == empty.matrix)), TRUE)
   

@@ -329,30 +329,25 @@
 #'@export
 encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
 {
-  outcome <- FALSE
-  
-
-  if (exists("settings", where = 1) & 
-      is.logical(master_mode) & 
-      is.logical(preserve_mode))
+  if (is.logical(master_mode) & is.logical(preserve_mode))
   {
      
-     if(!settings$sharing.allowed)
+     if(is.sharing.allowed())
      {
-       stop("SERVER::ERR::PARAM::001")
+       expected.list <- .encrypt.data(master_mode, preserve_mode)   
+       outcome       <- .is.encrypted.valid(sharing, expected.list) & 
+                        exists(settings$name.struct, where=1)
+       return(outcome)
      }
      else
      {
-          expected.list <- .encrypt.data(master_mode, preserve_mode)   
-          outcome       <- .is.encrypted.valid(sharing, expected.list) & 
-                           exists(settings$name.struct, where=1)
-      }
+       stop("SERVER::ERR::PARAM::001")
+     }
   }
   else
   {
     stop("SERVER::ERR::PARAM::002")
   }
-  return(outcome)
 }
 
 

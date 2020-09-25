@@ -1,5 +1,6 @@
 source("definition_tests/def_sharing_structure.R")
 source("definition_tests/def_process.R")
+source("options/options_definition.R")
 
 context("encryptDataDS::expt::incorrect_parameters")
 test_that("variables exists",
@@ -24,12 +25,11 @@ test_that("variables exists",
   expect_error(encryptDataDS(123,134), "SERVER::ERR::PARAM::002")
   expect_error(encryptDataDS("123","134"), "SERVER::ERR::PARAM::002")
   expect_error(encryptDataDS(TRUE,"134"), "SERVER::ERR::PARAM::002")
-  expect_error(encryptDataDS(FALSE,FALSE), "SERVER::ERR::PARAM::002")
+  expect_error(encryptDataDS(FALSE,FALSE), "SERVER::ERR::PARAM::001")
 })
 
 
-
-set.default.options.restrictive()
+set.default.options.restrictive
 assignSharingSettingsDS()
 
 context("encryptDataDS::expt::not_allowed_to_share")

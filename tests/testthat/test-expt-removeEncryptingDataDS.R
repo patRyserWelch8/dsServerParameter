@@ -7,7 +7,7 @@ test_that("no_setting",
     rm("settings",pos=1)
   }
   expect_equal(exists("settings",where = 1),FALSE)
-  expect_equal(removeEncryptingDataDS(),FALSE)
+  expect_error(removeEncryptingDataDS(),"SERVER::ERR::PARAM::001")
   expect_error(.get.sharing.data())
 })
 #"Step 0"
@@ -25,6 +25,8 @@ test_that("no_sharing",
   expect_equal(.get.sharing.data(),list())
 })
 
+options(param.name.struct = "sharing")
+options(param.sharing.allowed = 1) 
 
 #("Step 0")
 rm(list=ls(pos = 1),pos=1)
@@ -67,7 +69,7 @@ assign("master.3.5", get("sharing",pos = 1), pos = 1)
 assign("f", getCoordinatesDS(), pos = 1)
 rm(sharing,pos=1)
 assign("sharing", get("receiver.2", pos = 1), pos=1)
-assignCoordinatesDS(f$header, f$payload,f$property.a,f$property.b,f$property.c,f$property.d)
+assignCoordinatesDS(f$header,payload = f$payload,f$property.a,f$property.b,f$property.c,f$property.d)
 assign("receiver.2.5", get("sharing", pos = 1), pos = 1)
 rm(sharing,pos=1)
 assign("sharing", get("master.3.5", pos = 1), pos=1)

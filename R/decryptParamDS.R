@@ -36,6 +36,26 @@
   return(outcome)
 }
 
+.decryptParam <- function(param_names = NULL, tolerance = 8)
+{
+  outcome <- FALSE
+  param.value <- NA
+  
+  params    <- .create.vector.params(param_names)
+  no.params <- length(params)
+  rows      <- ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]])
+  columns   <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]])
+  
+  #those are swapped due to transpose in encoding process
+  for(index in 1:no.params)
+  {
+    param_name  <- params[index]
+    param.value <-  round(sharing$decrypted[columns[index],rows[index]], tolerance)
+    assign(param_name,param.value, pos = 1)
+  }
+  outcome <- !is.na(param.value)
+  return(outcome)
+}
 
 #'@name decryptParamDS
 #'@title  decrypt a server parameter 
@@ -47,28 +67,24 @@ decryptParamDS <- function(param_names = NULL, tolerance = 8)
 {
    outcome <- FALSE
    param.value <- NA
-   if (exists("settings", where = 1))
+   
+   if (is.sharing.allowed())
    {
      sharing <- .get.encoded.param()
-    
      if(.is.encoded.param.valid(sharing))
      {   
-         params    <- .create.vector.params(param_names)
-         no.params <- length(params)
-         rows      <- ceiling(sharing[[settings$index_x]] * sharing[[settings$no_columns]])
-         columns   <- ceiling(sharing[[settings$index_y]] * sharing[[settings$no_rows]])
-        
-         #those are swapped due to transpose in encoding process
-         for(index in 1:no.params)
-         {
-           param_name  <- params[index]
-           param.value <-  round(sharing$decrypted[columns[index],rows[index]], tolerance)
-           assign(param_name,param.value, pos = 1)
-         }
+       return(.decryptParam(param_names, tolerance))
      }
+     else
+     {
+       stop("SERVER::ERR::PARAM::009")
+     }   
    }
-   outcome <- !is.na(param.value)
-   return(outcome)
+   else
+   {
+     stop("SERVER::ERR::PARAM::001")
+   }
+  
 }
 
 

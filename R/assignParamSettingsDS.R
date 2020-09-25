@@ -1,27 +1,15 @@
-.has.correct.data <- function(param_names = c())
-{
-  
-  params.exist     <- FALSE
-  encrypted.exists <- FALSE
-  if (exists("settings",where = 1)  &
-      !is.null(param_names) )
-  {
-   
-    if (exists(settings$name.struct,where = 1) & length(param_names) > 0)
-    {
-      if(length(param_names) >=1  & is.character(param_names) )
-      {
-        
-        list.files <- ls(pos = 1)
-        params.exist  <- all(param_names %in% list.files)
-      }
 
+.has.correct.data <- function()
+{
+  encrypted.exists <- FALSE
+ 
+  if (exists(settings$name.struct,where = 1))
+  {
       sharing           <- get(settings$name.struct, pos = 1)
       encrypted.exists  <- settings$encrypted %in% names(sharing)
-    }
   }
   
-  return(encrypted.exists & params.exist)
+  return(encrypted.exists)
 }
 
 .generate.ratios <- function(no.elements = 0, coordinate = 0)
@@ -87,18 +75,14 @@
   return(outcome)
 }
 
-#'@name   assignParamSettingsDS
-#'@title  assigns some settings used to encrypt and decrypt the parameters
-#'@description This server function sets some settings specific to the parameters encryption and decryption mechanisms. 
-#'The latter should identify a column and row for each parameter in some matrices. The row and column is disclosive. So, it remains
-#'on the server and cannot be analysed directly.
-#'@param param_names  character vector. Name of the server parameter to encrypt.
-#'@export
-assignParamSettingsDS <- function(param_names = "")
+.assignParamSettings <- function(param_names = "")
 {
   outcome <-FALSE
+  
+  
   params <- .create.vector(param_names)
-  if (.has.correct.data(params))
+  
+  if (.has.correct.data())
   {
     sharing <- get(settings$name, pos = 1)
     sharing <-.init.coordinates.ratios(params, sharing)
@@ -111,4 +95,34 @@ assignParamSettingsDS <- function(param_names = "")
     }
   }
   return(outcome)
+}
+
+
+
+#'@name   assignParamSettingsDS
+#'@title  assigns some settings used to encrypt and decrypt the parameters
+#'@description This server function sets some settings specific to the parameters encryption and decryption mechanisms. 
+#'The latter should identify a column and row for each parameter in some matrices. The row and column is disclosive. So, it remains
+#'on the server and cannot be analysed directly.
+#'@param param_names  character vector. Name of the server parameter to encrypt.
+#'@export
+assignParamSettingsDS <- function(param_names = "")
+{
+  
+  if (is.sharing.allowed())
+  {
+    if(are.params.created(param_names))
+    {
+      return(.assignParamSettings(param_names))
+    }
+    else
+    {
+      stop("SERVER::ERR::PARAM::008")
+    }
+  }
+  else
+  {
+    stop("SERVER::ERR::PARAM::001")
+  }
+  
 }
