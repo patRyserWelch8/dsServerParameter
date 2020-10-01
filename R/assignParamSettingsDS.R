@@ -111,7 +111,8 @@ assignParamSettingsDS <- function(param_names = "")
   
   if (is.sharing.allowed())
   {
-    if(are.params.created(param_names))
+    param_names.decoded <- unlist(strsplit(as.character(param_names),";")) 
+    if(are.params.created(param_names.decoded))
     {
       return(.assignParamSettings(param_names))
     }
