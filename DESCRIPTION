@@ -26,6 +26,6 @@ AggregateMethods:
   removeEncryptingDataDS,
   removeExchangeDataDS
 Options:
- param.name.struct = "sharing",
- param.sharing.allowed = 1
+ param.name.struct="sharing",
+ param.sharing.allowed=1
 RoxygenNote: 7.1.0

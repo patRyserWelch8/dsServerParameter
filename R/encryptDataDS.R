@@ -313,8 +313,7 @@
 
 #'@name encryptDataDS
 #'@title  encrypt some data on the server 
-#'@description This server function uses some matrices operations to encrypts some data required to exchange a parameter securely between two
-#'DataSHIELD server.
+#'@description This server function uses some matrices operations to encrypts some data required to exchange a parameter securely between two DataSHIELD server.
 #'@details This function encrypts data in four different ways; each of them are defined by the combination of argument values.
 #'\itemize{
 #'\item{\code{master_mode = TRUE, preserve_mode = FALSE}} {- This combination of argument values indicates the server is in \strong{master_mode}. An exchange of encrypted data is  initiated. It is the first step of the exchange.}  
@@ -324,10 +323,11 @@
 #'concealed in within some newly generated data.}
 #'\item{\code{master_mode = FALSE, preserve_mode = TRUE}} {- This set of argument values states the server is in \strong{receiver_mode}. Some data received from the master is 
 #'used again to encrypted a \strong{receiver_server specific} data. Some data previously used by the process are preserved.}
+#'}
 #'@param master_mode Boolean argument. It indicates the mode of encryption. By default, set to TRUE.
 #'@param preserve_mode  Boolean argument. It indicates to presever some data exchanged previously between servers. By default, set to FALSE.
 #'@export
-encryptDataDS <- function(master_mode=TRUE, preserve_mode = FALSE)
+encryptDataDS <- function(master_mode = TRUE, preserve_mode = FALSE)
 {
   if (is.logical(master_mode) & is.logical(preserve_mode))
   {

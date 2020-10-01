@@ -42,7 +42,7 @@ print("step 5")
 decryptDataDS()
 master.3 <- get("sharing",pos=1)
 print(names(master.3))
-assignParamSettingsDS(c("pi_value_1","pi_value_2","pi_value_3")) #done
+assignParamSettingsDS("pi_value_1;pi_value_2;pi_value_3") #done
 master.3.5 <- get("sharing",pos=1)
 print(names(master.3.5))
 
